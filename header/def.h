@@ -2,14 +2,8 @@
 	#define DEF_INSIDE
 
 	/*#include"mpi.h"*/	/*IMRCの伝統的な神様*/
-	#include <assert.h>
 	#include <stdio.h>
-	#include <stdlib.h>
 	#include <stdint.h>
-	#include <string.h>
-	#include <memory.h>
-	#include <signal.h>
-	#include <gmp.h>
 
 	#define FLUSH
 	#define NODP

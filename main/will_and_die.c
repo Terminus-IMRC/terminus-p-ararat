@@ -1,4 +1,5 @@
 #include "def.h"
+#include <stdlib.h>
 
 void will_and_die(char* str, int exitno)
 {

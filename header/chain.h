@@ -1,6 +1,7 @@
 #ifndef CHAIN_INSIDE
 	#define CHAIN_INSIDE
 	#include "def.h"
+	#include <stdlib.h>
 	/*20130111*/
 	extern enum trident prepcode[X][X];
 

@@ -5,6 +5,8 @@
 
 #include "chain.h"
 #include "code.h"
+#include <signal.h>
+#include <assert.h>
 
 void caught_signal(int);
 

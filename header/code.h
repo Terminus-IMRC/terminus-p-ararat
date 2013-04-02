@@ -1,6 +1,7 @@
 #ifndef CODE_INSIDE
 	#define CODE_INSIDE
 	#include "def.h"
+	#include "gmp.h"
 	/*20130112*/
 	extern void follow(usetype);
 	extern usetype find_next_j(usetype*);
