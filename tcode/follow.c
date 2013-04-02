@@ -70,19 +70,21 @@ void follow(usetype m){
 					l-1);
 				goto ncot;
 			}
+
 			if( ((chain[m].toafill[j].x==X-1) && (chain[m].toafill[j].y==X-1)) && (!(l>tcode[0][0])) )
 				goto ncot;	/*TODO: return; is OK here. Why?*/
 			if( ((chain[m].toafill[j].x==0) && (chain[m].toafill[j].y==X-1)) &&	\
 					 ((!(l>tcode[X-1][0])) ) )
 				goto ncot;	/*TODO: return; is OK here. Why?*/
+
 			tcode[chain[m].toafill[j].x][chain[m].toafill[j].y]=l;
-			dned[tcode[chain[m].toafill[j].x][chain[m].toafill[j].y]-1]=True;
-			sum_tate[chain[m].toafill[j].x]+=tcode[chain[m].toafill[j].x][chain[m].toafill[j].y];
-			sum_yoko[chain[m].toafill[j].y]+=tcode[chain[m].toafill[j].x][chain[m].toafill[j].y];
+			dned[l-1]=True;
+			sum_tate[chain[m].toafill[j].x]+=l;
+			sum_yoko[chain[m].toafill[j].y]+=l;
 			if(if_name0(chain[m].toafill[j]))
-				sum_name[0]+=tcode[chain[m].toafill[j].x][chain[m].toafill[j].y];
+				sum_name[0]+=l;
 			if(if_name1(chain[m].toafill[j]))
-				sum_name[1]+=tcode[chain[m].toafill[j].x][chain[m].toafill[j].y];
+				sum_name[1]+=l;
 
 			if(!(isitconsist(sum_tate[chain[m].x]) &&	\
 				 isitconsist(sum_yoko[chain[m].y]) &&	\
