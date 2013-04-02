@@ -1,7 +1,7 @@
 #20130111 from [gitlh]. forget [MaybeCode] on school.
 #20130309 We are ANSI and pedantic. With Seasons Of Love.
 PROG=Terminus
-CFLAGS=-Iheader -g -O3
+CFLAGS=-Iheader -g -O0
 CFLAGS+=-Wall -Wextra -W -Wundef -Wshadow	\
 		-Wcast-qual -Winline -Wno-long-long	\
 		-fsigned-char -ansi -pedantic
