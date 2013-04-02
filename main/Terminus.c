@@ -17,8 +17,7 @@ mpz_t total;
 int main(){
 	int i, j;
 
-	i=signal(SIGINT, caught_signal);
-	assert(i != SIG_ERR);
+	assert(signal(SIGINT, caught_signal) != SIG_ERR);
 
 	mpz_init(total);
 	for(i=0; i<X;i++){
