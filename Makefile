@@ -13,7 +13,7 @@ SRCS=chain/chain_init.c chain/chain_main.c chain/printChain.c	\
 		code/counttri.c code/findFinalPlace.c code/pfCode.c	\
 		main/Terminus.c main/caught_signal.c tcode/find_next_j.c	\
 		tcode/follow.c main/will_and_die.c
-OBJS=$(SRCS:%.c=%.o)
+OBJS=$(SRCS:%.c=%.c.o)
 INSTALL=install -s -p -o imrc -g staff -m 0777
 GIT=git
 
@@ -38,14 +38,14 @@ all:	$(PROG) $(DEP)
 $(PROG):	$(GCHDRS) $(OBJS) $(DEP)
 	$(LINK.o) $(OUTPUT_OPTION) $(OBJS)
 
-%.o:	%.c $(GCHDRS) $(MAKEFILE_LIST) $(DEP)
+%.c.o:	%.c $(GCHDRS) $(MAKEFILE_LIST) $(DEP)
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 %.h.gch:	%.h $(MAKEFILE_LIST) $(DEP)
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 header/code.h.gch header/chain.h.gch: header/def.h
-tcode/follow.o:	$(PFBOOL)
+tcode/follow.c.o:	$(PFBOOL)
 
 clean:
 	$(RM) $(OBJS) $(GCHDRS) $(PROG)
