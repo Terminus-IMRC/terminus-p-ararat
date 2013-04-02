@@ -8,16 +8,16 @@
 #define isitconsist(m) (((m>0)&&(m<=OneLine)) ? True:False)
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
-uint_fast8_t tcode[X][X];
+usetype tcode[X][X];
 _Bool dned[Ceilings];
-uint_fast8_t sum_tate[X], sum_yoko[X], sum_name[2];
+usetype sum_tate[X], sum_yoko[X], sum_name[2];
 
 #define if_name0(s) (s.x==s.y ? True:False)
 #define if_name1(s) ((X-s.y-1)==s.x ? True:False)
 
-void follow(uint_fast8_t m){
-	uint_fast8_t i=0, j, k, l;
-	uint_fast8_t local_tate[X], local_yoko[X], local_name[2];
+void follow(usetype m){
+	usetype i=0, j, k, l;
+	usetype local_tate[X], local_yoko[X], local_name[2];
 	_Bool local_dned[Ceilings];
 
 	dprintf("Entering #%d\n", m);

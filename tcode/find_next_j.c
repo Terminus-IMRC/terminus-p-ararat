@@ -1,6 +1,6 @@
 #include "code.h"
 
-uint_fast8_t find_next_j(uint_fast8_t* stat){
+usetype find_next_j(usetype* stat){
 	dprintf("find_next_j: ");
 	for(; *stat<Ceilings; ++*stat){
 		dprintf("[%d]%d ", *stat, dned[*stat]);
