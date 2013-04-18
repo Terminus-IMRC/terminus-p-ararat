@@ -63,7 +63,7 @@ vrun:	$(PROG)
 	valgrind --leak-check=yes --track-origins=no -v ./$<
 
 load:
-	@tce-load -i compiletc git less gdb >/dev/null
+	@tce-load -i compiletc git less gdb gmp gmp-dev
 
 greptodo:
 	-grep -F -n TODO $(HDRS) $(SRCS)
