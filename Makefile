@@ -1,18 +1,19 @@
 #20130111 from [gitlh]. forget [MaybeCode] on school.
 #20130309 We are ANSI and pedantic. With Seasons Of Love.
 PROG=Terminus
+CC=mpicc
 CFLAGS=-Iheader -g -O0
 CFLAGS+=-Wall -Wextra -W -Wundef -Wshadow	\
 		-Wcast-qual -Winline -Wno-long-long	\
 		-fsigned-char -ansi -pedantic
 LDFLAGS=-lc -lgmp
-HDRS=header/def.h header/chain.h header/code.h header/debug.h
+HDRS=header/def.h header/chain.h header/code.h header/debug.h header/parallel.h
 GCHDRS=$(HDRS:%.h=%.h.gch)
 SRCS=chain/chain_init.c chain/chain_main.c chain/printChain.c	\
 		code/addChainOrder.c code/allfilled.c code/bfcode.c	\
 		code/counttri.c code/findFinalPlace.c code/pfCode.c	\
 		main/Terminus.c main/caught_signal.c tcode/find_next_j.c	\
-		tcode/follow.c main/will_and_die.c
+		tcode/follow.c main/will_and_die.c tcode/follow_pa.c
 OBJS=$(SRCS:%.c=%.c.o)
 INSTALL=install -s -p -o imrc -g staff -m 0777
 GIT=git

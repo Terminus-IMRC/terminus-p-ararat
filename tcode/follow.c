@@ -22,6 +22,11 @@ void follow(usetype m){
 
 	dprintf("Entering #%d\n", m);
 
+	if(m==N-1){
+		dprintf("Now let master broadcast ms.\n");
+		follow_pa(m);
+	}
+
 	/*There used to be storetynd here.*/
 	for(j=0; j<X; j++){
 		local_tate[j]=sum_tate[j];

@@ -8,6 +8,8 @@
 #include <signal.h>
 #include <assert.h>
 
+extern int tosend;
+
 void caught_signal(int);
 
 enum trident prepcode[X][X];
@@ -33,6 +35,10 @@ int main(){
 	chaincont=0;
 
 	chain_main();
+
+	/* TODO: broadcast chain */
+
+	tosend=1l
 
 	dputs("Long overdue. This program will follow below steps.");
 	printChain();
