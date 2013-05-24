@@ -25,6 +25,9 @@ XNUM=.x
 PFBOOL=.pf
 DEP=$(XNUM)
 
+N+=3
+CFLAGS+=-DN=$(N)
+
 ifneq ($(PF),)
 	CFLAGS+=-DPF
 endif

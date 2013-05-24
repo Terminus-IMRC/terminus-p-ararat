@@ -5,10 +5,12 @@
 
 #include "chain.h"
 #include "code.h"
+#include "parallel.h"
 #include <signal.h>
 #include <assert.h>
 
 extern int tosend;
+int commrank, commsize;
 
 void caught_signal(int);
 

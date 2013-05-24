@@ -4,6 +4,7 @@
  */
 /* Anyway the wind blows */
 #include "code.h"
+#include "parallel.h"
 
 #define isitconsist(m) (((m>0)&&(m<=OneLine)) ? True:False)
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
