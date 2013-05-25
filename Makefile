@@ -40,13 +40,16 @@ $(shell ([ -f $(XNUM) ] && [ `cat $(XNUM)` -eq $(X) ])	\
 all:	$(PROG) $(DEP)
 
 $(PROG):	$(GCHDRS) $(OBJS) $(DEP)
-	$(LINK.o) $(OUTPUT_OPTION) $(OBJS)
+	@echo -e "\tLINK\t$@"
+	@$(LINK.o) $(OUTPUT_OPTION) $(OBJS)
 
 %.c.o:	%.c $(GCHDRS) $(MAKEFILE_LIST) $(DEP)
-	$(COMPILE.c) $(OUTPUT_OPTION) $<
+	@echo -e "\tCC\t$@"
+	@$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 %.h.gch:	%.h $(MAKEFILE_LIST) $(DEP)
-	$(COMPILE.c) $(OUTPUT_OPTION) $<
+	@echo -e "\tCC\t$@"
+	@$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 header/code.h.gch header/chain.h.gch: header/def.h
 tcode/follow.c.o:	$(PFBOOL)
