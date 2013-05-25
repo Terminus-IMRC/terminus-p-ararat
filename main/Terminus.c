@@ -38,9 +38,9 @@ int main(){
 
 	chain_main();
 
-	/* TODO: broadcast chain */
+	/* Note that it is needed to broadcast chain */
 
-	tosend=1l
+	tosend=1;
 
 	dputs("Long overdue. This program will follow below steps.");
 	printChain();
