@@ -10,7 +10,7 @@
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
 usetype tcode[X][X];
-_Bool dned[Ceilings];
+unsigned char dned[Ceilings];
 usetype sum_tate[X], sum_yoko[X], sum_name[2];
 
 #define if_name0(s) (s.x==s.y ? True:False)
@@ -19,7 +19,7 @@ usetype sum_tate[X], sum_yoko[X], sum_name[2];
 void follow(usetype m){
 	usetype i=0, j, k, l;
 	usetype local_tate[X], local_yoko[X], local_name[2];
-	_Bool local_dned[Ceilings];
+	unsigned char local_dned[Ceilings];
 
 	dprintf("Entering #%d\n", m);
 
@@ -113,7 +113,10 @@ void follow(usetype m){
 				pfCode(tcode);
 				puts("------------");
 				#endif
-				mpz_add_ui(total, total, 1);
+				if(!commrank){
+					dputs("root rearched max depth. Are you sure?");
+				}
+				mpz_add_ui(eachtotal, eachtotal, 1);
 			}
 		}else{
 			dprintf("main tyn is not consist. So don't following.\n");
