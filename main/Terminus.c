@@ -24,6 +24,7 @@ int main(int argc, char* argv[]){
 	int i, j;
 	int len;
 	int* recvcounts;
+	unsigned char contflag;
 	char *str, **allstr;
 
 	assert(signal(SIGINT, caught_signal) != SIG_ERR);
@@ -75,9 +76,13 @@ int main(int argc, char* argv[]){
 	for(i=0; i<2; i++)
 		sum_name[i]=0;
 
-	if(!commrank)
+	if(!commrank){
 		follow(0);
-	else
+		contflag=0;	/*"Let's give up", she said me.*/
+		for(i=1; i<commsize; i++)
+			MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR,	\
+				i, 1, MPI_COMM_WORLD);
+	}else
 		follow_pa(N-1);
 	fprintf(stdout, "EachTotal(%d): ", commrank);
 	mpz_out_str(stdout, BASE, eachtotal);
@@ -89,7 +94,8 @@ int main(int argc, char* argv[]){
 	len=mpz_sizeinbase(eachtotal, BASE);
 	MPI_Reduce_scatter(&i, &len, recvcounts, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 	len=i+1;
-	printf("len is %d.\n", len);
+	if(!commrank)
+		printf("len is %d.\n", len);
 	str=(char*)malloc(sizeof(char)*(len+1));	/*len plus \0*/
 	assert(str);
 	if(!commrank){

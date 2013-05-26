@@ -23,9 +23,10 @@ void follow(usetype m){
 
 	dprintf("Entering #%d\n", m);
 
-	if(m==N-1){
+	if((!commrank) && (m==N-1)){
 		dprintf("Now let master broadcast ms.\n");
 		follow_pa(m);
+		return;	/*Don't forget!!!*/
 	}
 
 	/*There used to be storetynd here.*/
