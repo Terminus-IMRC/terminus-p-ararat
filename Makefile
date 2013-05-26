@@ -28,6 +28,8 @@ DEP=$(XNUM)
 N+=3
 CFLAGS+=-DN=$(N)
 
+PROC:=2
+
 ifneq ($(PF),)
 	CFLAGS+=-DPF
 endif
@@ -58,7 +60,7 @@ clean:
 	$(RM) $(OBJS) $(GCHDRS) $(PROG)
 
 run:	$(PROG)
-	time -p ./$<
+	mpiexec -n $(PROC) ./$<
 
 install:	$(PROG)
 	$(INSTALL) $< $(DEST)
