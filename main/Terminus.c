@@ -75,8 +75,11 @@ int main(int argc, char* argv[]){
 	for(i=0; i<2; i++)
 		sum_name[i]=0;
 
-	follow(0);
-	fputs("EachTotal: ", stdout);
+	if(!commrank)
+		follow(0);
+	else
+		follow_pa(N-1);
+	fprintf(stdout, "EachTotal(%d): ", commrank);
 	mpz_out_str(stdout, BASE, eachtotal);
 	putchar('\n');
 
@@ -84,7 +87,9 @@ int main(int argc, char* argv[]){
 	for(i=0; i<commsize; i++)
 		recvcounts[i]=1;
 	len=mpz_sizeinbase(eachtotal, BASE);
-	MPI_Reduce_scatter(&len, &len, recvcounts, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+	MPI_Reduce_scatter(&i, &len, recvcounts, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+	len=i+1;
+	printf("len is %d.\n", len);
 	str=(char*)malloc(sizeof(char)*(len+1));	/*len plus \0*/
 	assert(str);
 	if(!commrank){
@@ -96,16 +101,22 @@ int main(int argc, char* argv[]){
 		}
 	}
 	mpz_get_str(str, BASE, eachtotal);
-	MPI_Gather(str, len, MPI_INT, allstr, len, MPI_INT, 0, MPI_COMM_WORLD);
+	/*It can be bug. I do not know how to use this...
+	MPI_Gather(str, len, MPI_INT, allstr, len, MPI_INT, 0, MPI_COMM_WORLD);*/
 	if(!commrank){
-		for(i=0; i<commsize; i++){
-			mpz_set_str(eachtotal, allstr[i], BASE);
+		mpz_set(total, eachtotal);
+		for(i=1; i<commsize; i++){
+			MPI_Recv(str, len+1, MPI_CHAR, i, MPI_ANY_TAG,	\
+				MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			mpz_set_str(eachtotal, str, BASE);
 			mpz_add(total, total, eachtotal);
 		}
 		fputs("Total: ", stdout);
+		mpz_out_str(stdout, BASE, total);
 		putchar('\n');
 		mpz_clear(total);
-	}
+	}else
+		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
 	mpz_clear(eachtotal);
 
 	MPI_Finalize();
