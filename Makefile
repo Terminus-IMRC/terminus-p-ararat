@@ -80,6 +80,5 @@ gitinit:
 	$(GIT) config --global user.name "Terminus"
 	$(GIT) config --global user.email "i.can.speak.c.and.basic@gmail.com"
 	$(GIT) config --global color.ui auto
-	$(GIT) remote add origin https://terminus.backlog.jp/git/TERM/terminus.git
 
 .PHONY:	load
