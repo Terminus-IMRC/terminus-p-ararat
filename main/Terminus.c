@@ -79,9 +79,12 @@ int main(int argc, char* argv[]){
 	if(!commrank){
 		follow(0);
 		contflag=0;	/*"Let's give up", she said me.*/
-		for(i=1; i<commsize; i++)
+		for(i=1; i<commsize; i++){
+			MPI_Recv(&i, 1, MPI_INT, i, 2, MPI_COMM_WORLD,	\
+				MPI_STATUS_IGNORE);
 			MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR,	\
 				i, 1, MPI_COMM_WORLD);
+		}
 	}else
 		follow_pa(N-1);
 	fprintf(stdout, "EachTotal(%d): ", commrank);

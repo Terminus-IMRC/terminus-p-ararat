@@ -9,6 +9,8 @@ void follow_pa(usetype m)
 	unsigned char contflag;
 
 	if(!commrank){
+		MPI_Recv(&tosend, 1, MPI_INT, MPI_ANY_SOURCE, 2,	\
+			MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		contflag=1;
 		MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR, tosend,	\
 			1, MPI_COMM_WORLD);
@@ -28,6 +30,8 @@ void follow_pa(usetype m)
 			tosend++;
 	}else{
 		for(;;){
+			MPI_Send(&commrank, 1, MPI_INT, 0, 2,	\
+				MPI_COMM_WORLD);
 			MPI_Recv(&contflag, 1, MPI_UNSIGNED_CHAR, 0,	\
 				1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			if(!contflag)
