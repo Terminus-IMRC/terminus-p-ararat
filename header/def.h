@@ -44,6 +44,7 @@
 
 	extern struct ring chain[Ceilings];
 	extern usetype chaincont;
+	extern FILE* myfp;
 	extern void pfCode(usetype code[X][X]);
 	extern void will_and_die(char*, int);
 #endif

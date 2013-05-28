@@ -112,7 +112,7 @@ void follow(usetype m){
 				dprintf("Max depth(m) reached.\n");
 				#ifdef PF
 				pfCode(tcode);
-				puts("------------");
+				fputs("------------\n", myfp);
 				#endif
 				if(!commrank){
 					dputs("root rearched max depth. Are you sure?");
