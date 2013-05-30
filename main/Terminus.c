@@ -29,6 +29,8 @@ int main(int argc, char* argv[]){
 	char *str, **allstr;
 	char filename[0xff];
 
+	MPI_Init(&argc, &argv);
+
 	assert(signal(SIGINT, caught_signal) != SIG_ERR);
 
 	mpz_init(eachtotal);
@@ -46,7 +48,6 @@ int main(int argc, char* argv[]){
 
 	/* Note that it is needed to broadcast chain */
 
-	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &commrank);
 	MPI_Comm_size(MPI_COMM_WORLD, &commsize);
 
