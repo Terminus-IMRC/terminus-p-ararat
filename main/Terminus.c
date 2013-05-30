@@ -82,6 +82,8 @@ int main(int argc, char* argv[]){
 	for(i=0; i<2; i++)
 		sum_name[i]=0;
 
+	ppass();
+
 	if(!commrank){
 		follow(0);
 		contflag=0;	/*"Let's give up", she said me.*/
@@ -93,6 +95,9 @@ int main(int argc, char* argv[]){
 		}
 	}else
 		follow_pa(N-1);
+
+	ppass();
+
 	fprintf(stdout, "EachTotal(%d): ", commrank);
 	mpz_out_str(stdout, BASE, eachtotal);
 	putchar('\n');
