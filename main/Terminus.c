@@ -31,6 +31,7 @@ int main(int argc, char* argv[]){
 	unsigned char contflag;
 	char *str, **allstr;
 	char filename[0xff];
+	FILE* nfp;
 
 	MPI_Init(&argc, &argv);
 
@@ -139,6 +140,10 @@ int main(int argc, char* argv[]){
 		fputs("Total: ", stdout);
 		mpz_out_str(stdout, BASE, total);
 		putchar('\n');
+		sprintf(filename, "res%02d%02d.txt", X, N);
+		nfp=fopen(filename, "w");
+		mpz_out_str(nfp, BASE, total);
+		fclose(nfp);
 		mpz_clear(total);
 	}else
 		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
