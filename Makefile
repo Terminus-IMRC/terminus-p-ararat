@@ -6,7 +6,7 @@ CFLAGS=-Iheader -g -O0
 CFLAGS+=-Wall -Wextra -W -Wundef -Wshadow	\
 		-Wcast-qual -Winline -Wno-long-long	\
 		-fsigned-char -ansi -pedantic
-CFLAGS+=-mcmodel=medium
+#CFLAGS+=-mcmodel=medium
 LDFLAGS=-lc -lgmp
 HDRS=header/def.h header/chain.h header/code.h header/debug.h header/parallel.h
 GCHDRS=$(HDRS:%.h=%.h.gch)
