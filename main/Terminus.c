@@ -11,7 +11,10 @@
 
 extern int tosend;
 int commrank, commsize;
+
+#ifdef PF
 FILE* myfp;
+#endif
 
 void caught_signal(int);
 
@@ -28,6 +31,7 @@ int main(int argc, char* argv[]){
 	unsigned char contflag;
 	char *str, **allstr;
 	char filename[0xff];
+	FILE* nfp;
 
 	MPI_Init(&argc, &argv);
 
@@ -51,8 +55,10 @@ int main(int argc, char* argv[]){
 	MPI_Comm_rank(MPI_COMM_WORLD, &commrank);
 	MPI_Comm_size(MPI_COMM_WORLD, &commsize);
 
+	#ifdef PF
 	sprintf(filename, "out%d.txt", commrank);
 	myfp=fopen(filename, "w");
+	#endif
 
 	if(!commrank){
 		tosend=1;
@@ -134,12 +140,18 @@ int main(int argc, char* argv[]){
 		fputs("Total: ", stdout);
 		mpz_out_str(stdout, BASE, total);
 		putchar('\n');
+		sprintf(filename, "res%02d%02d.txt", X, N);
+		nfp=fopen(filename, "w");
+		mpz_out_str(nfp, BASE, total);
+		fclose(nfp);
 		mpz_clear(total);
 	}else
 		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
 	mpz_clear(eachtotal);
 
+	#ifdef PF
 	fclose(myfp);
+	#endif
 
 	MPI_Finalize();
 

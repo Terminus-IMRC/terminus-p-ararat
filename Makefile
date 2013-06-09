@@ -59,7 +59,7 @@ $(PROG):	$(GCHDRS) $(OBJS) $(DEP)
 	@$(COMPILE.c) $(OUTPUT_OPTION) $<
 
 header/code.h.gch header/chain.h.gch: header/def.h
-tcode/follow.c.o:	$(PFBOOL)
+tcode/follow.c.o main/Terminus.c.o code/pfCode.c.o header.def.h:	$(PFBOOL)
 
 clean:
 	$(RM) $(OBJS) $(GCHDRS) $(PROG)
