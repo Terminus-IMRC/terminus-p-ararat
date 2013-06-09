@@ -2,12 +2,13 @@
 #20130309 We are ANSI and pedantic. With Seasons Of Love.
 PROG=Terminus
 CC=mpicc
-CFLAGS=-Iheader -g -O0
-CFLAGS+=-Wall -Wextra -W -Wundef -Wshadow	\
+HEADERFLAGS=-Iheader
+OPTFLAGS=-g -O0
+WARNFLAGS=-Wall -Wextra -W -Wundef -Wshadow	\
 		-Wcast-qual -Winline -Wno-long-long	\
 		-fsigned-char -ansi -pedantic
 #CFLAGS+=-mcmodel=medium
-LDFLAGS=-lc -lgmp
+LOCALLDFLAGS=-lgmp
 HDRS=header/def.h header/chain.h header/code.h header/debug.h header/parallel.h
 GCHDRS=$(HDRS:%.h=%.h.gch)
 SRCS=chain/chain_init.c chain/chain_main.c chain/printChain.c	\
@@ -20,25 +21,28 @@ INSTALL=install -s -p -o imrc -g staff -m 0777
 GIT=git
 
 X=3
-CFLAGS+=-DX=$(X)
+VALFLAGS+=-DX=$(X)
 
 XNUM=.x
 PFBOOL=.pf
 DEP=$(XNUM)
 
 N+=3
-CFLAGS+=-DN=$(N)
+VALFLAGS+=-DN=$(N)
 
 PROC:=2
 
 ifneq ($(PF),)
-	CFLAGS+=-DPF
+	VALFLAGS+=-DPF
 endif
 $(shell ([ -f $(PFBOOL) ] && [ "`cat $(PFBOOL)`" = "$(PF)" ])	\
-										|| echo $(PF) >$(PFBOOL))
+	|| echo $(PF) >$(PFBOOL))
 
 $(shell ([ -f $(XNUM) ] && [ `cat $(XNUM)` -eq $(X) ])	\
-									|| echo $(X) >$(XNUM))
+	|| echo $(X) >$(XNUM))
+
+COMPILE.c=$(CC) $(HEADERFLAGS) $(OPTFLAGS) $(WARNFLAGS) $(VALFLAGS) $(CFLAGS) -c
+LINK.o=$(CC) $(LOCALLDFLAGS) $(LDFLAGS)
 
 all:	$(PROG) $(DEP)
 
