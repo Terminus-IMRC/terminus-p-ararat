@@ -1,2 +1,5 @@
 *.c.o
 *.h.gch
+.pf
+.x
+Terminus
