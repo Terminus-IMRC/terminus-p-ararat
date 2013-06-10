@@ -79,10 +79,10 @@ void follow(usetype m){
 			}
 
 			if( ((chain[m].toafill[j].x==X-1) && (chain[m].toafill[j].y==X-1)) && (!(l>tcode[0][0])) )
-				goto ncot;	/*TODO: return; is OK here. Why?*/
+				return;
 			if( ((chain[m].toafill[j].x==0) && (chain[m].toafill[j].y==X-1)) &&	\
 					 ((!(l>tcode[X-1][0])) ) )
-				goto ncot;	/*TODO: return; is OK here. Why?*/
+				return;
 
 			tcode[chain[m].toafill[j].x][chain[m].toafill[j].y]=l;
 			dned[l-1]=True;
