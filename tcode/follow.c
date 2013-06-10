@@ -16,8 +16,10 @@ usetype sum_tate[X], sum_yoko[X], sum_name[2];
 #define if_name0(s) (s.x==s.y ? True:False)
 #define if_name1(s) ((X-s.y-1)==s.x ? True:False)
 
+short int follow_chain(int m);
+
 void follow(usetype m){
-	usetype i=0, j, k, l;
+	usetype i=0, j;
 	usetype local_tate[X], local_yoko[X], local_name[2];
 	unsigned char local_dned[Ceilings];
 
@@ -56,50 +58,18 @@ void follow(usetype m){
 		if(if_name1(chain[m]))
 			sum_name[1]+=i;
 
-		for(j=0; j<chain[m].toafillcont; j++){
-			dprintf("Trying to chain[%d]'s toafill #%d[%d][%d].\n", m, j,	\
-				chain[m].toafill[j][0], chain[m].toafill[j][0]);
-			l=OneLine;
-			for(k=0; k<X-1; k++){
-				l-=
-					tcode[	\
-					chain[m].toafillroad[j][k].x	]	\
-					[chain[m].toafillroad[j][k].y	];
-			}
-			if(!isitpropernum(l)){
-				dputs("Isn't proper. Continuing.");
+		switch(follow_chain(m)){
+			case 0:
+				break;
+			case 1:
 				goto ncot;
-			}
-			if(dned[l-1]){
-				dprintf("TT: dned[tcode[%d][%d](%d)] is already in use.\n",	\
-					chain[m].toafill[j][0],	\
-					chain[m].toafill[j][1],	\
-					l-1);
-				goto ncot;
-			}
-
-			if( ((chain[m].toafill[j].x==X-1) && (chain[m].toafill[j].y==X-1)) && (!(l>tcode[0][0])) )
+				break;
+			case 2:
 				return;
-			if( ((chain[m].toafill[j].x==0) && (chain[m].toafill[j].y==X-1)) &&	\
-					 ((!(l>tcode[X-1][0])) ) )
-				return;
-
-			tcode[chain[m].toafill[j].x][chain[m].toafill[j].y]=l;
-			dned[l-1]=True;
-			sum_tate[chain[m].toafill[j].x]+=l;
-			sum_yoko[chain[m].toafill[j].y]+=l;
-			if(if_name0(chain[m].toafill[j]))
-				sum_name[0]+=l;
-			if(if_name1(chain[m].toafill[j]))
-				sum_name[1]+=l;
-
-			if(!(isitconsist(sum_tate[chain[m].x]) &&	\
-				 isitconsist(sum_yoko[chain[m].y]) &&	\
-				 ((if_name0(chain[m].toafill[j])) ? isitconsist(sum_name[0]):True) &&	\
-				 ((if_name1(chain[m].toafill[j])) ? isitconsist(sum_name[1]):True))	){
-				dprintf("tate or yoko or name is not consist. Giving up.\n");
-				goto ncot;
-			}
+				break;
+			default:
+				will_and_die("follow_chain did not returned 0, 1 or 2.", 1);
+				break;
 		}
 
 		if(isitconsist(sum_tate[chain[m].x]) &&	\
@@ -140,4 +110,61 @@ ncot:
 	}
 	dprintf("Leaving from #%d\n", m);
 	return;
+}
+
+short int follow_chain(int m){
+	/*return value
+	  0: go ahead
+	  1: to goto ncot
+	  2: to return
+	 */
+
+	int i, j, tobes;
+
+	for(i=0; i<chain[m].toafillcont; i++){
+		dprintf("Trying to chain[%d]'s toafill #%d[%d][%d].\n", m, i,	\
+			chain[m].toafill[i][0], chain[m].toafill[i][0]);
+		tobes=OneLine;
+		for(j=0; j<X-1; j++){
+			tobes-=
+				tcode[	\
+				chain[m].toafillroad[i][j].x	]	\
+				[chain[m].toafillroad[i][j].y	];
+		}
+		if(!isitpropernum(tobes)){
+			dputs("Isn't proper. Continuing.");
+			return 1;
+		}
+		if(dned[tobes-1]){
+			dprintf("TT: dned[tcode[%d][%d](%d)] is already in use.\n",	\
+				chain[m].toafill[i][0],	\
+				chain[m].toafill[i][1],	\
+				tobes-1);
+			return 1;
+		}
+
+		if( ((chain[m].toafill[i].x==X-1) && (chain[m].toafill[i].y==X-1)) && (!(tobes>tcode[0][0])) )
+			return 2;
+		if( ((chain[m].toafill[i].x==0) && (chain[m].toafill[i].y==X-1)) &&	\
+				 ((!(tobes>tcode[X-1][0])) ) )
+			return 2;
+
+		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;
+		dned[tobes-1]=True;
+		sum_tate[chain[m].toafill[i].x]+=tobes;
+		sum_yoko[chain[m].toafill[i].y]+=tobes;
+		if(if_name0(chain[m].toafill[i]))
+			sum_name[0]+=tobes;
+		if(if_name1(chain[m].toafill[i]))
+			sum_name[1]+=tobes;
+
+		if(!(isitconsist(sum_tate[chain[m].x]) &&	\
+			 isitconsist(sum_yoko[chain[m].y]) &&	\
+			 ((if_name0(chain[m].toafill[i])) ? isitconsist(sum_name[0]):True) &&	\
+			 ((if_name1(chain[m].toafill[i])) ? isitconsist(sum_name[1]):True))	){
+			dprintf("tate or yoko or name is not consist. Giving up.\n");
+			return 1;
+		}
+	}
+	return 0;
 }
