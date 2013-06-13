@@ -15,7 +15,8 @@ SRCS=chain/chain_init.c chain/chain_main.c chain/printChain.c	\
 		code/addChainOrder.c code/allfilled.c code/bfcode.c	\
 		code/counttri.c code/findFinalPlace.c code/pfCode.c	\
 		main/Terminus.c main/caught_signal.c tcode/find_next_j.c	\
-		tcode/follow.c main/will_and_die.c tcode/follow_pa.c
+		tcode/follow.c main/will_and_die.c tcode/follow_pa.c	\
+		chain/addRestNameChain.c
 OBJS=$(SRCS:%.c=%.c.o)
 INSTALL=install -s -p -o imrc -g staff -m 0777
 GIT=git
