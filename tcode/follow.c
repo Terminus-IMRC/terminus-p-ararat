@@ -17,9 +17,10 @@ usetype sum_tate[X], sum_yoko[X], sum_name[2];
 #define if_name1(s) ((X-s.y-1)==s.x ? True:False)
 
 short int follow_chain(int m);
+int grope4initialValueOfLove(usetype m);
 
 void follow(usetype m){
-	usetype i=0, j;
+	usetype i=-1, j;
 	usetype local_tate[X], local_yoko[X], local_name[2];
 	unsigned char local_dned[Ceilings];
 
@@ -40,6 +41,8 @@ void follow(usetype m){
 		local_name[j]=sum_name[j];
 	for(j=0; j<Ceilings; j++)
 		local_dned[j]=dned[j];
+
+	i=grope4initialValueOfLove(m);
 
 	while(find_next_j(&i)!=Ceilings){
 		i++;
@@ -143,11 +146,13 @@ short int follow_chain(int m){
 			return 1;
 		}
 
+#if 0
 		if( ((chain[m].toafill[i].x==X-1) && (chain[m].toafill[i].y==X-1)) && (!(tobes>tcode[0][0])) )
 			return 2;
 		if( ((chain[m].toafill[i].x==0) && (chain[m].toafill[i].y==X-1)) &&	\
 				 ((!(tobes>tcode[X-1][0])) ) )
 			return 2;
+#endif
 
 		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;
 		dned[tobes-1]=True;
@@ -167,4 +172,30 @@ short int follow_chain(int m){
 		}
 	}
 	return 0;
+}
+
+int grope4initialValueOfLove(usetype m)
+{
+#if 1
+	/*TODO: is it code[][]+1 or code[][]?*/
+	int retval;
+
+	if((chain[m].x==X-1) && (chain[m].y==0))
+		retval=tcode[0][0];
+	else if((chain[m].x==0) && (chain[m].y==X-1))
+		retval=tcode[X-1][0];
+	else if((chain[m].x==X-1) && (chain[m].y==X-1))
+		retval=tcode[0][0];
+	else
+		return 0;
+
+	if(retval<0)
+		return 0;
+	else if(retval>Ceilings-1)
+		return Ceilings-1;
+	else
+		return retval;
+#else
+	return 0;
+#endif
 }

@@ -7,6 +7,7 @@
 
 	#define FLUSH
 	#define NODP
+	#define NOPASS
 	#include "debug.h"
 
 	#ifndef X
