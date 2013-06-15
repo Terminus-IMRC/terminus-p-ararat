@@ -63,7 +63,7 @@ header/code.h.gch header/chain.h.gch: header/def.h
 tcode/follow.c.o main/Terminus.c.o code/pfCode.c.o header.def.h:	$(PFBOOL)
 
 clean:
-	$(RM) $(OBJS) $(GCHDRS) $(PROG)
+	$(RM) $(OBJS) $(GCHDRS) $(PROG) res*.txt out*.txt
 
 run:	$(PROG)
 	mpiexec -n $(PROC) ./$<
