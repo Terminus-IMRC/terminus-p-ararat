@@ -178,23 +178,14 @@ int grope4initialValueOfLove(usetype m)
 {
 #if 1
 	/*TODO: is it code[][]+1 or code[][]?*/
-	int retval;
 
-	if((chain[m].x==X-1) && (chain[m].y==0))
-		retval=tcode[0][0];
+	if(((chain[m].x==X-1) && (chain[m].y==0)) ||	\
+		((chain[m].x==X-1) && (chain[m].y==X-1)))
+		return tcode[0][0];
 	else if((chain[m].x==0) && (chain[m].y==X-1))
-		retval=tcode[X-1][0];
-	else if((chain[m].x==X-1) && (chain[m].y==X-1))
-		retval=tcode[0][0];
+		return tcode[X-1][0];
 	else
 		return 0;
-
-	if(retval<0)
-		return 0;
-	else if(retval>Ceilings-1)
-		return Ceilings-1;
-	else
-		return retval;
 #else
 	return 0;
 #endif
