@@ -18,9 +18,12 @@ usetype sum_tate[X], sum_yoko[X], sum_name[2];
 
 short int follow_chain(int m);
 int grope4initialValueOfLove(usetype m);
+void storetynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings]);
+void restoretynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings]);
+void settcodeval(usetype i, usetype m);
 
 void follow(usetype m){
-	usetype i=-1, j;
+	usetype i=-1;
 	usetype local_tate[X], local_yoko[X], local_name[2];
 	unsigned char local_dned[Ceilings];
 
@@ -32,15 +35,8 @@ void follow(usetype m){
 		return;	/*Don't forget!!!*/
 	}
 
-	/*There used to be storetynd here.*/
-	for(j=0; j<X; j++){
-		local_tate[j]=sum_tate[j];
-		local_yoko[j]=sum_yoko[j];
-	}
-	for(j=0; j<2; j++)
-		local_name[j]=sum_name[j];
-	for(j=0; j<Ceilings; j++)
-		local_dned[j]=dned[j];
+	/*There used to be unfolded storetynd here.*/
+	storetynd(local_tate, local_yoko, local_name, local_dned);
 
 	i=grope4initialValueOfLove(m);
 
@@ -53,13 +49,8 @@ void follow(usetype m){
 		tcode[chain[m].x][chain[m].y]=i;
 		dned[i-1]=True;
 
-		/*There used to be settcodeval here.*/
-		sum_tate[chain[m].x]+=i;
-		sum_yoko[chain[m].y]+=i;
-		if(if_name0(chain[m]))
-			sum_name[0]+=i;
-		if(if_name1(chain[m]))
-			sum_name[1]+=i;
+		/*There used to be unfolded settcodeval here.*/
+		settcodeval(i, m);
 
 		switch(follow_chain(m)){
 			case 0:
@@ -100,22 +91,16 @@ void follow(usetype m){
 		}
 		
 ncot:
-		/*There used to be restoretynd here.*/
+		/*There used to be unfolded restoretynd here.*/
 		dprintf("Restoring\n");
-		for(j=0; j<X; j++){
-			sum_tate[j]=local_tate[j];
-			sum_yoko[j]=local_yoko[j];
-		}
-		for(j=0; j<2; j++)
-			sum_name[j]=local_name[j];
-		for(j=0; j<Ceilings; j++)
-			dned[j]=local_dned[j];
+		restoretynd(local_tate, local_yoko, local_name, local_dned);
 	}
 	dprintf("Leaving from #%d\n", m);
 	return;
 }
 
-short int follow_chain(int m){
+short int follow_chain(int m)
+{
 	/*return value
 	  0: go ahead
 	  1: to goto ncot
@@ -184,9 +169,61 @@ int grope4initialValueOfLove(usetype m)
 		return tcode[0][0];
 	else if((chain[m].x==0) && (chain[m].y==X-1))
 		return tcode[X-1][0];
+	else if((chain[m].x==0) && (chain[m].y==0))
+		return 0;/*Ceilings/2+1;*/
+	else
+		return 0;
+#elif 0
+	if(((chain[m].x==X-1) && (chain[m].y==0)) ||	\
+		((chain[m].x==X-1) && (chain[m].y==X-1)))
+		return tcode[0][0];
 	else
 		return 0;
 #else
 	return 0;
 #endif
+}
+
+void storetynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings])
+{
+	int j;
+
+	for(j=0; j<X; j++){
+		local_tate[j]=sum_tate[j];
+		local_yoko[j]=sum_yoko[j];
+	}
+	for(j=0; j<2; j++)
+		local_name[j]=sum_name[j];
+	for(j=0; j<Ceilings; j++)
+		local_dned[j]=dned[j];
+
+	return;
+}
+
+void restoretynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings])
+{
+	int j;
+
+	for(j=0; j<X; j++){
+		sum_tate[j]=local_tate[j];
+		sum_yoko[j]=local_yoko[j];
+	}
+	for(j=0; j<2; j++)
+		sum_name[j]=local_name[j];
+	for(j=0; j<Ceilings; j++)
+		dned[j]=local_dned[j];
+
+	return;
+}
+
+void settcodeval(usetype i, usetype m)
+{
+	sum_tate[chain[m].x]+=i;
+	sum_yoko[chain[m].y]+=i;
+	if(if_name0(chain[m]))
+		sum_name[0]+=i;
+	if(if_name1(chain[m]))
+		sum_name[1]+=i;
+
+	return;
 }
