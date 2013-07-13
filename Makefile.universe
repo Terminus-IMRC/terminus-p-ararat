@@ -1,0 +1,70 @@
+#20130111 from [gitlh]. forget [MaybeCode] on school.h
+#20130309 We are ANSI and pedantic. With Seasons Of Love.
+#20130707 from Makefile. This is the universe.
+
+CC?=mpicc
+INSTALL?=install -s -p -o imrc -g staff -m 0777
+GIT?=git
+STRIP?=strip --strip-all
+
+all:
+
+include $(addsuffix /Makefile.passive, $(SRCDIRS) $(HDRDIRS))
+
+GCHDRS=$(HDRS:%.h=%.h.gch)
+OBJS=$(SRCS:%.c=%.c.o)
+SRCMODS=$(SRCS:%.c=%.c.mod)
+HDRMODS=$(HDRS:%.h=%.h.mod)
+
+include $(SRCMODS) $(HDRMODS)
+
+HEADERFLAGS=$(addprefix -I, $(HDRDIRS))
+
+COMPILE.c=$(CC) $(HEADERFLAGS) $(OPTFLAGS) $(WARNFLAGS) $(ADDCFLAGS) $(CFLAGS) -c
+COMPILE.mod=$(CC) $(HEADERFLAGS) $(OPTFLAGS) $(WARNFLAGS) $(ADDCFLAGS) $(CFLAGS) -M 
+LINK.o=$(CC) $(OPTFLAGS) $(WARNFLAGS) $(LINKFLAGS) $(LDFLAGS)
+
+all:	$(PROG) $(DEP)
+
+$(PROG):	$(GCHDRS) $(OBJS) $(DEP)
+	$(LINK.o) $(OUTPUT_OPTION) $(OBJS)
+
+%.h.mod: %.h
+	$(COMPILE.mod) $< | sed 's/^def.o/def.h.gch/' >$@
+
+%.c.mod: %.c
+	TMP=`mktemp`;	\
+	$(COMPILE.mod) $< >$$TMP;	\
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g;s,\($(notdir $*)\.o\) *:,$(dir $@)\1 $@: ,' <$$TMP >$@;	\
+	$(RM) $$TMP
+
+%.c.o:	%.c $(GCHDRS) $(MAKEFILE_LIST) $(DEP)
+	$(COMPILE.c) $(OUTPUT_OPTION) $<
+
+%.h.gch:	%.h $(MAKEFILE_LIST) $(DEP)
+	$(COMPILE.c) $(OUTPUT_OPTION) $<
+
+clean:
+	$(RM) $(OBJS) $(GCHDRS) $(PROG) $(SRCMODS) $(HDRMODS) $(TOCLEAN)
+
+install:	$(PROG)
+	$(INSTALL) $< $(DEST)
+
+line:
+	@wc -c -l $(SRCS) $(HDRS) $(MAKEFILE_LIST)
+
+load:
+	@tce-load -i compiletc git less gdb gmp gmp-dev
+
+greptodo:
+	-grep -F -n TODO $(HDRS) $(SRCS)
+
+gitinit:
+	$(GIT) init
+	$(GIT) config --global user.name "Terminus"
+	$(GIT) config --global user.email "i.can.speak.c.and.basic@gmail.com"
+
+product: $(PROG)
+	$(STRIP) $<
+
+.PHONY:	load

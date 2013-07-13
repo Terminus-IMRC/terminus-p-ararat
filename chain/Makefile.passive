@@ -1,0 +1,2 @@
+chain_srcs:=addRestNameChain.c chain_main.c chain_init.c printChain.c
+SRCS+=$(addprefix chain/,$(chain_srcs))

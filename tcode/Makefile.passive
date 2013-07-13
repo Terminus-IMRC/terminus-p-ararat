@@ -1,0 +1,5 @@
+tcode_srcs:=find_next_j.c follow.c follow_pa.c
+SRCS+=$(addprefix tcode/,$(tcode_srcs))
+
+tcode/follow.c.o tcode/follow_pa.c.o: $(NNUM)
+tcode/follow.c.o: $(PFBOOL)
