@@ -22,7 +22,7 @@ void storetynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[
 void restoretynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings]);
 void settcodeval(usetype i, usetype m);
 
-void follow(usetype m){
+void follow(const usetype m){
 	usetype i=-1;
 	usetype local_tate[X], local_yoko[X], local_name[2];
 	unsigned char local_dned[Ceilings];

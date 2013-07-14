@@ -3,7 +3,7 @@
 
 int tosend;
 
-void follow_pa(usetype m)
+void follow_pa(const usetype m)
 {
 	int i;
 	unsigned char contflag;

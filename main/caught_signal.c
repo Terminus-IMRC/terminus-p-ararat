@@ -1,5 +1,5 @@
 #include "code.h" /* for total */
-void caught_signal(int signo)
+void caught_signal(const int signo)
 {
 	fprintf(stderr, "Terminus caught a signal %d.\nTotal(present): ", signo);
 	mpz_out_str(stderr, BASE, total);

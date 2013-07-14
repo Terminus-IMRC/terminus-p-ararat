@@ -1,6 +1,6 @@
 #include "chain.h"
 
-void addRestNameChain(int l, int m, _Bool);
+void addRestNameChain(const int l, const int m, const _Bool);
 
 void chain_main(){
 	int i;

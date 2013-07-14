@@ -3,7 +3,7 @@
 	#include "def.h"
 	#include "gmp.h"
 	/*20130112*/
-	extern void follow(usetype);
+	extern void follow(const usetype);
 	extern usetype find_next_j(usetype*);
 
 	/*20130113*/

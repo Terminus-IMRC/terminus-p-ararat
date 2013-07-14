@@ -46,7 +46,7 @@
 	extern struct ring chain[Ceilings];
 	extern usetype chaincont;
 	extern void pfCode(usetype code[X][X]);
-	extern void will_and_die(char*, int);
+	extern void will_and_die(const char*, const int);
 	#ifdef PF
 	extern FILE* myfp;
 	#endif

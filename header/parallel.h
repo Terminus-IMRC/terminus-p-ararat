@@ -11,5 +11,5 @@
 	extern int tosend;
 	extern int commrank, commsize;
 
-	void follow_pa(usetype m);
+	void follow_pa(const usetype m);
 #endif

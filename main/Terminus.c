@@ -16,7 +16,7 @@ int commrank, commsize;
 FILE* myfp;
 #endif
 
-void caught_signal(int);
+void caught_signal(const int);
 
 enum trident prepcode[X][X];
 struct ring chain[Ceilings];	/*TODO: will be formula line Ceilings-X*2*/

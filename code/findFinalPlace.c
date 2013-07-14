@@ -1,6 +1,6 @@
 #include "chain.h"
 
-int findFinalPlace(enum trident code[X][X], _Bool tate_or_yoko, int k){
+int findFinalPlace(enum trident code[X][X], const _Bool tate_or_yoko, const int k){
 	int i;
 	for(i=0; i<X; i++)
 		if(tate_or_yoko){	/*yoko*/

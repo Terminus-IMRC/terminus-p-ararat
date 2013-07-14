@@ -1,6 +1,6 @@
 #include "chain.h"
 
-void addRestNameChain(int l, int m, _Bool isname1){
+void addRestNameChain(const int l, const int m, const _Bool isname1){
 	int i, ti;	/*love and true love*/
 
 	prepcode[l][m]=AutoFilled;

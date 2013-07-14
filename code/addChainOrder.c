@@ -1,6 +1,6 @@
 #include "chain.h"
 
-void addChainOrder(enum trident code[X][X], int x, int y, _Bool do_chain){
+void addChainOrder(enum trident code[X][X], const int x, const int y, const _Bool do_chain){
 	/*TODO: code may be prepcode*/
 	int i, j, k;
 	if(do_chain){
