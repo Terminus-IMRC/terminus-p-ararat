@@ -23,20 +23,18 @@
 	#define False (0)
 	#define True (!False)
 
-	typedef signed short usetype;
-
 	enum trident{
 		Unknown=0, Filled=1, AutoFilled=2
 	};
 
 	struct coord{
-		usetype x;
-		usetype y;
+		signed short int x;
+		signed short int y;
 	};
 
 	struct ring{
-		usetype x, y;	/*code[x][y]*/
-		usetype toafillcont;
+		signed short int x, y;	/*code[x][y]*/
+		signed short int toafillcont;
 		/*TODO: not needed to alloc so many*/
 		struct coord toafill[Ceilings];
 		/*TODO: not needed to alloc so many(maybe)*/
@@ -44,8 +42,8 @@
 	};
 
 	extern struct ring chain[Ceilings];
-	extern usetype chaincont;
-	extern void pfCode(usetype code[X][X]);
+	extern signed short int chaincont;
+	extern void pfCode(signed short int code[X][X]);
 	extern void will_and_die(const char*, const int);
 	#ifdef PF
 	extern FILE* myfp;

@@ -1,6 +1,6 @@
 #include "code.h"
 
-usetype find_next_j(usetype* stat){
+signed short int find_next_j(signed short int* stat){
 	dprintf("find_next_j: ");
 	for(; *stat<Ceilings; ++*stat){
 		dprintf("[%d]%d ", *stat, dned[*stat]);

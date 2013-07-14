@@ -3,13 +3,13 @@
 	#include "def.h"
 	#include "gmp.h"
 	/*20130112*/
-	extern void follow(const usetype);
-	extern usetype find_next_j(usetype*);
+	extern void follow(const signed short int);
+	extern signed short int find_next_j(signed short int*);
 
 	/*20130113*/
-	extern usetype tcode[X][X];
+	extern signed short int tcode[X][X];
 	extern unsigned char dned[Ceilings];
-	extern usetype sum_tate[X], sum_yoko[X], sum_name[2];
+	extern signed short int sum_tate[X], sum_yoko[X], sum_name[2];
 
 	/*20130202*/
 	/*extern int total;*/

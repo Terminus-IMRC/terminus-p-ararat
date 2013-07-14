@@ -9,22 +9,22 @@
 #define isitconsist(m) (((m>0)&&(m<=OneLine)) ? True:False)
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
-usetype tcode[X][X];
+signed short int tcode[X][X];
 unsigned char dned[Ceilings];
-usetype sum_tate[X], sum_yoko[X], sum_name[2];
+signed short int sum_tate[X], sum_yoko[X], sum_name[2];
 
 #define if_name0(s) (s.x==s.y ? True:False)
 #define if_name1(s) ((X-s.y-1)==s.x ? True:False)
 
 short int follow_chain(int m);
-int grope4initialValueOfLove(usetype m);
-void storetynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings]);
-void restoretynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings]);
-void settcodeval(usetype i, usetype m);
+int grope4initialValueOfLove(signed short int m);
+void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings]);
+void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings]);
+void settcodeval(signed short int i, signed short int m);
 
-void follow(const usetype m){
-	usetype i=-1;
-	usetype local_tate[X], local_yoko[X], local_name[2];
+void follow(const signed short int m){
+	signed short int i=-1;
+	signed short int local_tate[X], local_yoko[X], local_name[2];
 	unsigned char local_dned[Ceilings];
 
 	dprintf("Entering #%d\n", m);
@@ -159,7 +159,7 @@ short int follow_chain(int m)
 	return 0;
 }
 
-int grope4initialValueOfLove(usetype m)
+int grope4initialValueOfLove(signed short int m)
 {
 #if 1
 	/*TODO: is it code[][]+1 or code[][]?*/
@@ -184,7 +184,7 @@ int grope4initialValueOfLove(usetype m)
 #endif
 }
 
-void storetynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings])
+void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings])
 {
 	int j;
 
@@ -200,7 +200,7 @@ void storetynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[
 	return;
 }
 
-void restoretynd(usetype local_tate[X], usetype local_yoko[X], usetype local_name[X], unsigned char local_dned[Ceilings])
+void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings])
 {
 	int j;
 
@@ -216,7 +216,7 @@ void restoretynd(usetype local_tate[X], usetype local_yoko[X], usetype local_nam
 	return;
 }
 
-void settcodeval(usetype i, usetype m)
+void settcodeval(signed short int i, signed short int m)
 {
 	sum_tate[chain[m].x]+=i;
 	sum_yoko[chain[m].y]+=i;

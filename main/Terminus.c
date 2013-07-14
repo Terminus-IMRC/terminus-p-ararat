@@ -21,7 +21,7 @@ void caught_signal(const int);
 enum trident prepcode[X][X];
 struct ring chain[Ceilings];	/*TODO: will be formula line Ceilings-X*2*/
 int tate[X], yoko[X];
-usetype chaincont;
+signed short int chaincont;
 mpz_t eachtotal, total;
 
 int main(int argc, char* argv[]){
