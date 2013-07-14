@@ -1,4 +1,5 @@
 header_hdrs=chain.h code.h debug.h def.h parallel.h
 HDRS+=$(addprefix header/,$(header_hdrs))
 
-header/def.h: $(PFBOOL)
+DEP_PF+=header/def.h.gch
+DEP_N+=header/parallel.h.gch

@@ -1,4 +1,4 @@
 code_srcs:=addChainOrder.c allfilled.c bfcode.c counttri.c findFinalPlace.c pfCode.c
 SRCS+=$(addprefix code/,$(code_srcs))
 
-code/pfCode.c.o: $(PFBOOL)
+DEP_PF+=code/pfCode.c.o

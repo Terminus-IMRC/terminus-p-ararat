@@ -8,16 +8,15 @@ HDRDIRS:=header
 SRCDIRS:=main chain code tcode
 
 X?=3
-VALFLAGS+=-DX=$(X)
+VALFLAGS_X=-DX=$(X)
 XNUM=.x
 
 N?=3
-VALFLAGS+=-DN=$(N)
 NNUM=.n
 
 PFBOOL=.pf
 ifneq ($(PF),)
-	VALFLAGS+=-DPF
+	VALFLAGS_PF+=-DPF
 endif
 
 $(shell ([ -f $(PFBOOL) ] && [ "`cat $(PFBOOL)`" = "$(PF)" ]) || echo $(PF) >$(PFBOOL))
@@ -26,8 +25,12 @@ $(shell ([ -f $(NNUM) ] && [ `cat $(NNUM)` -eq $(N) ]) || echo $(N) >$(NNUM))
 
 include Makefile.universe
 
-$(OBJS): $(XNUM)
-$(GCHDRS) $(OBJS) $(SRCMODS) $(HDRMODS): ADDCFLAGS+=$(VALFLAGS)
+$(GCHDRS) $(OBJS): $(XNUM)
+$(GCHDRS) $(OBJS) $(SRCMODS) $(HDRMODS): ADDCFLAGS+=$(VALFLAGS_X)
+$(DEP_N): $(NNUM)
+$(DEP_N): ADDCFLAGS+=-DN=$(N)
+$(DEP_PF): $(PFBOOL)
+$(DEP_PF): ADDCFLAGS+=$(VALFLAGS_PF)
 
 OPTFLAGS:=-g -O0
 WARNFLAGS:=-Wall -Wextra -W -Wundef -Wshadow -Wcast-qual -Winline -Wno-long-long -fsigned-char -ansi -pedantic
