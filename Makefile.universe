@@ -72,6 +72,7 @@ gitinit:
 	$(GIT) init
 	$(GIT) config --global user.name "Terminus"
 	$(GIT) config --global user.email "i.can.speak.c.and.basic@gmail.com"
+	$(GIT) config --global push.default current
 
 product: $(PROG)
 	@echo -e "\tSTRIP $<"
