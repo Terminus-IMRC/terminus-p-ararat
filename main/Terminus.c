@@ -38,10 +38,20 @@ int main(int argc, char* argv[]){
 	assert(signal(SIGINT, caught_signal) != SIG_ERR);
 
 	mpz_init(eachtotal);
+	tcode=(signed short int*)malloc(sizeof(signed short int)*X*X);
+	assert(tcode);
+	sum_tate=(signed short int*)malloc(sizeof(signed short int)*X);
+	assert(sum_tate);
+	sum_yoko=(signed short int*)malloc(sizeof(signed short int)*X);
+	assert(sum_yoko);
+	sum_name=(signed short int*)malloc(sizeof(signed short int)*2);
+	assert(sum_name);
+	dned=(unsigned char*)malloc(sizeof(unsigned char)*Ceilings);
+	assert(dned);
 	for(i=0; i<X;i++){
 		for(j=0; j<X; j++){
 			prepcode[i][j]=Unknown;
-			tcode[i][j]=0;
+			tcode[j+i*X]=0;
 		}
 		tate[i]=0;
 		yoko[i]=0;

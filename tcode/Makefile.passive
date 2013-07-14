@@ -1,5 +1,5 @@
-tcode_srcs:=find_next_j.c follow.c follow_pa.c
+tcode_srcs:=find_next_j.c follow.c follow_pa.c pfTcode.c
 SRCS+=$(addprefix tcode/,$(tcode_srcs))
 
 DEP_N_C+=tcode/follow.c tcode/follow_pa.c
-DEP_PF_C+=tcode/follow.c
+DEP_PF_C+=tcode/follow.c tcode/pfTcode.c

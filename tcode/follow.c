@@ -9,9 +9,9 @@
 #define isitconsist(m) (((m>0)&&(m<=OneLine)) ? True:False)
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
-signed short int tcode[X][X];
-unsigned char dned[Ceilings];
-signed short int sum_tate[X], sum_yoko[X], sum_name[2];
+signed short int* tcode;
+unsigned char* dned;
+signed short int *sum_tate, *sum_yoko, *sum_name;
 
 #define if_name0(s) (s.x==s.y ? True:False)
 #define if_name1(s) ((X-s.y-1)==s.x ? True:False)
@@ -44,9 +44,9 @@ void follow(const signed short int m){
 		i++;
 		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i,	\
 						chain[m].x, chain[m].y);
-		if( ((chain[m].x==X-1) && (chain[m].y==0)) && !(tcode[0][0]<i) )
+		if( ((chain[m].x==X-1) && (chain[m].y==0)) && !(tcode[0+0*X]<i) )
 				continue;
-		tcode[chain[m].x][chain[m].y]=i;
+		tcode[chain[m].x+chain[m].y*X]=i;
 		dned[i-1]=True;
 
 		/*There used to be unfolded settcodeval here.*/
@@ -75,7 +75,7 @@ void follow(const signed short int m){
 			else{
 				dprintf("Max depth(m) reached.\n");
 				#ifdef PF
-				pfCode(tcode);
+				pfTcode(tcode);
 				fputs("------------\n", myfp);
 				#endif
 				if(!commrank){
@@ -115,9 +115,7 @@ short int follow_chain(int m)
 		tobes=OneLine;
 		for(j=0; j<X-1; j++){
 			tobes-=
-				tcode[	\
-				chain[m].toafillroad[i][j].x	]	\
-				[chain[m].toafillroad[i][j].y	];
+				tcode[chain[m].toafillroad[i][j].x+chain[m].toafillroad[i][j].y*X];
 		}
 		if(!isitpropernum(tobes)){
 			dputs("Isn't proper. Continuing.");
@@ -132,14 +130,14 @@ short int follow_chain(int m)
 		}
 
 #if 0
-		if( ((chain[m].toafill[i].x==X-1) && (chain[m].toafill[i].y==X-1)) && (!(tobes>tcode[0][0])) )
+		if( ((chain[m].toafill[i].x==X-1) && (chain[m].toafill[i].y==X-1)) && (!(tobes>tcode[0+0*X])) )
 			return 2;
 		if( ((chain[m].toafill[i].x==0) && (chain[m].toafill[i].y==X-1)) &&	\
-				 ((!(tobes>tcode[X-1][0])) ) )
+				 ((!(tobes>tcode[X-1+0*X])) ) )
 			return 2;
 #endif
 
-		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;
+		tcode[chain[m].toafill[i].x+chain[m].toafill[i].y*X]=tobes;
 		dned[tobes-1]=True;
 		sum_tate[chain[m].toafill[i].x]+=tobes;
 		sum_yoko[chain[m].toafill[i].y]+=tobes;
@@ -166,9 +164,9 @@ int grope4initialValueOfLove(signed short int m)
 
 	if(((chain[m].x==X-1) && (chain[m].y==0)) ||	\
 		((chain[m].x==X-1) && (chain[m].y==X-1)))
-		return tcode[0][0];
+		return tcode[0+0*X];
 	else if((chain[m].x==0) && (chain[m].y==X-1))
-		return tcode[X-1][0];
+		return tcode[X-1+0*X];
 	else if((chain[m].x==0) && (chain[m].y==0))
 		return 0;/*Ceilings/2+1;*/
 	else
@@ -176,7 +174,7 @@ int grope4initialValueOfLove(signed short int m)
 #elif 0
 	if(((chain[m].x==X-1) && (chain[m].y==0)) ||	\
 		((chain[m].x==X-1) && (chain[m].y==X-1)))
-		return tcode[0][0];
+		return tcode[0+0*X];
 	else
 		return 0;
 #else
