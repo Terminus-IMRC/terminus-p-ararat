@@ -1,5 +1,7 @@
 *.c.o
 *.h.gch
+*.mod
 .pf
 .x
+.n
 Terminus
