@@ -27,7 +27,7 @@ $(shell ([ -f $(NNUM) ] && [ `cat $(NNUM)` -eq $(N) ]) || echo $(N) >$(NNUM))
 include Makefile.universe
 
 $(GCHDRS) $(OBJS): $(XNUM)
-$(PROG) $(GCHDRS) $(OBJS) $(SRCMODS) $(HDRMODS): $(filter-out %.mod, $(MAKEFILE_LIST))
+$(PROG) $(GCHDRS) $(OBJS) $(SRCMODS) $(HDRMODS): $(MAKEFILE_LIST_SANS_MODS)
 $(GCHDRS) $(OBJS) $(SRCMODS) $(HDRMODS): ADDCFLAGS+=$(VALFLAGS_X)
 
 DEP_N=$(addsuffix .o, $(DEP_N_C)) $(addsuffix .gch, $(DEP_N_H)) $(addsuffix .mod, $(DEP_N_C) $(DEP_N_H))

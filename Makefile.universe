@@ -20,6 +20,8 @@ HDRMODS=$(HDRS:%.h=%.h.mod)
 
 sinclude $(SRCMODS) $(HDRMODS)
 
+MAKEFILE_LIST_SANS_MODS=$(filter-out %.mod, $(MAKEFILE_LIST))
+
 HEADERFLAGS=$(addprefix -I, $(HDRDIRS))
 
 COMPILE.c=$(CC) $(HEADERFLAGS) $(OPTFLAGS) $(WARNFLAGS) $(ADDCFLAGS) $(CFLAGS) -c
@@ -60,7 +62,7 @@ install: $(PROG)
 	$Q $(INSTALL) $< $(DEST)
 
 line:
-	@wc -c -l $(SRCS) $(HDRS) $(MAKEFILE_LIST)
+	@wc -c -l $(SRCS) $(HDRS) $(MAKEFILE_LIST_SANS_MODS)
 
 load:
 	@tce-load -i compiletc git less gdb gmp gmp-dev
