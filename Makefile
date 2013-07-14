@@ -12,11 +12,12 @@ VALFLAGS_X=-DX=$(X)
 XNUM=.x
 
 N?=3
+VALFLAGS_N=-DN=$(N)
 NNUM=.n
 
 PFBOOL=.pf
 ifneq ($(PF),)
-	VALFLAGS_PF+=-DPF
+	VALFLAGS_PF=-DPF
 endif
 
 $(shell ([ -f $(PFBOOL) ] && [ "`cat $(PFBOOL)`" = "$(PF)" ]) || echo $(PF) >$(PFBOOL))
@@ -26,9 +27,14 @@ $(shell ([ -f $(NNUM) ] && [ `cat $(NNUM)` -eq $(N) ]) || echo $(N) >$(NNUM))
 include Makefile.universe
 
 $(GCHDRS) $(OBJS): $(XNUM)
+$(PROG) $(GCHDRS) $(OBJS) $(SRCMODS) $(HDRMODS): $(filter-out %.mod, $(MAKEFILE_LIST))
 $(GCHDRS) $(OBJS) $(SRCMODS) $(HDRMODS): ADDCFLAGS+=$(VALFLAGS_X)
+
+DEP_N=$(addsuffix .o, $(DEP_N_C)) $(addsuffix .gch, $(DEP_N_H)) $(addsuffix .mod, $(DEP_N_C) $(DEP_N_H))
 $(DEP_N): $(NNUM)
-$(DEP_N): ADDCFLAGS+=-DN=$(N)
+$(DEP_N): ADDCFLAGS+=$(VALFLAGS_N)
+
+DEP_PF=$(addsuffix .o, $(DEP_PF_C)) $(addsuffix .gch, $(DEP_PF_H)) $(addsuffix .mod, $(DEP_PF_C) $(DEP_PF_H))
 $(DEP_PF): $(PFBOOL)
 $(DEP_PF): ADDCFLAGS+=$(VALFLAGS_PF)
 

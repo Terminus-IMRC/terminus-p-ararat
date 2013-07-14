@@ -23,18 +23,18 @@ sinclude $(SRCMODS) $(HDRMODS)
 HEADERFLAGS=$(addprefix -I, $(HDRDIRS))
 
 COMPILE.c=$(CC) $(HEADERFLAGS) $(OPTFLAGS) $(WARNFLAGS) $(ADDCFLAGS) $(CFLAGS) -c
-COMPILE.mod=$(CC) $(HEADERFLAGS) $(OPTFLAGS) $(WARNFLAGS) $(ADDCFLAGS) $(CFLAGS) -M 
+COMPILE.mod=$(CC) $(HEADERFLAGS) $(OPTFLAGS) $(WARNFLAGS) $(ADDCFLAGS) $(CFLAGS) -MM
 LINK.o=$(CC) $(OPTFLAGS) $(WARNFLAGS) $(LINKFLAGS) $(LDFLAGS)
 
-all:	$(PROG) $(DEP)
+all: $(PROG)
 
-$(PROG):	$(GCHDRS) $(OBJS) $(DEP)
+$(PROG): $(GCHDRS) $(OBJS)
 	@echo -e "\tLINK $@"
 	$Q $(LINK.o) $(OUTPUT_OPTION) $(OBJS)
 
 %.h.mod: %.h
 	@echo -e "\tGEN $@"
-	$Q $(COMPILE.mod) $< | sed 's/^def.o/def.h.gch/' >$@
+	$Q $(COMPILE.mod) $< | sed 's?$(notdir $*)?$*?;s?^$*.o?$*.h.gch?' >$@
 
 %.c.mod: %.c
 	@echo -e "\tGEN $@"
@@ -43,11 +43,11 @@ $(PROG):	$(GCHDRS) $(OBJS) $(DEP)
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g;s,\($(notdir $*)\.o\) *:,$(dir $@)\1 $@: ,' <$$TMP >$@;	\
 	$(RM) $$TMP
 
-%.c.o:	%.c $(GCHDRS) $(MAKEFILE_LIST) $(DEP)
+%.c.o: %.c $(GCHDRS)
 	@echo -e "\tCC $@"
 	$Q $(COMPILE.c) $(OUTPUT_OPTION) $<
 
-%.h.gch:	%.h $(MAKEFILE_LIST) $(DEP)
+%.h.gch: %.h
 	@echo -e "\tCC $@"
 	$Q $(COMPILE.c) $(OUTPUT_OPTION) $<
 
@@ -55,7 +55,7 @@ clean:
 	@echo -e "\tCLEAN"
 	$Q $(RM) $(OBJS) $(GCHDRS) $(PROG) $(SRCMODS) $(HDRMODS) $(TOCLEAN)
 
-install:	$(PROG)
+install: $(PROG)
 	@echo -e "\tINSTALL $<"
 	$Q $(INSTALL) $< $(DEST)
 
