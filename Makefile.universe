@@ -7,6 +7,8 @@ INSTALL?=install -s -p -o imrc -g staff -m 0777
 GIT?=git
 STRIP?=strip --strip-all
 
+Q?=@
+
 all:
 
 include $(addsuffix /Makefile.passive, $(SRCDIRS) $(HDRDIRS))
@@ -16,7 +18,7 @@ OBJS=$(SRCS:%.c=%.c.o)
 SRCMODS=$(SRCS:%.c=%.c.mod)
 HDRMODS=$(HDRS:%.h=%.h.mod)
 
-include $(SRCMODS) $(HDRMODS)
+sinclude $(SRCMODS) $(HDRMODS)
 
 HEADERFLAGS=$(addprefix -I, $(HDRDIRS))
 
@@ -27,28 +29,35 @@ LINK.o=$(CC) $(OPTFLAGS) $(WARNFLAGS) $(LINKFLAGS) $(LDFLAGS)
 all:	$(PROG) $(DEP)
 
 $(PROG):	$(GCHDRS) $(OBJS) $(DEP)
-	$(LINK.o) $(OUTPUT_OPTION) $(OBJS)
+	@echo -e "\tLINK $@"
+	$Q $(LINK.o) $(OUTPUT_OPTION) $(OBJS)
 
 %.h.mod: %.h
-	$(COMPILE.mod) $< | sed 's/^def.o/def.h.gch/' >$@
+	@echo -e "\tGEN $@"
+	$Q $(COMPILE.mod) $< | sed 's/^def.o/def.h.gch/' >$@
 
 %.c.mod: %.c
-	TMP=`mktemp`;	\
+	@echo -e "\tGEN $@"
+	$Q TMP=`mktemp`;	\
 	$(COMPILE.mod) $< >$$TMP;	\
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g;s,\($(notdir $*)\.o\) *:,$(dir $@)\1 $@: ,' <$$TMP >$@;	\
 	$(RM) $$TMP
 
 %.c.o:	%.c $(GCHDRS) $(MAKEFILE_LIST) $(DEP)
-	$(COMPILE.c) $(OUTPUT_OPTION) $<
+	@echo -e "\tCC $@"
+	$Q $(COMPILE.c) $(OUTPUT_OPTION) $<
 
 %.h.gch:	%.h $(MAKEFILE_LIST) $(DEP)
-	$(COMPILE.c) $(OUTPUT_OPTION) $<
+	@echo -e "\tCC $@"
+	$Q $(COMPILE.c) $(OUTPUT_OPTION) $<
 
 clean:
-	$(RM) $(OBJS) $(GCHDRS) $(PROG) $(SRCMODS) $(HDRMODS) $(TOCLEAN)
+	@echo -e "\tCLEAN"
+	$Q $(RM) $(OBJS) $(GCHDRS) $(PROG) $(SRCMODS) $(HDRMODS) $(TOCLEAN)
 
 install:	$(PROG)
-	$(INSTALL) $< $(DEST)
+	@echo -e "\tINSTALL $<"
+	$Q $(INSTALL) $< $(DEST)
 
 line:
 	@wc -c -l $(SRCS) $(HDRS) $(MAKEFILE_LIST)
@@ -65,6 +74,7 @@ gitinit:
 	$(GIT) config --global user.email "i.can.speak.c.and.basic@gmail.com"
 
 product: $(PROG)
-	$(STRIP) $<
+	@echo -e "\tSTRIP $<"
+	$Q $(STRIP) $<
 
 .PHONY:	load
