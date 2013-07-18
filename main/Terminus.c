@@ -158,6 +158,10 @@ int main(int argc, char* argv[]){
 	}else
 		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
 	mpz_clear(eachtotal);
+	free(sum_tate);
+	free(sum_yoko);
+	free(sum_name);
+	free(dned);
 
 	#ifdef PF
 	fclose(myfp);
