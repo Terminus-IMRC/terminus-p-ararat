@@ -7,11 +7,11 @@ CC=mpicc
 HDRDIRS:=header
 SRCDIRS:=main chain code tcode
 
-X?=3
+X?=5
 VALFLAGS_X=-DX=$(X)
 XNUM=.x
 
-N?=3
+N?=8
 VALFLAGS_N=-DN=$(N)
 NNUM=.n
 
