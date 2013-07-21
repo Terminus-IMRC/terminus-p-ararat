@@ -8,7 +8,8 @@
 	extern void pfTcode(signed short int*);
 
 	/*20130113*/
-	extern signed short int* tcode;
+	extern signed short int** tcode;
+	extern signed short int* tcode_as_1dim;
 	extern unsigned char* dned;
 	extern signed short int *sum_tate, *sum_yoko, *sum_name;
 

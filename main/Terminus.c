@@ -7,6 +7,7 @@
 #include "code.h"
 #include "parallel.h"
 #include <signal.h>
+#undef NDEBUG
 #include <assert.h>
 
 extern int tosend;
@@ -22,6 +23,7 @@ enum trident prepcode[X][X];
 struct ring chain[Ceilings];	/*TODO: will be formula line Ceilings-X*2*/
 int tate[X], yoko[X];
 signed short int chaincont;
+signed short int* tcode_as_1dim;
 mpz_t eachtotal, total;
 
 int main(int argc, char* argv[]){
@@ -38,8 +40,12 @@ int main(int argc, char* argv[]){
 	assert(signal(SIGINT, caught_signal) != SIG_ERR);
 
 	mpz_init(eachtotal);
-	tcode=(signed short int*)malloc(sizeof(signed short int)*X*X);
+	tcode=(signed short int**)malloc(sizeof(signed short int*)*X);
 	assert(tcode);
+	tcode_as_1dim=(signed short int*)malloc(sizeof(signed short int)*X*X);
+	assert(tcode_as_1dim);
+	for(i=0; i<X; i++)
+		tcode[i]=tcode_as_1dim+i*X;
 	sum_tate=(signed short int*)malloc(sizeof(signed short int)*X);
 	assert(sum_tate);
 	sum_yoko=(signed short int*)malloc(sizeof(signed short int)*X);
@@ -51,7 +57,6 @@ int main(int argc, char* argv[]){
 	for(i=0; i<X;i++){
 		for(j=0; j<X; j++){
 			prepcode[i][j]=Unknown;
-			tcode[j+i*X]=0;
 		}
 		tate[i]=0;
 		yoko[i]=0;
@@ -91,8 +96,10 @@ int main(int argc, char* argv[]){
 		printf("Chaincount:%d\n", chaincont);
 	}
 
-	for(i=0; i<Ceilings; i++)
+	for(i=0; i<Ceilings; i++){
+		tcode_as_1dim[i]=0;
 		dned[i]=False;
+	}
 	for(i=0; i<X; i++)
 		sum_tate[i]=sum_yoko[i]=0;
 	for(i=0; i<2; i++)
@@ -158,6 +165,8 @@ int main(int argc, char* argv[]){
 	}else
 		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
 	mpz_clear(eachtotal);
+	free(tcode_as_1dim);
+	free(tcode);
 	free(sum_tate);
 	free(sum_yoko);
 	free(sum_name);

@@ -9,7 +9,7 @@
 #define isitconsist(m) (((m>0)&&(m<=OneLine)) ? True:False)
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
-signed short int* tcode;
+signed short int** tcode;
 unsigned char* dned;
 signed short int *sum_tate, *sum_yoko, *sum_name;
 
@@ -44,9 +44,9 @@ void follow(const signed short int m){
 		i++;
 		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i,	\
 						chain[m].x, chain[m].y);
-		if( ((chain[m].x==X-1) && (chain[m].y==0)) && !(tcode[0+0*X]<i) )
+		if( ((chain[m].x==X-1) && (chain[m].y==0)) && !(tcode[0][0]<i) )
 				continue;
-		tcode[chain[m].x+chain[m].y*X]=i;
+		tcode[chain[m].x][chain[m].y]=i;
 		dned[i-1]=True;
 
 		/*There used to be unfolded settcodeval here.*/
@@ -115,7 +115,7 @@ short int follow_chain(int m)
 		tobes=OneLine;
 		for(j=0; j<X-1; j++){
 			tobes-=
-				tcode[chain[m].toafillroad[i][j].x+chain[m].toafillroad[i][j].y*X];
+				tcode[chain[m].toafillroad[i][j].x][chain[m].toafillroad[i][j].y];
 		}
 		if(!isitpropernum(tobes)){
 			dputs("Isn't proper. Continuing.");
@@ -130,14 +130,14 @@ short int follow_chain(int m)
 		}
 
 #if 0
-		if( ((chain[m].toafill[i].x==X-1) && (chain[m].toafill[i].y==X-1)) && (!(tobes>tcode[0+0*X])) )
+		if( ((chain[m].toafill[i].x==X-1) && (chain[m].toafill[i].y==X-1)) && (!(tobes>tcode[0][0])) )
 			return 2;
 		if( ((chain[m].toafill[i].x==0) && (chain[m].toafill[i].y==X-1)) &&	\
-				 ((!(tobes>tcode[X-1+0*X])) ) )
+				 ((!(tobes>tcode[X-1][0])) ) )
 			return 2;
 #endif
 
-		tcode[chain[m].toafill[i].x+chain[m].toafill[i].y*X]=tobes;
+		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;
 		dned[tobes-1]=True;
 		sum_tate[chain[m].toafill[i].x]+=tobes;
 		sum_yoko[chain[m].toafill[i].y]+=tobes;
@@ -164,9 +164,9 @@ int grope4initialValueOfLove(signed short int m)
 
 	if(((chain[m].x==X-1) && (chain[m].y==0)) ||	\
 		((chain[m].x==X-1) && (chain[m].y==X-1)))
-		return tcode[0+0*X];
+		return tcode[0][0];
 	else if((chain[m].x==0) && (chain[m].y==X-1))
-		return tcode[X-1+0*X];
+		return tcode[X-1][0];
 	else if((chain[m].x==0) && (chain[m].y==0))
 		return 0;/*Ceilings/2+1;*/
 	else
@@ -174,7 +174,7 @@ int grope4initialValueOfLove(signed short int m)
 #elif 0
 	if(((chain[m].x==X-1) && (chain[m].y==0)) ||	\
 		((chain[m].x==X-1) && (chain[m].y==X-1)))
-		return tcode[0+0*X];
+		return tcode[0][0];
 	else
 		return 0;
 #else

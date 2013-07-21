@@ -13,7 +13,7 @@ void follow_pa(const signed short int m)
 		contflag=1;
 		MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR, tosend,	\
 			1, MPI_COMM_WORLD);
-		MPI_Send(tcode, X*X, MPI_SHORT, tosend,	\
+		MPI_Send(tcode_as_1dim, X*X, MPI_SHORT, tosend,	\
 			0, MPI_COMM_WORLD);
 		MPI_Send(dned, Ceilings, MPI_UNSIGNED_CHAR, tosend,	\
 			0, MPI_COMM_WORLD);
@@ -34,7 +34,7 @@ void follow_pa(const signed short int m)
 				1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			if(!contflag)
 				break;
-			MPI_Recv(tcode, X*X, MPI_SHORT, 0,	\
+			MPI_Recv(tcode_as_1dim, X*X, MPI_SHORT, 0,	\
 				MPI_ANY_TAG, MPI_COMM_WORLD,	\
 				MPI_STATUS_IGNORE);
 			MPI_Recv(dned, Ceilings, MPI_UNSIGNED_CHAR, 0,	\
