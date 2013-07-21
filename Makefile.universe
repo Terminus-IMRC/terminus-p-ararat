@@ -10,6 +10,8 @@ MKDIR?=mkdir -p
 
 Q?=@
 
+TODO?=TODO
+
 all:
 
 include $(addsuffix /Makefile.passive, $(SRCDIRS) $(HDRDIRS))
@@ -70,7 +72,7 @@ load:
 	@tce-load -i compiletc git less gdb gmp gmp-dev
 
 greptodo:
-	-grep -F -n TODO $(HDRS) $(SRCS)
+	@grep -F -n $(TODO) $(HDRS) $(SRCS) /dev/null
 
 gitinit:
 	$(GIT) init
