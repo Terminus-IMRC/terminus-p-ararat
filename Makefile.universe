@@ -3,9 +3,10 @@
 #20130707 from Makefile. This is the universe.
 
 CC?=mpicc
-INSTALL?=install -s -p -o imrc -g staff -m 0777
+INSTALL?=install -s -p -m 0777
 GIT?=git
 STRIP?=strip --strip-all
+MKDIR?=mkdir -p
 
 Q?=@
 
@@ -59,7 +60,8 @@ clean:
 
 install: $(PROG)
 	@echo -e "\tINSTALL $<"
-	$Q $(INSTALL) $< $(DEST)
+	$Q $(MKDIR) $(DESTDIR)/
+	$Q $(INSTALL) $< $(DESTDIR)/
 
 line:
 	@wc -c -l $(SRCS) $(HDRS) $(MAKEFILE_LIST_SANS_MODS)
