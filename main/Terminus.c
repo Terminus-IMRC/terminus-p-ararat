@@ -162,6 +162,7 @@ int main(int argc, char* argv[]){
 		sprintf(filename, "res%02d%02d.txt", X, N);
 		nfp=fopen(filename, "w");
 		mpz_out_str(nfp, BASE, total);
+		fputc('\n', nfp);
 		fclose(nfp);
 		mpz_clear(total);
 	}else
