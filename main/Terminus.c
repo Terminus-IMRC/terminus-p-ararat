@@ -34,6 +34,7 @@ int main(int argc, char* argv[]){
 	char *str, **allstr;
 	char filename[0xff];
 	FILE* nfp;
+	double start_wtime, end_wtime;
 
 	MPI_Init(&argc, &argv);
 
@@ -108,7 +109,9 @@ int main(int argc, char* argv[]){
 	ppass();
 
 	if(!commrank){
+		start_wtime=MPI_Wtime();
 		follow(0);
+		end_wtime=MPI_Wtime();
 		contflag=0;	/*"Let's give up", she said me.*/
 		for(i=1; i<commsize; i++){
 			MPI_Recv(&i, 1, MPI_INT, i, 2, MPI_COMM_WORLD,	\
@@ -163,6 +166,10 @@ int main(int argc, char* argv[]){
 		nfp=fopen(filename, "w");
 		mpz_out_str(nfp, BASE, total);
 		fputc('\n', nfp);
+		fclose(nfp);
+		sprintf(filename, "tim%02d%02d.txt", X, N);
+		nfp=fopen(filename, "w");
+		fprintf(nfp, "%g\n", end_wtime-start_wtime);
 		fclose(nfp);
 		mpz_clear(total);
 	}else
