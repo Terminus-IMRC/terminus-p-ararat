@@ -82,4 +82,4 @@ product: $(PROG)
 	@echo -e "\tSTRIP $<"
 	$Q $(STRIP) $<
 
-.PHONY:	load
+.PHONY:	clean install line load greptodo gitinit
