@@ -121,9 +121,11 @@ int main(int argc, char* argv[]){
 
 	ppass();
 
+	/*
 	fprintf(stdout, "EachTotal(%d): ", commrank);
 	mpz_out_str(stdout, BASE, eachtotal);
 	putchar('\n');
+	*/
 
 	recvcounts=(int*)malloc(sizeof(int)*commsize);
 	for(i=0; i<commsize; i++)
