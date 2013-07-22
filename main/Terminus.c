@@ -39,6 +39,7 @@ int main(int argc, char* argv[]){
 	MPI_Init(&argc, &argv);
 
 	assert(signal(SIGINT, caught_signal) != SIG_ERR);
+	assert(signal(SIGHUP, caught_signal) != SIG_ERR);
 
 	mpz_init(eachtotal);
 	tcode=(signed short int**)malloc(sizeof(signed short int*)*X);

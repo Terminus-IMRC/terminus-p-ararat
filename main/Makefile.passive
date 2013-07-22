@@ -1,5 +1,5 @@
 main_srcs:=Terminus.c will_and_die.c caught_signal.c
 SRCS+=$(addprefix main/,$(main_srcs))
 
-DEP_N_C+=main/Terminus.c
+DEP_N_C+=main/Terminus.c main/caught_signal.c
 DEP_PF_C+=main/Terminus.c
