@@ -163,12 +163,12 @@ int main(int argc, char* argv[]){
 		fputs("Total: ", stdout);
 		mpz_out_str(stdout, BASE, total);
 		putchar('\n');
-		sprintf(filename, "res%02d%02d.txt", X, N);
+		sprintf(filename, "res%d-%d-%d.txt", X, N, commsize);
 		nfp=fopen(filename, "w");
 		mpz_out_str(nfp, BASE, total);
 		fputc('\n', nfp);
 		fclose(nfp);
-		sprintf(filename, "tim%02d%02d.txt", X, N);
+		sprintf(filename, "tim%d-%d-%d.txt", X, N, commsize);
 		nfp=fopen(filename, "w");
 		fprintf(nfp, "%g\n", end_wtime-start_wtime);
 		fclose(nfp);
