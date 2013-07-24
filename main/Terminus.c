@@ -109,10 +109,10 @@ int main(int argc, char* argv[]){
 
 	ppass();
 
+	MPI_Barrier(MPI_COMM_WORLD);
 	if(!commrank){
 		start_wtime=MPI_Wtime();
 		follow(0);
-		end_wtime=MPI_Wtime();
 		contflag=0;	/*"Let's give up", she said me.*/
 		for(i=1; i<commsize; i++){
 			MPI_Recv(&i, 1, MPI_INT, i, 2, MPI_COMM_WORLD,	\
@@ -122,6 +122,10 @@ int main(int argc, char* argv[]){
 		}
 	}else
 		follow_pa(N-1);
+
+	MPI_Barrier(MPI_COMM_WORLD);
+	if(!commrank){
+		end_wtime=MPI_Wtime();
 
 	ppass();
 
