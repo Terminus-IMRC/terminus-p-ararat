@@ -124,7 +124,7 @@ int main(int argc, char* argv[]){
 		follow_pa(N-1);
 
 	MPI_Barrier(MPI_COMM_WORLD);
-	if(!commrank){
+	if(!commrank)
 		end_wtime=MPI_Wtime();
 
 	ppass();
