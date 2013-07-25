@@ -12,6 +12,7 @@
 
 extern int tosend;
 int commrank, commsize;
+double wtime_for_correspond;
 
 #ifdef PF
 FILE* myfp;
@@ -64,6 +65,7 @@ int main(int argc, char* argv[]){
 		yoko[i]=0;
 	}
 	chaincont=0;
+	wtime_for_correspond=0;
 
 	chain_main();
 
@@ -179,6 +181,10 @@ int main(int argc, char* argv[]){
 		mpz_clear(total);
 	}else
 		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+	sprintf(filename, "tic%d-%d-%d.%d.txt", X, N, commsize, commrank);
+	nfp=fopen(filename, "w");
+	fprintf(nfp, "%g\n", wtime_for_correspond);
+	fclose(nfp);
 	mpz_clear(eachtotal);
 	free(tcode_as_1dim);
 	free(tcode);

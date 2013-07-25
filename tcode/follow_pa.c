@@ -2,12 +2,15 @@
 #include "parallel.h"
 
 int tosend;
+extern double wtime_for_correspond;
 
 void follow_pa(const signed short int m)
 {
 	unsigned char contflag;
+	double start_tmp_wtime, end_tmp_wtime;
 
 	if(!commrank){
+		start_tmp_wtime=MPI_Wtime();
 		MPI_Recv(&tosend, 1, MPI_INT, MPI_ANY_SOURCE, 2,	\
 			MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		contflag=1;
@@ -23,11 +26,14 @@ void follow_pa(const signed short int m)
 			0, MPI_COMM_WORLD);
 		MPI_Send(sum_name, 2, MPI_SHORT, tosend,	\
 			0, MPI_COMM_WORLD);
+		end_tmp_wtime=MPI_Wtime();
+		wtime_for_correspond+=end_tmp_wtime-start_tmp_wtime;
 		tosend=(tosend+1)%commsize;
 		if(!tosend)
 			tosend++;
 	}else{
 		for(;;){
+			start_tmp_wtime=MPI_Wtime();
 			MPI_Send(&commrank, 1, MPI_INT, 0, 2,	\
 				MPI_COMM_WORLD);
 			MPI_Recv(&contflag, 1, MPI_UNSIGNED_CHAR, 0,	\
@@ -45,6 +51,8 @@ void follow_pa(const signed short int m)
 				MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			MPI_Recv(sum_name, 2, MPI_SHORT, 0, MPI_ANY_TAG,	\
 				MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			end_tmp_wtime=MPI_Wtime();
+			wtime_for_correspond+=end_tmp_wtime-start_tmp_wtime;
 			follow(m);
 		}
 	}
