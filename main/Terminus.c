@@ -36,6 +36,7 @@ int main(int argc, char* argv[]){
 	char filename[0xff];
 	FILE* nfp;
 	double start_wtime, end_wtime;
+	double start_each_wtime, end_each_wtime;
 
 	MPI_Init(&argc, &argv);
 
@@ -112,9 +113,11 @@ int main(int argc, char* argv[]){
 	ppass();
 
 	MPI_Barrier(MPI_COMM_WORLD);
+	start_each_wtime=MPI_Wtime();
 	if(!commrank){
 		start_wtime=MPI_Wtime();
 		follow(0);
+		end_each_wtime=MPI_Wtime();
 		contflag=0;	/*"Let's give up", she said me.*/
 		for(i=1; i<commsize; i++){
 			MPI_Recv(&i, 1, MPI_INT, i, 2, MPI_COMM_WORLD,	\
@@ -122,8 +125,10 @@ int main(int argc, char* argv[]){
 			MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR,	\
 				i, 1, MPI_COMM_WORLD);
 		}
-	}else
+	}else{
 		follow_pa(N-1);
+		end_each_wtime=MPI_Wtime();
+	}
 
 	MPI_Barrier(MPI_COMM_WORLD);
 	if(!commrank)
@@ -184,6 +189,10 @@ int main(int argc, char* argv[]){
 	sprintf(filename, "tic%d-%d-%d.%d.txt", X, N, commsize, commrank);
 	nfp=fopen(filename, "w");
 	fprintf(nfp, "%g\n", wtime_for_correspond);
+	fclose(nfp);
+	sprintf(filename, "tie%d-%d-%d.%d.txt", X, N, commsize, commrank);
+	nfp=fopen(filename, "w");
+	fprintf(nfp, "%g\n", end_each_wtime-start_each_wtime);
 	fclose(nfp);
 	mpz_clear(eachtotal);
 	free(tcode_as_1dim);
