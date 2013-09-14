@@ -12,21 +12,22 @@
 
 extern int tosend;
 int commrank, commsize;
-double wtime_for_correspond;
+signed short int chaincont;
 
+/* Only for making chain. */
+enum trident prepcode[X][X];
+struct ring chain[Ceilings];	/*TODO: will be formula line Ceilings-X*2*/
+int tate[X], yoko[X];
+
+/* Only for making ms. */
+signed short int* tcode_as_1dim;
+double wtime_for_correspond;
+mpz_t eachtotal, total;
 #ifdef PF
 FILE* myfp;
 #endif
 
 void caught_signal(const int);
-
-enum trident prepcode[X][X];
-struct ring chain[Ceilings];	/*TODO: will be formula line Ceilings-X*2*/
-int tate[X], yoko[X];
-signed short int chaincont;
-signed short int* tcode_as_1dim;
-mpz_t eachtotal, total;
-
 void initialization_before_chain_main();
 void initialization_before_follow();
 
@@ -186,6 +187,8 @@ void initialization_before_chain_main()
 
 	MPI_Comm_rank(MPI_COMM_WORLD, &commrank);
 	MPI_Comm_size(MPI_COMM_WORLD, &commsize);
+	if(!commrank)
+		tosend=1;
 
 	ppass();
 
@@ -238,10 +241,8 @@ void initialization_before_follow()
 	myfp=fopen(filename, "w");
 	#endif
 
-	if(!commrank){
-		tosend=1;
+	if(!commrank)
 		mpz_init(total);
-	}
 
 	ppass();
 
