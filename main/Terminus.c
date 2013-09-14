@@ -30,13 +30,11 @@ FILE* myfp;
 void caught_signal(const int);
 void initialization_before_chain_main();
 void initialization_before_follow();
+void probe_len_and_gather_total();
 
 int main(int argc, char* argv[]){
 	int i, j;
-	int len;
-	int* recvcounts;
 	unsigned char contflag;
-	char *str, **allstr;
 	char filename[0xff];
 	FILE* nfp;
 	double start_wtime, end_wtime;
@@ -99,35 +97,9 @@ int main(int argc, char* argv[]){
 	putchar('\n');
 	*/
 
-	recvcounts=(int*)malloc(sizeof(int)*commsize);
-	for(i=0; i<commsize; i++)
-		recvcounts[i]=1;
-	len=mpz_sizeinbase(eachtotal, BASE);
-	MPI_Reduce_scatter(&i, &len, recvcounts, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
-	len=i+1;
-	if(!commrank)
-		printf("len is %d.\n", len);
-	str=(char*)malloc(sizeof(char)*(len+1));	/*len plus \0*/
-	assert(str);
+	probe_len_and_gather_total();
+
 	if(!commrank){
-		allstr=(char**)malloc(sizeof(char*)*commsize);
-		assert(allstr);
-		for(i=0; i<commsize; i++){
-			allstr[i]=(char*)malloc(sizeof(char)*len);
-			assert(allstr[i]);
-		}
-	}
-	mpz_get_str(str, BASE, eachtotal);
-	/*It can be bug. I do not know how to use this...
-	MPI_Gather(str, len, MPI_INT, allstr, len, MPI_INT, 0, MPI_COMM_WORLD);*/
-	if(!commrank){
-		mpz_set(total, eachtotal);
-		for(i=1; i<commsize; i++){
-			MPI_Recv(str, len+1, MPI_CHAR, i, MPI_ANY_TAG,	\
-				MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			mpz_set_str(eachtotal, str, BASE);
-			mpz_add(total, total, eachtotal);
-		}
 		fputs("Total: ", stdout);
 		mpz_out_str(stdout, BASE, total);
 		putchar('\n');
@@ -141,8 +113,7 @@ int main(int argc, char* argv[]){
 		fprintf(nfp, "%g\n", end_wtime-start_wtime);
 		fclose(nfp);
 		mpz_clear(total);
-	}else
-		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+	}
 	sprintf(filename, "tic%d-%d-%d.%d.txt", X, N, commsize, commrank);
 	nfp=fopen(filename, "w");
 	fprintf(nfp, "%g\n", wtime_for_correspond);
@@ -245,6 +216,48 @@ void initialization_before_follow()
 		mpz_init(total);
 
 	ppass();
+
+	return;
+}
+
+void probe_len_and_gather_total()
+{
+	int i;
+	int len;
+	int* recvcounts;
+	char *str, **allstr;
+
+	recvcounts=(int*)malloc(sizeof(int)*commsize);
+	for(i=0; i<commsize; i++)
+		recvcounts[i]=1;
+	len=mpz_sizeinbase(eachtotal, BASE);
+	MPI_Reduce_scatter(&i, &len, recvcounts, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+	len=i+1;
+	if(!commrank)
+		printf("len is %d.\n", len);
+	str=(char*)malloc(sizeof(char)*(len+1));	/*len plus \0*/
+	assert(str);
+	if(!commrank){
+		allstr=(char**)malloc(sizeof(char*)*commsize);
+		assert(allstr);
+		for(i=0; i<commsize; i++){
+			allstr[i]=(char*)malloc(sizeof(char)*len);
+			assert(allstr[i]);
+		}
+	}
+	mpz_get_str(str, BASE, eachtotal);
+	/*It can be bug. I do not know how to use this...
+	MPI_Gather(str, len, MPI_INT, allstr, len, MPI_INT, 0, MPI_COMM_WORLD);*/
+	if(!commrank){
+		mpz_set(total, eachtotal);
+		for(i=1; i<commsize; i++){
+			MPI_Recv(str, len+1, MPI_CHAR, i, MPI_ANY_TAG,	\
+				MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			mpz_set_str(eachtotal, str, BASE);
+			mpz_add(total, total, eachtotal);
+		}
+	}else
+		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
 
 	return;
 }
