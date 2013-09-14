@@ -27,6 +27,9 @@ signed short int chaincont;
 signed short int* tcode_as_1dim;
 mpz_t eachtotal, total;
 
+void initialization_before_chain_main();
+void initialization_before_follow();
+
 int main(int argc, char* argv[]){
 	int i, j;
 	int len;
@@ -40,50 +43,12 @@ int main(int argc, char* argv[]){
 
 	MPI_Init(&argc, &argv);
 
-	assert(signal(SIGINT, caught_signal) != SIG_ERR);
-	assert(signal(SIGHUP, caught_signal) != SIG_ERR);
-
-	mpz_init(eachtotal);
-	tcode=(signed short int**)malloc(sizeof(signed short int*)*X);
-	assert(tcode);
-	tcode_as_1dim=(signed short int*)malloc(sizeof(signed short int)*X*X);
-	assert(tcode_as_1dim);
-	for(i=0; i<X; i++)
-		tcode[i]=tcode_as_1dim+i*X;
-	sum_tate=(signed short int*)malloc(sizeof(signed short int)*X);
-	assert(sum_tate);
-	sum_yoko=(signed short int*)malloc(sizeof(signed short int)*X);
-	assert(sum_yoko);
-	sum_name=(signed short int*)malloc(sizeof(signed short int)*2);
-	assert(sum_name);
-	dned=(unsigned char*)malloc(sizeof(unsigned char)*Ceilings);
-	assert(dned);
-	for(i=0; i<X;i++){
-		for(j=0; j<X; j++){
-			prepcode[i][j]=Unknown;
-		}
-		tate[i]=0;
-		yoko[i]=0;
-	}
-	chaincont=0;
-	wtime_for_correspond=0;
+	initialization_before_chain_main();
 
 	chain_main();
-
-	/* Note that it is needed to broadcast chain */
-
-	MPI_Comm_rank(MPI_COMM_WORLD, &commrank);
-	MPI_Comm_size(MPI_COMM_WORLD, &commsize);
-
-	#ifdef PF
-	sprintf(filename, "out%d.txt", commrank);
-	myfp=fopen(filename, "w");
-	#endif
+	/* I want to distribute chain. */
 
 	if(!commrank){
-		tosend=1;
-		mpz_init(total);
-
 		dputs("Long overdue. This program will follow below steps.");
 		printChain();
 		dputs("\nThe structure is this.");
@@ -101,16 +66,7 @@ int main(int argc, char* argv[]){
 		printf("Chaincount:%d\n", chaincont);
 	}
 
-	for(i=0; i<Ceilings; i++){
-		tcode_as_1dim[i]=0;
-		dned[i]=False;
-	}
-	for(i=0; i<X; i++)
-		sum_tate[i]=sum_yoko[i]=0;
-	for(i=0; i<2; i++)
-		sum_name[i]=0;
-
-	ppass();
+	initialization_before_follow();
 
 	MPI_Barrier(MPI_COMM_WORLD);
 	start_each_wtime=MPI_Wtime();
@@ -211,3 +167,83 @@ int main(int argc, char* argv[]){
 	return 0;
 }
  
+void initialization_before_chain_main()
+{
+	int i, j;
+
+	assert(signal(SIGINT, caught_signal) != SIG_ERR);
+	assert(signal(SIGHUP, caught_signal) != SIG_ERR);
+
+	chaincont=0;
+
+	/* These are used only in chain making. */
+	for(i=0; i<X; i++){
+		for(j=0; j<X; j++)
+			prepcode[i][j]=Unknown;
+		tate[i]=0;
+		yoko[i]=0;
+	}
+
+	MPI_Comm_rank(MPI_COMM_WORLD, &commrank);
+	MPI_Comm_size(MPI_COMM_WORLD, &commsize);
+
+	ppass();
+
+	return;
+}
+
+void initialization_before_follow()
+{
+	int i;
+
+	tcode=(signed short int**)malloc(sizeof(signed short int*)*X);
+	assert(tcode);
+
+	tcode_as_1dim=(signed short int*)malloc(sizeof(signed short int)*X*X);
+	assert(tcode_as_1dim);
+
+	sum_tate=(signed short int*)malloc(sizeof(signed short int)*X);
+	assert(sum_tate);
+
+	sum_yoko=(signed short int*)malloc(sizeof(signed short int)*X);
+	assert(sum_yoko);
+
+	sum_name=(signed short int*)malloc(sizeof(signed short int)*2);
+	assert(sum_name);
+
+	dned=(unsigned char*)malloc(sizeof(unsigned char)*Ceilings);
+	assert(dned);
+
+	mpz_init(eachtotal);
+
+	/* Going to make 2-dimentional tcode. */
+	for(i=0; i<X; i++)
+		tcode[i]=tcode_as_1dim+i*X;
+
+	/* These are used only in ms making. */
+	for(i=0; i<Ceilings; i++){
+		tcode_as_1dim[i]=0;
+		dned[i]=False;
+	}
+	for(i=0; i<X; i++)
+		sum_tate[i]=sum_yoko[i]=0;
+	for(i=0; i<2; i++)
+		sum_name[i]=0;
+
+	wtime_for_correspond=0;
+
+	#ifdef PF
+	/* All of solved mses will be put into this file. */
+	sprintf(filename, "out%d.txt", commrank);
+	myfp=fopen(filename, "w");
+	#endif
+
+	if(!commrank){
+		tosend=1;
+		mpz_init(total);
+	}
+
+	ppass();
+
+	return;
+}
