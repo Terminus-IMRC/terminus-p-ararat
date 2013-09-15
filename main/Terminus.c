@@ -31,9 +31,10 @@ void caught_signal(const int);
 void initialization_before_chain_main();
 void initialization_before_follow();
 void probe_len_and_gather_total();
+void pfPrepcode();
 
 int main(int argc, char* argv[]){
-	int i, j;
+	int i;
 	unsigned char contflag;
 	char filename[0xff];
 	FILE* nfp;
@@ -52,16 +53,7 @@ int main(int argc, char* argv[]){
 		printChain();
 		dputs("\nThe structure is this.");
 		/*TODO: Can't use pfCode because the argument type is different.*/
-		/*Note that the argument type of pfCode was originaly enum trident.*/
-		for(i=0; i<X; i++){
-			for(j=0; j<X; j++){
-				if(!prepcode[j][i])
-					will_and_die("There still be Unknown in prepcode.",	\
-									EXIT_FAILURE);
-				printf("%c", prepcode[j][i]==1?'f':'a');
-			}
-			putchar('\n');
-		}
+		pfPrepcode();
 		printf("Chaincount:%d\n", chaincont);
 	}
 
@@ -255,4 +247,21 @@ void probe_len_and_gather_total()
 	free(str);
 
 	return;
+}
+
+void pfPrepcode()
+{
+	/*Note that prepcode is global variable.*/
+	int i, j;
+
+	/*Note that the argument type of pfCode was originaly enum trident.*/
+	for(i=0; i<X; i++){
+		for(j=0; j<X; j++){
+			if(!prepcode[j][i])
+				will_and_die("There still be Unknown in prepcode.",	\
+								EXIT_FAILURE);
+			printf("%c", prepcode[j][i]==1?'f':'a');
+		}
+		putchar('\n');
+	}
 }
