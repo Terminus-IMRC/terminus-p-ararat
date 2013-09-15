@@ -82,18 +82,6 @@ int main(int argc, char* argv[]){
 
 	ppass();
 
-	probe_len_and_gather_total();
-
-	if(!commrank){
-		fputs("Total: ", stdout);
-		mpz_out_str(stdout, BASE, total);
-		putchar('\n');
-		mpz_clear(total);
-	}
-
-	output_times(start_wtime, end_wtime, start_each_wtime, end_each_wtime);
-
-	mpz_clear(eachtotal);
 	free(tcode_as_1dim);
 	free(tcode);
 	free(sum_tate);
@@ -104,6 +92,18 @@ int main(int argc, char* argv[]){
 	#ifdef PF
 	fclose(myfp);
 	#endif
+
+	probe_len_and_gather_total();
+	mpz_clear(eachtotal);
+
+	if(!commrank){
+		fputs("Total: ", stdout);
+		mpz_out_str(stdout, BASE, total);
+		putchar('\n');
+		mpz_clear(total);
+	}
+
+	output_times(start_wtime, end_wtime, start_each_wtime, end_each_wtime);
 
 	MPI_Finalize();
 
