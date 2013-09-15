@@ -32,12 +32,11 @@ void initialization_before_chain_main();
 void initialization_before_follow();
 void probe_len_and_gather_total();
 void pfPrepcode();
+void output_times(double start_wtime, double end_wtime, double start_each_wtime, double end_each_wtime);
 
 int main(int argc, char* argv[]){
 	int i;
 	unsigned char contflag;
-	char filename[0xff];
-	FILE* nfp;
 	double start_wtime, end_wtime;
 	double start_each_wtime, end_each_wtime;
 
@@ -89,25 +88,11 @@ int main(int argc, char* argv[]){
 		fputs("Total: ", stdout);
 		mpz_out_str(stdout, BASE, total);
 		putchar('\n');
-		sprintf(filename, "res%d-%d-%d.txt", X, N, commsize);
-		nfp=fopen(filename, "w");
-		mpz_out_str(nfp, BASE, total);
-		fputc('\n', nfp);
-		fclose(nfp);
-		sprintf(filename, "tim%d-%d-%d.txt", X, N, commsize);
-		nfp=fopen(filename, "w");
-		fprintf(nfp, "%g\n", end_wtime-start_wtime);
-		fclose(nfp);
 		mpz_clear(total);
 	}
-	sprintf(filename, "tic%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	nfp=fopen(filename, "w");
-	fprintf(nfp, "%g\n", wtime_for_correspond);
-	fclose(nfp);
-	sprintf(filename, "tie%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	nfp=fopen(filename, "w");
-	fprintf(nfp, "%g\n", end_each_wtime-start_each_wtime);
-	fclose(nfp);
+
+	output_times(start_wtime, end_wtime, start_each_wtime, end_each_wtime);
+
 	mpz_clear(eachtotal);
 	free(tcode_as_1dim);
 	free(tcode);
@@ -258,4 +243,46 @@ void pfPrepcode()
 		}
 		putchar('\n');
 	}
+}
+
+void output_times(double start_wtime, double end_wtime, double start_each_wtime, double end_each_wtime)
+{
+	char filename[0xff];
+	FILE* nfp;
+
+	/***************
+	 * X: X        *
+	 * N: N        *
+	 * R: commrank *
+	 * S: commsize *
+	 ***************/
+
+	if(!commrank){
+		/*resX-N-S.txt: final ms total*/
+		sprintf(filename, "res%d-%d-%d.txt", X, N, commsize);
+		nfp=fopen(filename, "w");
+		mpz_out_str(nfp, BASE, total);
+		fputc('\n', nfp);
+		fclose(nfp);
+
+		/*timX-N-S.txt: wall clock time of all ms processes between barriers of the top and bottom*/
+		sprintf(filename, "tim%d-%d-%d.txt", X, N, commsize);
+		nfp=fopen(filename, "w");
+		fprintf(nfp, "%g\n", end_wtime-start_wtime);
+		fclose(nfp);
+	}
+
+	/*ticX-N-S-R.txt: corresponding wall clock time*/
+	sprintf(filename, "tic%d-%d-%d.%d.txt", X, N, commsize, commrank);
+	nfp=fopen(filename, "w");
+	fprintf(nfp, "%g\n", wtime_for_correspond);
+	fclose(nfp);
+
+	/*tieX-N-S-R.txt: wall clock time of each follow*/
+	sprintf(filename, "tie%d-%d-%d.%d.txt", X, N, commsize, commrank);
+	nfp=fopen(filename, "w");
+	fprintf(nfp, "%g\n", end_each_wtime-start_each_wtime);
+	fclose(nfp);
+
+	return;
 }
