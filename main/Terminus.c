@@ -83,12 +83,6 @@ int main(int argc, char* argv[]){
 
 	ppass();
 
-	/*
-	fprintf(stdout, "EachTotal(%d): ", commrank);
-	mpz_out_str(stdout, BASE, eachtotal);
-	putchar('\n');
-	*/
-
 	probe_len_and_gather_total();
 
 	if(!commrank){
