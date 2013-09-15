@@ -224,40 +224,35 @@ void probe_len_and_gather_total()
 {
 	int i;
 	int len;
-	int* recvcounts;
-	char *str, **allstr;
+	char *str, **allstr, *allstr_1dim;
 
-	recvcounts=(int*)malloc(sizeof(int)*commsize);
-	for(i=0; i<commsize; i++)
-		recvcounts[i]=1;
 	len=mpz_sizeinbase(eachtotal, BASE);
-	MPI_Reduce_scatter(&i, &len, recvcounts, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
-	len=i+1;
+	MPI_Allreduce(&len, &i, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+	len=i+1;	/*core + '\0'*/
 	if(!commrank)
 		printf("len is %d.\n", len);
-	str=(char*)malloc(sizeof(char)*(len+1));	/*len plus \0*/
+	str=(char*)malloc(len*sizeof(char));
 	assert(str);
 	if(!commrank){
-		allstr=(char**)malloc(sizeof(char*)*commsize);
+		allstr=(char**)malloc(commsize*sizeof(char*));
 		assert(allstr);
-		for(i=0; i<commsize; i++){
-			allstr[i]=(char*)malloc(sizeof(char)*len);
-			assert(allstr[i]);
-		}
+		allstr_1dim=(char*)malloc(commsize*len*sizeof(char));
+		assert(allstr_1dim);
+		for(i=0; i<commsize; i++)
+			allstr[i]=allstr_1dim+i*len;
 	}
 	mpz_get_str(str, BASE, eachtotal);
-	/*It can be bug. I do not know how to use this...
-	MPI_Gather(str, len, MPI_INT, allstr, len, MPI_INT, 0, MPI_COMM_WORLD);*/
+	MPI_Gather(str, len, MPI_CHAR, allstr_1dim, len, MPI_CHAR, 0, MPI_COMM_WORLD);
 	if(!commrank){
 		mpz_set(total, eachtotal);
 		for(i=1; i<commsize; i++){
-			MPI_Recv(str, len+1, MPI_CHAR, i, MPI_ANY_TAG,	\
-				MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			mpz_set_str(eachtotal, str, BASE);
+			mpz_set_str(eachtotal, allstr[i], BASE);
 			mpz_add(total, total, eachtotal);
 		}
-	}else
-		MPI_Send(str, len+1, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+		free(allstr);
+		free(allstr_1dim);
+	}
+	free(str);
 
 	return;
 }
