@@ -2,7 +2,8 @@
 
 void addRestNameChain(const int l, const int m, const _Bool);
 
-void chain_main(){
+void chain_main()
+{
 	int i;
 	chain_init(&chain[0]);
 

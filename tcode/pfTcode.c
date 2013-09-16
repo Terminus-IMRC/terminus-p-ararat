@@ -8,7 +8,8 @@
 
 #if 0
 /*When tcode is 1-dimentional array*/
-void pfTcode(signed short int* code){
+void pfTcode(signed short int* code)
+{
 	int i;
 	for(i=0; i<X*X; i++){
 		fprintf(FP, "%2d ", code[i]);

@@ -34,7 +34,8 @@ void probe_len_and_gather_total();
 void pfPrepcode();
 void output_times(double start_wtime, double end_wtime, double start_each_wtime, double end_each_wtime);
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[])
+{
 	int i;
 	unsigned char contflag;
 	double start_wtime, end_wtime;

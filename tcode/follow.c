@@ -22,7 +22,8 @@ void storetynd(signed short int local_tate[X], signed short int local_yoko[X], s
 void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings]);
 void settcodeval(signed short int i, signed short int m);
 
-void follow(const signed short int m){
+void follow(const signed short int m)
+{
 	signed short int i=-1;
 	signed short int local_tate[X], local_yoko[X], local_name[2];
 	unsigned char local_dned[Ceilings];

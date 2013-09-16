@@ -1,6 +1,7 @@
 #include "chain.h"
 
-void printChain(){
+void printChain()
+{
 	int i, j, k;
 	for(i=0; i<chaincont; i++){
 		printf("Chain%d:\t(%d, %d) toafill:%d", i, chain[i].x,	\
