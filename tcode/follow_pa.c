@@ -3,10 +3,15 @@
 
 int tosend;
 extern double wtime_for_correspond;
+extern FILE *wholeCorrespondingTimeFp, *realCorrespondingTimeFp;
+
+void pfEachCorrespondTime(double wtime_for_whole_corresponding, double wtime_for_real_corresponding);
 
 void follow_pa(const signed short int m)
 {
 	unsigned char contflag;
+	double start_real_correspond_wtime;
+	double wtime_for_whole_corresponding, wtime_for_real_corresponding;
 	double start_tmp_wtime, end_tmp_wtime;
 
 	if(!commrank){
@@ -16,6 +21,8 @@ void follow_pa(const signed short int m)
 		contflag=1;
 		MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR, tosend,	\
 			1, MPI_COMM_WORLD);
+
+		start_real_correspond_wtime=MPI_Wtime();
 		MPI_Send(tcode_as_1dim, X*X, MPI_SHORT, tosend,	\
 			0, MPI_COMM_WORLD);
 		MPI_Send(dned, Ceilings, MPI_UNSIGNED_CHAR, tosend,	\
@@ -27,7 +34,12 @@ void follow_pa(const signed short int m)
 		MPI_Send(sum_name, 2, MPI_SHORT, tosend,	\
 			0, MPI_COMM_WORLD);
 		end_tmp_wtime=MPI_Wtime();
-		wtime_for_correspond+=end_tmp_wtime-start_tmp_wtime;
+
+		wtime_for_whole_corresponding=end_tmp_wtime-start_tmp_wtime;
+		wtime_for_real_corresponding=end_tmp_wtime-start_real_correspond_wtime;
+		pfEachCorrespondTime(wtime_for_whole_corresponding, wtime_for_real_corresponding);
+
+		wtime_for_correspond+=wtime_for_whole_corresponding;
 		tosend=(tosend+1)%commsize;
 		if(!tosend)
 			tosend++;
@@ -40,6 +52,8 @@ void follow_pa(const signed short int m)
 				1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			if(!contflag)
 				break;
+
+			start_real_correspond_wtime=MPI_Wtime();
 			MPI_Recv(tcode_as_1dim, X*X, MPI_SHORT, 0,	\
 				MPI_ANY_TAG, MPI_COMM_WORLD,	\
 				MPI_STATUS_IGNORE);
@@ -52,10 +66,23 @@ void follow_pa(const signed short int m)
 			MPI_Recv(sum_name, 2, MPI_SHORT, 0, MPI_ANY_TAG,	\
 				MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			end_tmp_wtime=MPI_Wtime();
-			wtime_for_correspond+=end_tmp_wtime-start_tmp_wtime;
+
+			wtime_for_whole_corresponding=end_tmp_wtime-start_tmp_wtime;
+			wtime_for_real_corresponding=end_tmp_wtime-start_real_correspond_wtime;
+			pfEachCorrespondTime(wtime_for_whole_corresponding, wtime_for_real_corresponding);
+
+			wtime_for_correspond+=wtime_for_whole_corresponding;
+
 			follow(m);
 		}
 	}
 
+	return;
+}
+
+void pfEachCorrespondTime(double wtime_for_whole_corresponding, double wtime_for_real_corresponding)
+{
+	fprintf(wholeCorrespondingTimeFp, "%g\n", wtime_for_whole_corresponding);
+	fprintf(realCorrespondingTimeFp, "%g\n", wtime_for_real_corresponding);
 	return;
 }

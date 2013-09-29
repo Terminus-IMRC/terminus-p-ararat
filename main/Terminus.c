@@ -23,6 +23,7 @@ int tate[X], yoko[X];
 signed short int* tcode_as_1dim;
 double wtime_for_correspond;
 mpz_t eachtotal, total;
+FILE *wholeCorrespondingTimeFp, *realCorrespondingTimeFp;
 #ifdef PF
 FILE* myfp;
 #endif
@@ -90,6 +91,9 @@ int main(int argc, char* argv[])
 	free(sum_name);
 	free(dned);
 
+	fclose(wholeCorrespondingTimeFp);
+	fclose(realCorrespondingTimeFp);
+
 	#ifdef PF
 	fclose(myfp);
 	#endif
@@ -141,6 +145,7 @@ void initialization_before_chain_main()
 void initialization_before_follow()
 {
 	int i;
+	char filename[0xff];
 
 	tcode=(signed short int**)malloc(sizeof(signed short int*)*X);
 	assert(tcode);
@@ -177,6 +182,14 @@ void initialization_before_follow()
 		sum_name[i]=0;
 
 	wtime_for_correspond=0;
+
+	/*wcrX-N-S-R.txt: each whole corresponding time*/
+	sprintf(filename, "wcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
+	wholeCorrespondingTimeFp=fopen(filename, "w");
+
+	/*rcrX-N-S-R.txt: each real corresponding time*/
+	sprintf(filename, "rcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
+	realCorrespondingTimeFp=fopen(filename, "w");
 
 	#ifdef PF
 	/* All of solved mses will be put into this file. */
