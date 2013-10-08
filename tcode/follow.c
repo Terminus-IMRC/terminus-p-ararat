@@ -42,13 +42,11 @@ void follow(const signed short int m)
 	i=grope4initialValueOfLove(m);
 
 	while(find_next_j(&i)!=Ceilings){
+		dned[i]=True;
 		i++;
 		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i,	\
 						chain[m].x, chain[m].y);
-		if( ((chain[m].x==X-1) && (chain[m].y==0)) && !(tcode[0][0]<i) )
-				continue;
 		tcode[chain[m].x][chain[m].y]=i;
-		dned[i-1]=True;
 
 		/*There used to be unfolded settcodeval here.*/
 		settcodeval(i, m);
