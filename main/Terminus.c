@@ -37,7 +37,7 @@ void output_times(double start_wtime, double end_wtime, double start_each_wtime,
 
 int main(int argc, char* argv[])
 {
-	int i;
+	int i, j;
 	unsigned char contflag;
 	double start_wtime, end_wtime;
 	double start_each_wtime, end_each_wtime;
@@ -67,11 +67,12 @@ int main(int argc, char* argv[])
 		follow(0);
 		end_each_wtime=MPI_Wtime();
 		contflag=0;	/*"Let's give up", she said me.*/
-		for(i=1; i<commsize; i++){
-			MPI_Recv(&i, 1, MPI_INT, i, 2, MPI_COMM_WORLD,	\
+		i=commsize-1;
+		while(i--){
+			MPI_Recv(&j, 1, MPI_INT, MPI_ANY_SOURCE, 2, MPI_COMM_WORLD,	\
 				MPI_STATUS_IGNORE);
 			MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR,	\
-				i, 1, MPI_COMM_WORLD);
+				j, 1, MPI_COMM_WORLD);
 		}
 	}else{
 		follow_pa(N-1);
