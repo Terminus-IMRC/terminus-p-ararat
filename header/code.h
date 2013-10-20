@@ -14,6 +14,7 @@
 		signed short int tcode_as_1dim[Ceilings];
 		struct tcode_linear_list* next;
 	};
+	extern struct tcode_linear_list *proper_ms;
 	extern unsigned char* dned;
 	extern signed short int *sum_tate, *sum_yoko, *sum_name;
 

@@ -74,8 +74,7 @@ void follow(const signed short int m)
 			else{
 				dprintf("Max depth(m) reached.\n");
 				#ifdef PF
-				pfTcode(tcode);
-				fputs("------------\n", myfp);
+				tcode_linear_list_subst(&proper_ms, tcode_as_1dim);
 				#endif
 				if(!commrank){
 					dputs("root rearched max depth. Are you sure?");

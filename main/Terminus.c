@@ -25,6 +25,7 @@ double wtime_for_correspond;
 mpz_t eachtotal, total;
 FILE *wholeCorrespondingTimeFp, *realCorrespondingTimeFp;
 #ifdef PF
+struct tcode_linear_list *proper_ms, *proper_ms_def;
 FILE* myfp;
 #endif
 
@@ -41,6 +42,9 @@ int main(int argc, char* argv[])
 	unsigned char contflag;
 	double start_wtime, end_wtime;
 	double start_each_wtime, end_each_wtime;
+	#ifdef PF
+	char filename[0xff];
+	#endif
 
 	MPI_Init(&argc, &argv);
 
@@ -96,7 +100,12 @@ int main(int argc, char* argv[])
 	fclose(realCorrespondingTimeFp);
 
 	#ifdef PF
+	/* All of solved mses will be put into this file. */
+	sprintf(filename, "out%d.txt", commrank);
+	myfp=fopen(filename, "w");
+	tcode_linear_list_output_from_orig(myfp, proper_ms_def);
 	fclose(myfp);
+	tcode_linear_list_free_from_orig(proper_ms_def);
 	#endif
 
 	probe_len_and_gather_total();
@@ -166,6 +175,10 @@ void initialization_before_follow()
 	dned=(unsigned char*)malloc(sizeof(unsigned char)*Ceilings);
 	assert(dned);
 
+	#ifdef PF
+	proper_ms=proper_ms_def=tcode_linear_list_get_new_entry();
+	#endif
+
 	mpz_init(eachtotal);
 
 	/* Going to make 2-dimentional tcode. */
@@ -191,12 +204,6 @@ void initialization_before_follow()
 	/*rcrX-N-S-R.txt: each real corresponding time*/
 	sprintf(filename, "rcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
 	realCorrespondingTimeFp=fopen(filename, "w");
-
-	#ifdef PF
-	/* All of solved mses will be put into this file. */
-	sprintf(filename, "out%d.txt", commrank);
-	myfp=fopen(filename, "w");
-	#endif
 
 	if(!commrank)
 		mpz_init(total);
