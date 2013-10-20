@@ -41,7 +41,7 @@ $(DEP_PF): ADDCFLAGS+=$(VALFLAGS_PF)
 OPTFLAGS:=-g -O0
 WARNFLAGS:=-Wall -Wextra -Werror -W -Wundef -Wshadow -Wcast-qual -Winline -Wno-long-long -fsigned-char -ansi
 
-TOCLEAN+=res*.txt tim*.txt out*.txt tic*.txt tie*.txt wcr*.txt rcr*.txt
+TOCLEAN+=res*.txt tim*.txt out*.txt wcr*.txt rcr*.txt efl*.txt
 
 PROC?=2
 run:	$(PROG)

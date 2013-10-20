@@ -5,6 +5,7 @@
 
 #include "chain.h"
 #include "code.h"
+#include "timing.h"
 #include "parallel.h"
 #include <signal.h>
 #undef NDEBUG
@@ -21,9 +22,10 @@ int tate[X], yoko[X];
 
 /* Only for making ms. */
 signed short int* tcode_as_1dim;
-double wtime_for_correspond;
 mpz_t eachtotal, total;
-FILE *wholeCorrespondingTimeFp, *realCorrespondingTimeFp;
+FILE *wholeCorrespondingTimeFp, *realCorrespondingTimeFp, *eachFollowTimeFp;
+struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_real_corresponding_list, *wtime_for_each_follow_list;
+struct wtime_linear_list *wtime_for_whole_corresponding_list_def, *wtime_for_real_corresponding_list_def, *wtime_for_each_follow_list_def;
 #ifdef PF
 struct tcode_linear_list *proper_ms, *proper_ms_def;
 FILE* myfp;
@@ -34,14 +36,13 @@ void initialization_before_chain_main();
 void initialization_before_follow();
 void probe_len_and_gather_total();
 void pfPrepcode();
-void output_times(double start_wtime, double end_wtime, double start_each_wtime, double end_each_wtime);
+void output_times(double start_wtime, double end_wtime);
 
 int main(int argc, char* argv[])
 {
 	int i, j;
 	unsigned char contflag;
 	double start_wtime, end_wtime;
-	double start_each_wtime, end_each_wtime;
 	#ifdef PF
 	char filename[0xff];
 	#endif
@@ -65,11 +66,9 @@ int main(int argc, char* argv[])
 	initialization_before_follow();
 
 	MPI_Barrier(MPI_COMM_WORLD);
-	start_each_wtime=MPI_Wtime();
 	if(!commrank){
 		start_wtime=MPI_Wtime();
 		follow(0);
-		end_each_wtime=MPI_Wtime();
 		contflag=0;	/*"Let's give up", she said me.*/
 		i=commsize-1;
 		while(i--){
@@ -78,10 +77,8 @@ int main(int argc, char* argv[])
 			MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR,	\
 				j, 1, MPI_COMM_WORLD);
 		}
-	}else{
+	}else
 		follow_pa(N-1);
-		end_each_wtime=MPI_Wtime();
-	}
 
 	MPI_Barrier(MPI_COMM_WORLD);
 	if(!commrank)
@@ -95,9 +92,6 @@ int main(int argc, char* argv[])
 	free(sum_yoko);
 	free(sum_name);
 	free(dned);
-
-	fclose(wholeCorrespondingTimeFp);
-	fclose(realCorrespondingTimeFp);
 
 	#ifdef PF
 	if(commrank){	/* Master is only to make candidates. */
@@ -120,7 +114,7 @@ int main(int argc, char* argv[])
 		mpz_clear(total);
 	}
 
-	output_times(start_wtime, end_wtime, start_each_wtime, end_each_wtime);
+	output_times(start_wtime, end_wtime);
 
 	MPI_Finalize();
 
@@ -157,7 +151,6 @@ void initialization_before_chain_main()
 void initialization_before_follow()
 {
 	int i;
-	char filename[0xff];
 
 	tcode=(signed short int**)malloc(sizeof(signed short int*)*X);
 	assert(tcode);
@@ -181,6 +174,10 @@ void initialization_before_follow()
 	proper_ms=proper_ms_def=tcode_linear_list_get_new_entry();
 	#endif
 
+	wtime_for_whole_corresponding_list=wtime_for_whole_corresponding_list_def=wtime_linear_list_get_new_entry();
+	wtime_for_real_corresponding_list=wtime_for_real_corresponding_list_def=wtime_linear_list_get_new_entry();
+	wtime_for_each_follow_list=wtime_for_each_follow_list_def=wtime_linear_list_get_new_entry();
+
 	mpz_init(eachtotal);
 
 	/* Going to make 2-dimentional tcode. */
@@ -196,16 +193,6 @@ void initialization_before_follow()
 		sum_tate[i]=sum_yoko[i]=0;
 	for(i=0; i<2; i++)
 		sum_name[i]=0;
-
-	wtime_for_correspond=0;
-
-	/*wcrX-N-S-R.txt: each whole corresponding time*/
-	sprintf(filename, "wcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	wholeCorrespondingTimeFp=fopen(filename, "w");
-
-	/*rcrX-N-S-R.txt: each real corresponding time*/
-	sprintf(filename, "rcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	realCorrespondingTimeFp=fopen(filename, "w");
 
 	if(!commrank)
 		mpz_init(total);
@@ -269,7 +256,7 @@ void pfPrepcode()
 	}
 }
 
-void output_times(double start_wtime, double end_wtime, double start_each_wtime, double end_each_wtime)
+void output_times(double start_wtime, double end_wtime)
 {
 	char filename[0xff];
 	FILE* nfp;
@@ -294,19 +281,28 @@ void output_times(double start_wtime, double end_wtime, double start_each_wtime,
 		nfp=fopen(filename, "w");
 		fprintf(nfp, "%g\n", end_wtime-start_wtime);
 		fclose(nfp);
+	}else{
+		/*eflX-N-S-R.txt: each follow time*/
+		sprintf(filename, "efl%d-%d-%d.%d.txt", X, N, commsize, commrank);
+		eachFollowTimeFp=fopen(filename, "w");
+		wtime_linear_list_output_from_orig(eachFollowTimeFp, wtime_for_each_follow_list_def);
+		fclose(eachFollowTimeFp);
 	}
 
-	/*ticX-N-S-R.txt: corresponding wall clock time*/
-	sprintf(filename, "tic%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	nfp=fopen(filename, "w");
-	fprintf(nfp, "%g\n", wtime_for_correspond);
-	fclose(nfp);
+	/*RIP: ticX-N-S-R.txt: corresponding wall clock time*/
+	/*RIP: tieX-N-S-R.txt: wall clock time of each follow*/
 
-	/*tieX-N-S-R.txt: wall clock time of each follow*/
-	sprintf(filename, "tie%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	nfp=fopen(filename, "w");
-	fprintf(nfp, "%g\n", end_each_wtime-start_each_wtime);
-	fclose(nfp);
+	/*wcrX-N-S-R.txt: each whole corresponding time*/
+	sprintf(filename, "wcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
+	wholeCorrespondingTimeFp=fopen(filename, "w");
+	wtime_linear_list_output_from_orig(wholeCorrespondingTimeFp, wtime_for_whole_corresponding_list_def);
+	fclose(wholeCorrespondingTimeFp);
+
+	/*rcrX-N-S-R.txt: each real corresponding time*/
+	sprintf(filename, "rcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
+	realCorrespondingTimeFp=fopen(filename, "w");
+	wtime_linear_list_output_from_orig(realCorrespondingTimeFp, wtime_for_real_corresponding_list_def);
+	fclose(realCorrespondingTimeFp);
 
 	return;
 }

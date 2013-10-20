@@ -1,9 +1,11 @@
 #include "code.h"
 #include "parallel.h"
+#include "timing.h"
 
 int tosend;
 extern double wtime_for_correspond;
 extern FILE *wholeCorrespondingTimeFp, *realCorrespondingTimeFp;
+extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_real_corresponding_list, *wtime_for_each_follow_list;
 
 void pfEachCorrespondTime(double wtime_for_whole_corresponding, double wtime_for_real_corresponding);
 
@@ -11,7 +13,6 @@ void follow_pa(const signed short int m)
 {
 	unsigned char contflag;
 	double start_real_correspond_wtime;
-	double wtime_for_whole_corresponding, wtime_for_real_corresponding;
 	double start_tmp_wtime, end_tmp_wtime;
 
 	if(!commrank){
@@ -35,11 +36,9 @@ void follow_pa(const signed short int m)
 			0, MPI_COMM_WORLD);
 		end_tmp_wtime=MPI_Wtime();
 
-		wtime_for_whole_corresponding=end_tmp_wtime-start_tmp_wtime;
-		wtime_for_real_corresponding=end_tmp_wtime-start_real_correspond_wtime;
-		pfEachCorrespondTime(wtime_for_whole_corresponding, wtime_for_real_corresponding);
+		wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
+		wtime_linear_list_subst(&wtime_for_real_corresponding_list, end_tmp_wtime-start_real_correspond_wtime);
 
-		wtime_for_correspond+=wtime_for_whole_corresponding;
 		tosend=(tosend+1)%commsize;
 		if(!tosend)
 			tosend++;
@@ -67,13 +66,13 @@ void follow_pa(const signed short int m)
 				MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			end_tmp_wtime=MPI_Wtime();
 
-			wtime_for_whole_corresponding=end_tmp_wtime-start_tmp_wtime;
-			wtime_for_real_corresponding=end_tmp_wtime-start_real_correspond_wtime;
-			pfEachCorrespondTime(wtime_for_whole_corresponding, wtime_for_real_corresponding);
+			wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
+			wtime_linear_list_subst(&wtime_for_real_corresponding_list, end_tmp_wtime-start_real_correspond_wtime);
 
-			wtime_for_correspond+=wtime_for_whole_corresponding;
-
+			start_tmp_wtime=MPI_Wtime();
 			follow(m);
+			end_tmp_wtime=MPI_Wtime();
+			wtime_linear_list_subst(&wtime_for_each_follow_list, end_tmp_wtime-start_tmp_wtime);
 		}
 	}
 
