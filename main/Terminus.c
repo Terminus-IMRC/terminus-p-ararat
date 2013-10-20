@@ -100,12 +100,14 @@ int main(int argc, char* argv[])
 	fclose(realCorrespondingTimeFp);
 
 	#ifdef PF
-	/* All of solved mses will be put into this file. */
-	sprintf(filename, "out%d.txt", commrank);
-	myfp=fopen(filename, "w");
-	tcode_linear_list_output_from_orig(myfp, proper_ms_def);
-	fclose(myfp);
-	tcode_linear_list_free_from_orig(proper_ms_def);
+	if(commrank){	/* Master is only to make candidates. */
+		/* All of solved mses will be put into this file. */
+		sprintf(filename, "out%d.txt", commrank);
+		myfp=fopen(filename, "w");
+		tcode_linear_list_output_from_orig(myfp, proper_ms_def);
+		fclose(myfp);
+		tcode_linear_list_free_from_orig(proper_ms_def);
+	}
 	#endif
 
 	probe_len_and_gather_total();
