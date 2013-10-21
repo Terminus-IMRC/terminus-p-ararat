@@ -23,7 +23,6 @@ int tate[X], yoko[X];
 /* Only for making ms. */
 signed short int* tcode_as_1dim;
 mpz_t eachtotal, total;
-FILE *wholeCorrespondingTimeFp, *realCorrespondingTimeFp, *eachFollowTimeFp;
 struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_real_corresponding_list, *wtime_for_each_follow_list;
 struct wtime_linear_list *wtime_for_whole_corresponding_list_def, *wtime_for_real_corresponding_list_def, *wtime_for_each_follow_list_def;
 #ifdef PF
@@ -282,6 +281,7 @@ void output_times_only_for_master(double start_wtime, double end_wtime)
 void output_times()
 {
 	char filename[0xff];
+	FILE* nfp;
 
 	/***************
 	 * X: X        *
@@ -293,9 +293,9 @@ void output_times()
 	if(commrank){
 		/*eflX-N-S-R.txt: each follow time*/
 		sprintf(filename, "efl%d-%d-%d.%d.txt", X, N, commsize, commrank);
-		eachFollowTimeFp=fopen(filename, "w");
-		wtime_linear_list_output_from_orig(eachFollowTimeFp, wtime_for_each_follow_list_def);
-		fclose(eachFollowTimeFp);
+		nfp=fopen(filename, "w");
+		wtime_linear_list_output_from_orig(nfp, wtime_for_each_follow_list_def);
+		fclose(nfp);
 	}
 
 	/*RIP: ticX-N-S-R.txt: corresponding wall clock time*/
@@ -303,15 +303,15 @@ void output_times()
 
 	/*wcrX-N-S-R.txt: each whole corresponding time*/
 	sprintf(filename, "wcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	wholeCorrespondingTimeFp=fopen(filename, "w");
-	wtime_linear_list_output_from_orig(wholeCorrespondingTimeFp, wtime_for_whole_corresponding_list_def);
-	fclose(wholeCorrespondingTimeFp);
+	nfp=fopen(filename, "w");
+	wtime_linear_list_output_from_orig(nfp, wtime_for_whole_corresponding_list_def);
+	fclose(nfp);
 
 	/*rcrX-N-S-R.txt: each real corresponding time*/
 	sprintf(filename, "rcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	realCorrespondingTimeFp=fopen(filename, "w");
-	wtime_linear_list_output_from_orig(realCorrespondingTimeFp, wtime_for_real_corresponding_list_def);
-	fclose(realCorrespondingTimeFp);
+	nfp=fopen(filename, "w");
+	wtime_linear_list_output_from_orig(nfp, wtime_for_real_corresponding_list_def);
+	fclose(nfp);
 
 	return;
 }

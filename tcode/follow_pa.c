@@ -4,10 +4,7 @@
 
 int tosend;
 extern double wtime_for_correspond;
-extern FILE *wholeCorrespondingTimeFp, *realCorrespondingTimeFp;
 extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_real_corresponding_list, *wtime_for_each_follow_list;
-
-void pfEachCorrespondTime(double wtime_for_whole_corresponding, double wtime_for_real_corresponding);
 
 void follow_pa(const signed short int m)
 {
@@ -76,12 +73,5 @@ void follow_pa(const signed short int m)
 		}
 	}
 
-	return;
-}
-
-void pfEachCorrespondTime(double wtime_for_whole_corresponding, double wtime_for_real_corresponding)
-{
-	fprintf(wholeCorrespondingTimeFp, "%g\n", wtime_for_whole_corresponding);
-	fprintf(realCorrespondingTimeFp, "%g\n", wtime_for_real_corresponding);
 	return;
 }
