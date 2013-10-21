@@ -11,7 +11,6 @@
 #undef NDEBUG
 #include <assert.h>
 
-extern int tosend;
 int commrank, commsize;
 signed short int chaincont;
 
@@ -141,8 +140,6 @@ void initialization_before_chain_main()
 
 	MPI_Comm_rank(MPI_COMM_WORLD, &commrank);
 	MPI_Comm_size(MPI_COMM_WORLD, &commsize);
-	if(!commrank)
-		tosend=1;
 
 	ppass();
 

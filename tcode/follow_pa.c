@@ -2,12 +2,12 @@
 #include "parallel.h"
 #include "timing.h"
 
-int tosend;
 extern double wtime_for_correspond;
 extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_real_corresponding_list, *wtime_for_each_follow_list;
 
 void follow_pa(const signed short int m)
 {
+	int tosend;
 	unsigned char contflag;
 	double start_real_correspond_wtime;
 	double start_tmp_wtime, end_tmp_wtime;
@@ -35,10 +35,6 @@ void follow_pa(const signed short int m)
 
 		wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
 		wtime_linear_list_subst(&wtime_for_real_corresponding_list, end_tmp_wtime-start_real_correspond_wtime);
-
-		tosend=(tosend+1)%commsize;
-		if(!tosend)
-			tosend++;
 	}else{
 		for(;;){
 			start_tmp_wtime=MPI_Wtime();

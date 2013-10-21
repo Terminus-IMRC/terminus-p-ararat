@@ -8,7 +8,6 @@
 		#error Define N in compile.
 	#endif
 
-	extern int tosend;
 	extern int commrank, commsize;
 
 	void follow_pa(const signed short int m);
