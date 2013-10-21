@@ -36,7 +36,8 @@ void initialization_before_chain_main();
 void initialization_before_follow();
 void probe_len_and_gather_total();
 void pfPrepcode();
-void output_times(double start_wtime, double end_wtime);
+void output_times_only_for_master(double start_wtime, double end_wtime);
+void output_times();
 
 int main(int argc, char* argv[])
 {
@@ -108,13 +109,14 @@ int main(int argc, char* argv[])
 	mpz_clear(eachtotal);
 
 	if(!commrank){
+		output_times_only_for_master(start_wtime, end_wtime);
 		fputs("Total: ", stdout);
 		mpz_out_str(stdout, BASE, total);
 		putchar('\n');
 		mpz_clear(total);
 	}
 
-	output_times(start_wtime, end_wtime);
+	output_times();
 
 	MPI_Finalize();
 
@@ -256,10 +258,30 @@ void pfPrepcode()
 	}
 }
 
-void output_times(double start_wtime, double end_wtime)
+void output_times_only_for_master(double start_wtime, double end_wtime)
 {
 	char filename[0xff];
 	FILE* nfp;
+
+	/*resX-N-S.txt: final ms total*/
+	sprintf(filename, "res%d-%d-%d.txt", X, N, commsize);
+	nfp=fopen(filename, "w");
+	mpz_out_str(nfp, BASE, total);
+	fputc('\n', nfp);
+	fclose(nfp);
+
+	/*timX-N-S.txt: wall clock time of all ms processes between barriers of the top and bottom*/
+	sprintf(filename, "tim%d-%d-%d.txt", X, N, commsize);
+	nfp=fopen(filename, "w");
+	fprintf(nfp, "%g\n", end_wtime-start_wtime);
+	fclose(nfp);
+
+	return;
+}
+
+void output_times()
+{
+	char filename[0xff];
 
 	/***************
 	 * X: X        *
@@ -268,20 +290,7 @@ void output_times(double start_wtime, double end_wtime)
 	 * S: commsize *
 	 ***************/
 
-	if(!commrank){
-		/*resX-N-S.txt: final ms total*/
-		sprintf(filename, "res%d-%d-%d.txt", X, N, commsize);
-		nfp=fopen(filename, "w");
-		mpz_out_str(nfp, BASE, total);
-		fputc('\n', nfp);
-		fclose(nfp);
-
-		/*timX-N-S.txt: wall clock time of all ms processes between barriers of the top and bottom*/
-		sprintf(filename, "tim%d-%d-%d.txt", X, N, commsize);
-		nfp=fopen(filename, "w");
-		fprintf(nfp, "%g\n", end_wtime-start_wtime);
-		fclose(nfp);
-	}else{
+	if(commrank){
 		/*eflX-N-S-R.txt: each follow time*/
 		sprintf(filename, "efl%d-%d-%d.%d.txt", X, N, commsize, commrank);
 		eachFollowTimeFp=fopen(filename, "w");
