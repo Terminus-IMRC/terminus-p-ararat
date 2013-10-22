@@ -35,10 +35,8 @@ void chain_main()
 	for(i=0; i<X; i++){
 		if((X-1-i)==1)	/*i.e. y==X-1-1*/
 			continue;
-		chain[chaincont].toafillroad[chain[chaincont].	\
-			toafillcont][i].x=X-1-i;
-		chain[chaincont].toafillroad[chain[chaincont].	\
-			toafillcont][i].y=i;
+		chain[chaincont].toafillroad[chain[chaincont].toafillcont][i].x=X-1-i;
+		chain[chaincont].toafillroad[chain[chaincont].toafillcont][i].y=i;
 	}
 	chain[chaincont].toafillcont++;
 
@@ -48,10 +46,8 @@ void chain_main()
 	chain[chaincont].toafill[chain[chaincont].toafillcont].x=X-1;
 	chain[chaincont].toafill[chain[chaincont].toafillcont].y=X-1;
 	for(i=0; i<X-1; i++){
-		chain[chaincont].toafillroad[chain[chaincont].	\
-			toafillcont][i].x=i;
-		chain[chaincont].toafillroad[chain[chaincont].	\
-			toafillcont][i].y=i;
+		chain[chaincont].toafillroad[chain[chaincont].toafillcont][i].x=i;
+		chain[chaincont].toafillroad[chain[chaincont].toafillcont][i].y=i;
 	}
 	chain[chaincont].toafillcont++;
 

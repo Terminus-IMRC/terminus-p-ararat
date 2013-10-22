@@ -19,10 +19,8 @@ void addChainOrder(enum trident code[X][X], const int x, const int y, const _Boo
 		for(j=k=0; j<X; j++){
 			if(j==i)
 				continue;
-			chain[chaincont].toafillroad[chain[chaincont].	\
-							toafillcont][k].x=j;
-			chain[chaincont].toafillroad[chain[chaincont].	\
-							toafillcont][k].y=y;
+			chain[chaincont].toafillroad[chain[chaincont].toafillcont][k].x=j;
+			chain[chaincont].toafillroad[chain[chaincont].toafillcont][k].y=y;
 			k++;
 		}
 		chain[chaincont].toafillcont++;
@@ -39,10 +37,8 @@ void addChainOrder(enum trident code[X][X], const int x, const int y, const _Boo
 		for(j=k=0; j<X; j++){
 			if(j==i)
 				continue;
-			chain[chaincont].toafillroad[chain[chaincont].	\
-							toafillcont][k].x=x;
-			chain[chaincont].toafillroad[chain[chaincont].	\
-							toafillcont][k].y=j;
+			chain[chaincont].toafillroad[chain[chaincont].toafillcont][k].x=x;
+			chain[chaincont].toafillroad[chain[chaincont].toafillcont][k].y=j;
 			k++;
 		}
 		chain[chaincont].toafillcont++;

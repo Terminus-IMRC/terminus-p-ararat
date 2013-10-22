@@ -13,13 +13,10 @@ void addRestNameChain(const int l, const int m, const _Bool isname1)
 		if(i==m)
 			continue;
 		if(isname1)
-			chain[chaincont].toafillroad[chain[chaincont].	\
-				toafillcont][ti].x=X-1-i;
+			chain[chaincont].toafillroad[chain[chaincont].toafillcont][ti].x=X-1-i;
 		else
-			chain[chaincont].toafillroad[chain[chaincont].	\
-				toafillcont][ti].x=i;
-		chain[chaincont].toafillroad[chain[chaincont].	\
-			toafillcont][ti].y=i;
+			chain[chaincont].toafillroad[chain[chaincont].toafillcont][ti].x=i;
+		chain[chaincont].toafillroad[chain[chaincont].toafillcont][ti].y=i;
 
 		ti++;
 	}

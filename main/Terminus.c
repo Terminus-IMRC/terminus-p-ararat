@@ -71,10 +71,8 @@ int main(int argc, char* argv[])
 		contflag=0;	/*"Let's give up", she said me.*/
 		i=commsize-1;
 		while(i--){
-			MPI_Recv(&j, 1, MPI_INT, MPI_ANY_SOURCE, 2, MPI_COMM_WORLD,	\
-				MPI_STATUS_IGNORE);
-			MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR,	\
-				j, 1, MPI_COMM_WORLD);
+			MPI_Recv(&j, 1, MPI_INT, MPI_ANY_SOURCE, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR, j, 1, MPI_COMM_WORLD);
 		}
 	}else
 		follow_pa(N-1);
@@ -245,8 +243,7 @@ void pfPrepcode()
 	for(i=0; i<X; i++){
 		for(j=0; j<X; j++){
 			if(!prepcode[j][i])
-				will_and_die("There still be Unknown in prepcode.",	\
-								EXIT_FAILURE);
+				will_and_die("There still be Unknown in prepcode.", EXIT_FAILURE);
 			printf("%c", prepcode[j][i]==1?'f':'a');
 		}
 		putchar('\n');

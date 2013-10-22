@@ -44,8 +44,7 @@ void follow(const signed short int m)
 	while(find_next_j(&i)!=Ceilings){
 		dned[i]=True;
 		i++;
-		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i,	\
-						chain[m].x, chain[m].y);
+		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i, chain[m].x, chain[m].y);
 		tcode[chain[m].x][chain[m].y]=i;
 
 		/*There used to be unfolded settcodeval here.*/
@@ -65,10 +64,7 @@ void follow(const signed short int m)
 				break;
 		}
 
-		if(isitconsist(sum_tate[chain[m].x]) &&	\
-			isitconsist(sum_yoko[chain[m].y]) &&	\
-			((if_name0(chain[m])) ? isitconsist(sum_name[0]):True) &&	\
-			((if_name1(chain[m])) ? isitconsist(sum_name[1]):True)){
+		if(isitconsist(sum_tate[chain[m].x]) &&	isitconsist(sum_yoko[chain[m].y]) && ((if_name0(chain[m])) ? isitconsist(sum_name[0]):True) && ((if_name1(chain[m])) ? isitconsist(sum_name[1]):True)){
 			if(m<chaincont-1)
 				follow(m+1);
 			else{
@@ -83,9 +79,7 @@ void follow(const signed short int m)
 			}
 		}else{
 			dprintf("main tyn is not consist. So don't following.\n");
-			dprintf("BTW t:%d y:%d n:%d,%d\n", sum_tate[chain[m].x],	\
-					sum_yoko[chain[m].y], sum_name[0],	\
-					sum_name[1]);
+			dprintf("BTW t:%d y:%d n:%d,%d\n", sum_tate[chain[m].x], sum_yoko[chain[m].y], sum_name[0], sum_name[1]);
 		}
 		
 ncot:
@@ -108,8 +102,7 @@ short int follow_chain(int m)
 	int i, j, tobes;
 
 	for(i=0; i<chain[m].toafillcont; i++){
-		dprintf("Trying to chain[%d]'s toafill #%d[%d][%d].\n", m, i,	\
-			chain[m].toafill[i][0], chain[m].toafill[i][0]);
+		dprintf("Trying to chain[%d]'s toafill #%d[%d][%d].\n", m, i, chain[m].toafill[i][0], chain[m].toafill[i][0]);
 		tobes=OneLine;
 		for(j=0; j<X-1; j++){
 			tobes-=
@@ -120,18 +113,14 @@ short int follow_chain(int m)
 			return 1;
 		}
 		if(dned[tobes-1]){
-			dprintf("TT: dned[tcode[%d][%d](%d)] is already in use.\n",	\
-				chain[m].toafill[i][0],	\
-				chain[m].toafill[i][1],	\
-				tobes-1);
+			dprintf("TT: dned[tcode[%d][%d](%d)] is already in use.\n", chain[m].toafill[i][0], chain[m].toafill[i][1], tobes-1);
 			return 1;
 		}
 
 #if 0
 		if( ((chain[m].toafill[i].x==X-1) && (chain[m].toafill[i].y==X-1)) && (!(tobes>tcode[0][0])) )
 			return 2;
-		if( ((chain[m].toafill[i].x==0) && (chain[m].toafill[i].y==X-1)) &&	\
-				 ((!(tobes>tcode[X-1][0])) ) )
+		if( ((chain[m].toafill[i].x==0) && (chain[m].toafill[i].y==X-1)) && ((!(tobes>tcode[X-1][0])) ) )
 			return 2;
 #endif
 
@@ -144,10 +133,7 @@ short int follow_chain(int m)
 		if(if_name1(chain[m].toafill[i]))
 			sum_name[1]+=tobes;
 
-		if(!(isitconsist(sum_tate[chain[m].x]) &&	\
-			 isitconsist(sum_yoko[chain[m].y]) &&	\
-			 ((if_name0(chain[m].toafill[i])) ? isitconsist(sum_name[0]):True) &&	\
-			 ((if_name1(chain[m].toafill[i])) ? isitconsist(sum_name[1]):True))	){
+		if(!(isitconsist(sum_tate[chain[m].x]) && isitconsist(sum_yoko[chain[m].y]) && ((if_name0(chain[m].toafill[i])) ? isitconsist(sum_name[0]):True) && ((if_name1(chain[m].toafill[i])) ? isitconsist(sum_name[1]):True))	){
 			dprintf("tate or yoko or name is not consist. Giving up.\n");
 			return 1;
 		}
@@ -160,8 +146,7 @@ int grope4initialValueOfLove(signed short int m)
 #if 1
 	/*TODO: is it code[][]+1 or code[][]?*/
 
-	if(((chain[m].x==X-1) && (chain[m].y==0)) ||	\
-		((chain[m].x==X-1) && (chain[m].y==X-1)))
+	if(((chain[m].x==X-1) && (chain[m].y==0)) || ((chain[m].x==X-1) && (chain[m].y==X-1)))
 		return tcode[0][0];
 	else if((chain[m].x==0) && (chain[m].y==X-1))
 		return tcode[X-1][0];
@@ -170,8 +155,7 @@ int grope4initialValueOfLove(signed short int m)
 	else
 		return 0;
 #elif 0
-	if(((chain[m].x==X-1) && (chain[m].y==0)) ||	\
-		((chain[m].x==X-1) && (chain[m].y==X-1)))
+	if(((chain[m].x==X-1) && (chain[m].y==0)) || ((chain[m].x==X-1) && (chain[m].y==X-1)))
 		return tcode[0][0];
 	else
 		return 0;

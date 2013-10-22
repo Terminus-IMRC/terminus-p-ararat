@@ -1,8 +1,6 @@
 #ifndef printpass
-	#define printpass() printf("passed line %d on %s\n",	\
-							__LINE__, __FILE__)
-	#define pprintpass() printf("PD%d: passed line %d on %s\n",	\
-							commrank, __LINE__, __FILE__)
+	#define printpass() printf("passed line %d on %s\n", __LINE__, __FILE__)
+	#define pprintpass() printf("PD%d: passed line %d on %s\n", commrank, __LINE__, __FILE__)
 #endif
 #ifdef NOPASS
 	#define pass()

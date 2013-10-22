@@ -6,8 +6,7 @@
 	extern enum trident prepcode[X][X];
 
 	extern int tate[X], yoko[X];
-	extern void addChainOrder(enum trident code[X][X],	\
-						int x, int y, _Bool);
+	extern void addChainOrder(enum trident code[X][X], int x, int y, _Bool);
 	extern int findFinalPlace(enum trident code[X][X], const _Bool, const int);
 	extern void chain_init(struct ring*);
 	extern void printChain();
