@@ -3,13 +3,12 @@
 #include "timing.h"
 
 extern double wtime_for_correspond;
-extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_real_corresponding_list, *wtime_for_each_follow_list;
+extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_each_follow_list;
 
 void follow_pa(const signed short int m)
 {
 	int tosend;
 	unsigned char contflag;
-	double start_real_correspond_wtime;
 	double start_tmp_wtime, end_tmp_wtime;
 
 	if(!commrank){
@@ -20,7 +19,6 @@ void follow_pa(const signed short int m)
 		MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR, tosend,	\
 			1, MPI_COMM_WORLD);
 
-		start_real_correspond_wtime=MPI_Wtime();
 		MPI_Send(tcode_as_1dim, X*X, MPI_SHORT, tosend,	\
 			0, MPI_COMM_WORLD);
 		MPI_Send(dned, Ceilings, MPI_UNSIGNED_CHAR, tosend,	\
@@ -34,7 +32,6 @@ void follow_pa(const signed short int m)
 		end_tmp_wtime=MPI_Wtime();
 
 		wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
-		wtime_linear_list_subst(&wtime_for_real_corresponding_list, end_tmp_wtime-start_real_correspond_wtime);
 	}else{
 		for(;;){
 			start_tmp_wtime=MPI_Wtime();
@@ -45,7 +42,6 @@ void follow_pa(const signed short int m)
 			if(!contflag)
 				break;
 
-			start_real_correspond_wtime=MPI_Wtime();
 			MPI_Recv(tcode_as_1dim, X*X, MPI_SHORT, 0,	\
 				MPI_ANY_TAG, MPI_COMM_WORLD,	\
 				MPI_STATUS_IGNORE);
@@ -60,7 +56,6 @@ void follow_pa(const signed short int m)
 			end_tmp_wtime=MPI_Wtime();
 
 			wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
-			wtime_linear_list_subst(&wtime_for_real_corresponding_list, end_tmp_wtime-start_real_correspond_wtime);
 
 			start_tmp_wtime=MPI_Wtime();
 			follow(m);

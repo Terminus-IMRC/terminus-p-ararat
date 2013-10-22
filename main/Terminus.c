@@ -22,8 +22,8 @@ int tate[X], yoko[X];
 /* Only for making ms. */
 signed short int* tcode_as_1dim;
 mpz_t eachtotal, total;
-struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_real_corresponding_list, *wtime_for_each_follow_list;
-struct wtime_linear_list *wtime_for_whole_corresponding_list_def, *wtime_for_real_corresponding_list_def, *wtime_for_each_follow_list_def;
+struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_each_follow_list;
+struct wtime_linear_list *wtime_for_whole_corresponding_list_def, *wtime_for_each_follow_list_def;
 #ifdef PF
 struct tcode_linear_list *proper_ms, *proper_ms_def;
 FILE* myfp;
@@ -173,7 +173,6 @@ void initialization_before_follow()
 	#endif
 
 	wtime_for_whole_corresponding_list=wtime_for_whole_corresponding_list_def=wtime_linear_list_get_new_entry();
-	wtime_for_real_corresponding_list=wtime_for_real_corresponding_list_def=wtime_linear_list_get_new_entry();
 	wtime_for_each_follow_list=wtime_for_each_follow_list_def=wtime_linear_list_get_new_entry();
 
 	mpz_init(eachtotal);
@@ -304,11 +303,7 @@ void output_times()
 	wtime_linear_list_output_from_orig(nfp, wtime_for_whole_corresponding_list_def);
 	fclose(nfp);
 
-	/*rcrX-N-S-R.txt: each real corresponding time*/
-	sprintf(filename, "rcr%d-%d-%d.%d.txt", X, N, commsize, commrank);
-	nfp=fopen(filename, "w");
-	wtime_linear_list_output_from_orig(nfp, wtime_for_real_corresponding_list_def);
-	fclose(nfp);
+	/*RIP: rcrX-N-S-R.txt: each real corresponding time*/
 
 	return;
 }
