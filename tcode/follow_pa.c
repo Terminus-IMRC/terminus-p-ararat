@@ -2,7 +2,6 @@
 #include "parallel.h"
 #include "timing.h"
 
-extern double wtime_for_correspond;
 extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_each_follow_list;
 
 void follow_pa(const signed short int m)
