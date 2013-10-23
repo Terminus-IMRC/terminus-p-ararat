@@ -2,17 +2,20 @@
 #include "parallel.h"
 #include "timing.h"
 
-extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_each_follow_list;
+extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_each_follow_list, *wtime_for_idle;
 
 void follow_pa(const signed short int m)
 {
 	int tosend;
 	unsigned char contflag;
 	double start_tmp_wtime, end_tmp_wtime;
+	double end_idle_wtime;
 
 	if(!commrank){
 		start_tmp_wtime=MPI_Wtime();
 		MPI_Recv(&tosend, 1, MPI_INT, MPI_ANY_SOURCE, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		end_idle_wtime=MPI_Wtime();
+
 		contflag=1;
 		MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR, tosend, 1, MPI_COMM_WORLD);
 
@@ -24,10 +27,13 @@ void follow_pa(const signed short int m)
 		end_tmp_wtime=MPI_Wtime();
 
 		wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
+		wtime_linear_list_subst(&wtime_for_idle, end_idle_wtime-start_tmp_wtime);
 	}else{
 		for(;;){
 			start_tmp_wtime=MPI_Wtime();
 			MPI_Send(&commrank, 1, MPI_INT, 0, 2, MPI_COMM_WORLD);
+			end_idle_wtime=MPI_Wtime();
+
 			MPI_Recv(&contflag, 1, MPI_UNSIGNED_CHAR, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			if(!contflag)
 				break;
@@ -40,6 +46,7 @@ void follow_pa(const signed short int m)
 			end_tmp_wtime=MPI_Wtime();
 
 			wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
+			wtime_linear_list_subst(&wtime_for_idle, end_idle_wtime-start_tmp_wtime);
 
 			start_tmp_wtime=MPI_Wtime();
 			follow(m);
