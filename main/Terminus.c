@@ -114,6 +114,10 @@ int main(int argc, char* argv[])
 
 	output_times();
 
+	wtime_linear_list_free_from_orig(wtime_for_each_follow_list_def);
+	wtime_linear_list_free_from_orig(wtime_for_whole_corresponding_list_def);
+	wtime_linear_list_free_from_orig(wtime_for_idle_def);
+
 	MPI_Finalize();
 
 	return 0;
