@@ -26,7 +26,6 @@ struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_each_fo
 struct wtime_linear_list *wtime_for_whole_corresponding_list_def, *wtime_for_each_follow_list_def, *wtime_for_idle_def;
 #ifdef PF
 struct tcode_linear_list *proper_ms, *proper_ms_def;
-FILE* myfp;
 #endif
 
 void caught_signal(const int);
@@ -44,6 +43,7 @@ int main(int argc, char* argv[])
 	double start_wtime, end_wtime;
 	#ifdef PF
 	char filename[0xff];
+	FILE* nfp;
 	#endif
 
 	MPI_Init(&argc, &argv);
@@ -94,9 +94,9 @@ int main(int argc, char* argv[])
 	if(commrank){	/* Master is only to make candidates. */
 		/* All of solved mses will be put into this file. */
 		sprintf(filename, "out%d.txt", commrank);
-		myfp=fopen(filename, "w");
-		tcode_linear_list_output_from_orig(myfp, proper_ms_def);
-		fclose(myfp);
+		nfp=fopen(filename, "w");
+		tcode_linear_list_output_from_orig(nfp, proper_ms_def);
+		fclose(nfp);
 		tcode_linear_list_free_from_orig(proper_ms_def);
 	}
 	#endif

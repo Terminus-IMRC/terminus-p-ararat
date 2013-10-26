@@ -45,7 +45,4 @@
 	extern signed short int chaincont;
 	extern void pfCode(signed short int code[X][X]);
 	extern void will_and_die(const char*, const int);
-	#ifdef PF
-	extern FILE* myfp;
-	#endif
 #endif
