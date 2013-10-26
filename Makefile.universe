@@ -21,7 +21,7 @@ OBJS=$(SRCS:%.c=%.c.o)
 SRCMODS=$(SRCS:%.c=%.c.mod)
 HDRMODS=$(HDRS:%.h=%.h.mod)
 
-NONEED_MOD_TARGETS+=clean line load greptodo gitinit
+NONEED_MOD_TARGETS+=clean clean-outputs line load greptodo gitinit
 
 ifeq ($(shell for f in $(NONEED_MOD_TARGETS); do if echo $(MAKECMDGOALS) | tr -s ' ' '\n' | grep -q "^$$f$$"; then echo $$f; break; fi; done),)
 	sinclude $(SRCMODS) $(HDRMODS)
