@@ -2,4 +2,4 @@ tcode_srcs:=find_next_j.c follow.c follow_pa.c pfTcode.c tcode_linear_list_utils
 SRCS+=$(addprefix tcode/,$(tcode_srcs))
 
 DEP_N_C+=tcode/follow.c tcode/follow_pa.c
-DEP_PF_C+=tcode/follow.c tcode/pfTcode.c
+DEP_PF_C+=tcode/follow.c

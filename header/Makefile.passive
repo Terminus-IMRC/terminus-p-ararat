@@ -1,5 +1,4 @@
 header_hdrs=chain.h code.h debug.h def.h parallel.h timing.h
 HDRS+=$(addprefix header/,$(header_hdrs))
 
-DEP_PF_H+=header/def.h
 DEP_N_H+=header/parallel.h
