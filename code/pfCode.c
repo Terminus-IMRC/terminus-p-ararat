@@ -1,18 +1,12 @@
 #include "def.h"
 
-#ifdef PF
-#define FP myfp
-#else
-#define FP stdout
-#endif
-
 void pfCode(signed short int code[X][X])
 {
 	int i, j;
 	for(i=0; i<X; i++){
 		for(j=0; j<X; j++)
-			fprintf(FP, "%2d ", code[j][i]);
-		fputc('\n', FP);
+			printf("%2d ", code[j][i]);
+		putchar('\n');
 	}
 	return;
 }
