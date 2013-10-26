@@ -64,6 +64,10 @@ clean:
 	@echo -e "\tCLEAN"
 	$Q $(RM) $(OBJS) $(GCHDRS) $(PROG) $(SRCMODS) $(HDRMODS) $(TOCLEAN)
 
+clean-outputs:
+	@echo -e "\tCLEAN-OUTPUTS"
+	$Q $(RM) $(TOCLEAN-OUTPUTS)
+	
 install: $(PROG)
 	@echo -e "\tINSTALL $<"
 	$Q $(MKDIR) $(DESTDIR)/
@@ -88,4 +92,4 @@ product: $(PROG)
 	@echo -e "\tSTRIP $<"
 	$Q $(STRIP) $<
 
-.PHONY:	clean install line load greptodo gitinit
+.PHONY:	clean clean-outputs install line load greptodo gitinit
