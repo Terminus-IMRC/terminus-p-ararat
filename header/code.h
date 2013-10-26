@@ -5,7 +5,8 @@
 	/*20130112*/
 	extern void follow(const signed short int);
 	extern signed short int find_next_j(signed short int*);
-	extern void pfTcode(signed short int*);
+	extern void pfTcode_1dim(signed short int*);
+	extern void pfTcode(signed short int**);
 
 	/*20130113*/
 	extern signed short int** tcode;

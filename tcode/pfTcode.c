@@ -1,8 +1,6 @@
 #include "def.h"
 
-#if 0
-/*When tcode is 1-dimentional array*/
-void pfTcode(signed short int* code)
+void pfTcode_1dim(signed short int* code)
 {
 	int i;
 	for(i=0; i<X*X; i++){
@@ -12,7 +10,7 @@ void pfTcode(signed short int* code)
 	}
 	return;
 }
-#else
+
 void pfTcode(signed short int** code)
 {
 	int i, j;
@@ -23,4 +21,3 @@ void pfTcode(signed short int** code)
 	}
 	return;
 }
-#endif
