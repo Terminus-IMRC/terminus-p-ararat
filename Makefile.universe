@@ -60,7 +60,7 @@ $(PROG): $(GCHDRS) $(OBJS)
 	@echo -e "\tCC $@"
 	$Q $(COMPILE.c) $(OUTPUT_OPTION) $<
 
-clean:
+clean: clean-outputs
 	@echo -e "\tCLEAN"
 	$Q $(RM) $(OBJS) $(GCHDRS) $(PROG) $(SRCMODS) $(HDRMODS) $(TOCLEAN)
 
