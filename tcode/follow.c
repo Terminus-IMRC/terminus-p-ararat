@@ -166,32 +166,20 @@ int grope4initialValueOfLove(signed short int m)
 
 void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings])
 {
-	int j;
-
-	for(j=0; j<X; j++){
-		local_tate[j]=sum_tate[j];
-		local_yoko[j]=sum_yoko[j];
-	}
-	for(j=0; j<2; j++)
-		local_name[j]=sum_name[j];
-	for(j=0; j<Ceilings; j++)
-		local_dned[j]=dned[j];
+	memcpy(local_tate, sum_tate, sizeof(local_tate[0])*X);
+	memcpy(local_yoko, sum_yoko, sizeof(local_yoko[0])*X);
+	memcpy(local_name, sum_name, sizeof(local_name[0])*2);
+	memcpy(local_dned, dned, sizeof(local_dned[0])*Ceilings);
 
 	return;
 }
 
 void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings])
 {
-	int j;
-
-	for(j=0; j<X; j++){
-		sum_tate[j]=local_tate[j];
-		sum_yoko[j]=local_yoko[j];
-	}
-	for(j=0; j<2; j++)
-		sum_name[j]=local_name[j];
-	for(j=0; j<Ceilings; j++)
-		dned[j]=local_dned[j];
+	memcpy(sum_tate, local_tate, sizeof(sum_tate[0])*X);
+	memcpy(sum_yoko, local_yoko, sizeof(sum_yoko[0])*X);
+	memcpy(sum_name, local_name, sizeof(sum_name[0])*2);
+	memcpy(dned, local_dned, sizeof(dned[0])*Ceilings);
 
 	return;
 }

@@ -4,6 +4,7 @@
 	/*#include"mpi.h"*/	/*IMRCの伝統的な神様*/
 	#include <stdio.h>
 	#include <stdint.h>
+	#include <string.h>
 
 	#define FLUSH
 	#define NODP
