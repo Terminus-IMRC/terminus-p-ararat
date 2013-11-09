@@ -307,7 +307,7 @@ void output_times()
 
 	/*RIP: rcrX-N-S-R.txt: each real corresponding time*/
 
-	/*icrX-N-S-R.txt: each follow time*/
+	/*icrX-N-S-R.txt: idle time on each correspondence*/
 	sprintf(filename, "icr%d-%d-%d.%d.txt", X, N, commsize, commrank);
 	nfp=fopen(filename, "w");
 	wtime_linear_list_output_from_orig(nfp, wtime_for_idle_def);
