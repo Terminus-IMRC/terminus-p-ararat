@@ -88,7 +88,8 @@ int main(int argc, char* argv[])
 	free(sum_tate);
 	free(sum_yoko);
 	free(sum_name);
-	free(dned);
+	dned_free(dned_def);
+	dned_free(alllocal_dned);
 
 	#ifdef PF
 	if(commrank){	/* Master is only to make candidates. */
@@ -167,8 +168,14 @@ void initialization_before_follow()
 	sum_name=(signed short int*)malloc(sizeof(signed short int)*2);
 	assert(sum_name);
 
-	dned=(unsigned char*)malloc(sizeof(unsigned char)*Ceilings);
+	dned=dned_def=dned_alloc();
 	assert(dned);
+	dned_subst_normal_value(dned);
+	dned_first=dned;
+	maxValueInDned=Ceilings;
+	
+	alllocal_dned=(struct dned_part*)malloc(chaincont*Ceilings*sizeof(struct dned_part));
+	assert(alllocal_dned);
 
 	#ifdef PF
 	proper_ms=proper_ms_def=tcode_linear_list_get_new_entry();
@@ -185,10 +192,8 @@ void initialization_before_follow()
 		tcode[i]=tcode_as_1dim+i*X;
 
 	/* These are used only in ms making. */
-	for(i=0; i<Ceilings; i++){
+	for(i=0; i<Ceilings; i++)
 		tcode_as_1dim[i]=0;
-		dned[i]=False;
-	}
 	for(i=0; i<X; i++)
 		sum_tate[i]=sum_yoko[i]=0;
 	for(i=0; i<2; i++)

@@ -1,0 +1,129 @@
+#include <stdlib.h>
+#include "def.h"
+#include "dned.h"
+#include <assert.h>
+
+signed short int maxValueInDned;
+
+struct dned_part* dned_alloc()
+{
+	int i;
+	struct dned_part *toret;
+	
+	toret=(struct dned_part*)malloc(Ceilings*sizeof(struct dned_part));
+
+	for(i=1; i<Ceilings-1; i++){
+		toret[i].prior=toret+(i-1);
+		toret[i].next=toret+(i+1);
+	}
+	toret[0].prior=NULL;
+	toret[0].next=toret+1;
+	toret[Ceilings-1].prior=toret+((Ceilings-1)-1);
+	toret[Ceilings-1].next=NULL;
+	
+	return toret;
+}
+
+void dned_subst_normal_value(struct dned_part *parts)
+{
+	int i;
+	
+	for(i=0; i<Ceilings; i++)
+		parts[i].num=i+1;
+	
+	return;
+}
+
+/* Substitute the numbers in tosubst until 0 appears. */
+void dned_subst_particular_value(signed short int *tosubst, struct dned_part *parts)
+{
+	int i;
+
+	for(i=0; tosubst[i]!=0; i++)
+		parts[i].num=tosubst[i];
+
+	return;
+}
+
+void dned_cp(struct dned_part *dest, struct dned_part *src)
+{
+	do{
+		memcpy(dest, src, sizeof(struct dned_part));
+		dest=dest->next;
+		src=src->next;
+	}while(src);
+	return;
+}
+
+void dned_cp_array(struct dned_part *dest, struct dned_part *src)
+{
+	int i;
+
+	for(i=0; i<Ceilings; i++)
+		memcpy(dest, src, sizeof(struct dned_part));
+
+	return;
+}
+
+void dned_free(struct dned_part *parts)
+{
+	free(parts);
+	return;
+}
+
+struct dned_part* dned_whereis_num(signed short tofind, struct dned_part *start)
+{
+	while(start->num!=tofind){
+		if(!start->next)
+			return NULL;
+		start=start->next;
+	}
+	return start;
+}
+
+/* TODO: Be void and the argument would be struct dned_part **parts :) */
+struct dned_part* usedned_symbolic(struct dned_part *parts)
+{
+	if(!parts->prior){
+		if(parts->next){
+			parts->next->prior=NULL;
+			dned_first=parts->next;
+			return parts->next;
+		}
+		else
+			return NULL;
+	}else if(!parts->next){
+		parts->prior->next=NULL;
+		maxValueInDned=parts->prior->num;
+	}else{
+		parts->prior->next=dned->next;
+		dned->next->prior=dned->prior;
+	}
+	
+	return parts;
+}
+
+/* Of cource, the number of tostore elements must be equal or more than the number of parts elements.
+   This function will NOT check this. */
+void dned_num_serialize(signed short int tostore[Ceilings], struct dned_part *parts)
+{
+#if 0
+	do{
+		*tostore=parts->num;
+		tostore++;
+		parts=parts->next;
+	}while(parts);
+#else
+	int i;
+
+	assert(parts);
+	for(i=0; i<Ceilings; i++){
+		tostore[i]=parts->num;
+		parts=parts->next;
+		if(!parts)
+			break;
+	}
+#endif
+
+	return;
+}

@@ -5,12 +5,13 @@
 /* Anyway the wind blows */
 #include "code.h"
 #include "parallel.h"
+#include "dned.h"
 
 #define isitconsist(m) (((m>0)&&(m<=OneLine)) ? True:False)
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
 signed short int** tcode;
-unsigned char* dned;
+struct dned_part *dned, *dned_def, *dned_first, *alllocal_dned;
 signed short int *sum_tate, *sum_yoko, *sum_name;
 
 #define if_name0(s) (s.x==s.y ? True:False)
@@ -18,15 +19,15 @@ signed short int *sum_tate, *sum_yoko, *sum_name;
 
 short int follow_chain(int m);
 int grope4initialValueOfLove(signed short int m);
-void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings]);
-void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings]);
+void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], struct dned_part *local_dned, signed short int *local_maxValueInDned, struct dned_part **local_dned_first);
+void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], struct dned_part *local_dned, struct dned_part *dned_localdef, signed short int local_maxValueInDned, struct dned_part *local_dned_first);
 void settcodeval(signed short int i, signed short int m);
 
 void follow(const signed short int m)
 {
 	signed short int i=-1;
-	signed short int local_tate[X], local_yoko[X], local_name[2];
-	unsigned char local_dned[Ceilings];
+	signed short int local_tate[X], local_yoko[X], local_name[2], local_maxValueInDned;
+	struct dned_part *local_dned, *dned_localdef, *local_dned_first;
 
 	dprintf("Entering #%d\n", m);
 
@@ -36,14 +37,26 @@ void follow(const signed short int m)
 		return;	/*Don't forget!!!*/
 	}
 
+	/* local_dned is to save parent's dned values.
+	   dned_localdef is proxy for dned (not to change dned pointing). */
+	local_dned=alllocal_dned+m*Ceilings;
+	dned_localdef=dned_first;
+
 	/*There used to be unfolded storetynd here.*/
-	storetynd(local_tate, local_yoko, local_name, local_dned);
+	storetynd(local_tate, local_yoko, local_name, local_dned, &local_maxValueInDned, &local_dned_first);
 
-	i=grope4initialValueOfLove(m);
+	i=grope4initialValueOfLove(m)+1;
+	if(i>maxValueInDned)
+		return;
+	else
+		while(dned_localdef->num<i)
+			dned_localdef=dned_localdef->next;
 
-	while(find_next_j(&i)!=Ceilings){
-		dned[i]=True;
-		i++;
+	do{
+		dned=usedned_symbolic(dned_localdef);
+		/*if(dned->prior)
+			dned=dned->next;*/
+		i=dned_localdef->num;
 		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i, chain[m].x, chain[m].y);
 		tcode[chain[m].x][chain[m].y]=i;
 
@@ -85,8 +98,10 @@ void follow(const signed short int m)
 ncot:
 		/*There used to be unfolded restoretynd here.*/
 		dprintf("Restoring\n");
-		restoretynd(local_tate, local_yoko, local_name, local_dned);
-	}
+		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
+		restoretynd(local_tate, local_yoko, local_name, local_dned, dned, local_maxValueInDned, local_dned_first);
+	}while((dned_localdef=dned_localdef->next));
+	restoretynd(local_tate, local_yoko, local_name, local_dned, dned, local_maxValueInDned, local_dned_first);
 	dprintf("Leaving from #%d\n", m);
 	return;
 }
@@ -100,6 +115,7 @@ short int follow_chain(int m)
 	 */
 
 	int i, j, tobes;
+	struct dned_part *located;
 
 	for(i=0; i<chain[m].toafillcont; i++){
 		dprintf("Trying to chain[%d]'s toafill #%d[%d][%d].\n", m, i, chain[m].toafill[i][0], chain[m].toafill[i][0]);
@@ -112,7 +128,8 @@ short int follow_chain(int m)
 			dputs("Isn't proper. Continuing.");
 			return 1;
 		}
-		if(dned[tobes-1]){
+		located=dned_whereis_num(tobes, dned);
+		if(!located){
 			dprintf("TT: dned[tcode[%d][%d](%d)] is already in use.\n", chain[m].toafill[i][0], chain[m].toafill[i][1], tobes-1);
 			return 1;
 		}
@@ -125,7 +142,7 @@ short int follow_chain(int m)
 #endif
 
 		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;
-		dned[tobes-1]=True;
+		usedned_symbolic(located);
 		sum_tate[chain[m].toafill[i].x]+=tobes;
 		sum_yoko[chain[m].toafill[i].y]+=tobes;
 		if(if_name0(chain[m].toafill[i]))
@@ -164,22 +181,26 @@ int grope4initialValueOfLove(signed short int m)
 #endif
 }
 
-void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings])
+void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], struct dned_part *local_dned, signed short int *local_maxValueInDned, struct dned_part **local_dned_first)
 {
 	memcpy(local_tate, sum_tate, sizeof(local_tate[0])*X);
 	memcpy(local_yoko, sum_yoko, sizeof(local_yoko[0])*X);
 	memcpy(local_name, sum_name, sizeof(local_name[0])*2);
-	memcpy(local_dned, dned, sizeof(local_dned[0])*Ceilings);
+	dned_cp_array(local_dned, dned_def);
+	*local_maxValueInDned=maxValueInDned;
+	*local_dned_first=dned_first;
 
 	return;
 }
 
-void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], unsigned char local_dned[Ceilings])
+void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], struct dned_part *local_dned, struct dned_part *dned_localdef, signed short int local_maxValueInDned, struct dned_part *local_dned_first)
 {
 	memcpy(sum_tate, local_tate, sizeof(sum_tate[0])*X);
 	memcpy(sum_yoko, local_yoko, sizeof(sum_yoko[0])*X);
 	memcpy(sum_name, local_name, sizeof(sum_name[0])*2);
-	memcpy(dned, local_dned, sizeof(dned[0])*Ceilings);
+	dned_cp_array(dned_localdef, local_dned);
+	maxValueInDned=local_maxValueInDned;
+	dned_first=local_dned_first;
 
 	return;
 }

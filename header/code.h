@@ -2,6 +2,7 @@
 	#define CODE_INSIDE
 	#include "def.h"
 	#include "gmp.h"
+	#include "dned.h"
 	/*20130112*/
 	extern void follow(const signed short int);
 	extern signed short int find_next_j(signed short int*);
@@ -16,7 +17,7 @@
 		struct tcode_linear_list* next;
 	};
 	extern struct tcode_linear_list *proper_ms;
-	extern unsigned char* dned;
+	extern struct dned_part *dned;
 	extern signed short int *sum_tate, *sum_yoko, *sum_name;
 
 	struct tcode_linear_list* tcode_linear_list_get_new_entry();
