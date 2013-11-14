@@ -11,7 +11,7 @@
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
 signed short int** tcode;
-struct dned_part *dned, *dned_def, *dned_first, *alllocal_dned;
+struct dned_part *dned, *dned_global_def, *alllocal_dned;
 signed short int *sum_tate, *sum_yoko, *sum_name;
 
 #define if_name0(s) (s.x==s.y ? True:False)
@@ -19,15 +19,17 @@ signed short int *sum_tate, *sum_yoko, *sum_name;
 
 short int follow_chain(int m);
 int grope4initialValueOfLove(signed short int m);
-void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], struct dned_part *local_dned, signed short int *local_maxValueInDned, struct dned_part **local_dned_first);
-void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], struct dned_part *local_dned, struct dned_part *dned_localdef, signed short int local_maxValueInDned, struct dned_part *local_dned_first);
+void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], signed short int *local_maxValueInDned);
+void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], signed short int local_maxValueInDned);
 void settcodeval(signed short int i, signed short int m);
 
 void follow(const signed short int m)
 {
 	signed short int i=-1;
 	signed short int local_tate[X], local_yoko[X], local_name[2], local_maxValueInDned;
-	struct dned_part *local_dned, *dned_localdef, *local_dned_first;
+	struct dned_part *dned_local_initial_locate=dned;
+	struct dned_part *dned_local_significant_value, *dned_local_value_significant_def_locate;
+	struct dned_part *dned_local=dned;
 
 	dprintf("Entering #%d\n", m);
 
@@ -37,26 +39,23 @@ void follow(const signed short int m)
 		return;	/*Don't forget!!!*/
 	}
 
-	/* local_dned is to save parent's dned values.
-	   dned_localdef is proxy for dned (not to change dned pointing). */
-	local_dned=alllocal_dned+m*Ceilings;
-	dned_localdef=dned_first;
-
 	/*There used to be unfolded storetynd here.*/
-	storetynd(local_tate, local_yoko, local_name, local_dned, &local_maxValueInDned, &local_dned_first);
+	storetynd(local_tate, local_yoko, local_name, &local_maxValueInDned);
 
 	i=grope4initialValueOfLove(m)+1;
 	if(i>maxValueInDned)
 		return;
 	else
-		while(dned_localdef->num<i)
-			dned_localdef=dned_localdef->next;
+		while(dned_local->num<i)
+			dned_local=dned_local->next;
+
+	dned_local_significant_value=alllocal_dned+m*Ceilings;
+	dned_cp(dned_local_significant_value, dned_local);
+	dned_local_value_significant_def_locate=dned_local;
 
 	do{
-		dned=usedned_symbolic(dned_localdef);
-		/*if(dned->prior)
-			dned=dned->next;*/
-		i=dned_localdef->num;
+		usedned_symbolic(dned_local);
+		i=dned_local->num;
 		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i, chain[m].x, chain[m].y);
 		tcode[chain[m].x][chain[m].y]=i;
 
@@ -77,7 +76,7 @@ void follow(const signed short int m)
 				break;
 		}
 
-		if(isitconsist(sum_tate[chain[m].x]) &&	isitconsist(sum_yoko[chain[m].y]) && ((if_name0(chain[m])) ? isitconsist(sum_name[0]):True) && ((if_name1(chain[m])) ? isitconsist(sum_name[1]):True)){
+		if(isitconsist(sum_tate[chain[m].x]) && isitconsist(sum_yoko[chain[m].y]) && ((if_name0(chain[m])) ? isitconsist(sum_name[0]):True) && ((if_name1(chain[m])) ? isitconsist(sum_name[1]):True)){
 			if(m<chaincont-1)
 				follow(m+1);
 			else{
@@ -99,9 +98,13 @@ ncot:
 		/*There used to be unfolded restoretynd here.*/
 		dprintf("Restoring\n");
 		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
-		restoretynd(local_tate, local_yoko, local_name, local_dned, dned, local_maxValueInDned, local_dned_first);
-	}while((dned_localdef=dned_localdef->next));
-	restoretynd(local_tate, local_yoko, local_name, local_dned, dned, local_maxValueInDned, local_dned_first);
+		restoretynd(local_tate, local_yoko, local_name, local_maxValueInDned);
+		dned=dned_local_initial_locate;
+	}while((dned_local=dned_local->next));
+
+	dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);
+	dned=dned_local_initial_locate;
+
 	dprintf("Leaving from #%d\n", m);
 	return;
 }
@@ -181,26 +184,22 @@ int grope4initialValueOfLove(signed short int m)
 #endif
 }
 
-void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], struct dned_part *local_dned, signed short int *local_maxValueInDned, struct dned_part **local_dned_first)
+void storetynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], signed short int *local_maxValueInDned)
 {
 	memcpy(local_tate, sum_tate, sizeof(local_tate[0])*X);
 	memcpy(local_yoko, sum_yoko, sizeof(local_yoko[0])*X);
 	memcpy(local_name, sum_name, sizeof(local_name[0])*2);
-	dned_cp_array(local_dned, dned_def);
 	*local_maxValueInDned=maxValueInDned;
-	*local_dned_first=dned_first;
 
 	return;
 }
 
-void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], struct dned_part *local_dned, struct dned_part *dned_localdef, signed short int local_maxValueInDned, struct dned_part *local_dned_first)
+void restoretynd(signed short int local_tate[X], signed short int local_yoko[X], signed short int local_name[X], signed short int local_maxValueInDned)
 {
 	memcpy(sum_tate, local_tate, sizeof(sum_tate[0])*X);
 	memcpy(sum_yoko, local_yoko, sizeof(sum_yoko[0])*X);
 	memcpy(sum_name, local_name, sizeof(sum_name[0])*2);
-	dned_cp_array(dned_localdef, local_dned);
 	maxValueInDned=local_maxValueInDned;
-	dned_first=local_dned_first;
 
 	return;
 }

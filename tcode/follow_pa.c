@@ -8,12 +8,14 @@ signed short int dned_tosend[Ceilings];
 void follow_pa(const signed short int m)
 {
 	int tosend;
+	int dned_len;
 	unsigned char contflag;
 	double start_tmp_wtime, end_tmp_wtime;
 	double end_idle_wtime;
 
 	if(!commrank){
 		memset(dned_tosend, 0, sizeof(signed short int)*Ceilings);
+		dned_len=dned_probe_length(dned);
 		dned_num_serialize(dned_tosend, dned);
 
 		start_tmp_wtime=MPI_Wtime();
@@ -24,10 +26,12 @@ void follow_pa(const signed short int m)
 		MPI_Send(&contflag, 1, MPI_UNSIGNED_CHAR, tosend, 1, MPI_COMM_WORLD);
 
 		MPI_Send(tcode_as_1dim, X*X, MPI_SHORT, tosend,	0, MPI_COMM_WORLD);
-		MPI_Send(dned_tosend, Ceilings, MPI_SHORT, tosend, 0, MPI_COMM_WORLD);
 		MPI_Send(sum_tate, X, MPI_SHORT, tosend, 0, MPI_COMM_WORLD);
 		MPI_Send(sum_yoko, X, MPI_SHORT, tosend, 0, MPI_COMM_WORLD);
 		MPI_Send(sum_name, 2, MPI_SHORT, tosend, 0, MPI_COMM_WORLD);
+		MPI_Send(&dned_len, 1, MPI_INT, tosend, 0, MPI_COMM_WORLD);
+		if(dned_len)
+			MPI_Send(dned_tosend, Ceilings, MPI_SHORT, tosend, 0, MPI_COMM_WORLD);
 		end_tmp_wtime=MPI_Wtime();
 
 		wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
@@ -43,10 +47,12 @@ void follow_pa(const signed short int m)
 				break;
 
 			MPI_Recv(tcode_as_1dim, X*X, MPI_SHORT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			MPI_Recv(dned_tosend, Ceilings, MPI_SHORT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			MPI_Recv(sum_tate, X, MPI_SHORT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			MPI_Recv(sum_yoko, X, MPI_SHORT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			MPI_Recv(sum_name, 2, MPI_SHORT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Recv(&dned_len, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			if(dned_len)
+				MPI_Recv(dned_tosend, Ceilings, MPI_SHORT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			end_tmp_wtime=MPI_Wtime();
 
 			wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);

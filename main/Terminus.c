@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 	free(sum_tate);
 	free(sum_yoko);
 	free(sum_name);
-	dned_free(dned_def);
+	dned_free(dned_global_def);
 	dned_free(alllocal_dned);
 
 	#ifdef PF
@@ -168,10 +168,9 @@ void initialization_before_follow()
 	sum_name=(signed short int*)malloc(sizeof(signed short int)*2);
 	assert(sum_name);
 
-	dned=dned_def=dned_alloc();
+	dned=dned_global_def=dned_alloc();
 	assert(dned);
 	dned_subst_normal_value(dned);
-	dned_first=dned;
 	maxValueInDned=Ceilings;
 	
 	alllocal_dned=(struct dned_part*)malloc(chaincont*Ceilings*sizeof(struct dned_part));

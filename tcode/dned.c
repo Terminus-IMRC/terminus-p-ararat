@@ -73,34 +73,43 @@ void dned_free(struct dned_part *parts)
 
 struct dned_part* dned_whereis_num(signed short tofind, struct dned_part *start)
 {
+#if 0
 	while(start->num!=tofind){
 		if(!start->next)
 			return NULL;
 		start=start->next;
 	}
 	return start;
+#else
+	while(start){
+		if(start->num==tofind)
+			return start;
+		start=start->next;
+	}
+	return NULL;
+#endif
 }
 
 /* TODO: Be void and the argument would be struct dned_part **parts :) */
-struct dned_part* usedned_symbolic(struct dned_part *parts)
+void usedned_symbolic(struct dned_part *parts)
 {
 	if(!parts->prior){
 		if(parts->next){
 			parts->next->prior=NULL;
-			dned_first=parts->next;
-			return parts->next;
+			/*dned=parts->next;*/
+			dned=dned->next;
 		}
 		else
-			return NULL;
+			dned=NULL;
 	}else if(!parts->next){
 		parts->prior->next=NULL;
 		maxValueInDned=parts->prior->num;
 	}else{
-		parts->prior->next=dned->next;
-		dned->next->prior=dned->prior;
+		parts->prior->next=parts->next;
+		parts->next->prior=parts->prior;
 	}
 	
-	return parts;
+	return;
 }
 
 /* Of cource, the number of tostore elements must be equal or more than the number of parts elements.
@@ -126,4 +135,16 @@ void dned_num_serialize(signed short int tostore[Ceilings], struct dned_part *pa
 #endif
 
 	return;
+}
+
+int dned_probe_length(struct dned_part* parts)
+{
+	int i=0;
+
+	while(parts){
+		i++;
+		parts=parts->next;
+	}
+
+	return i;
 }
