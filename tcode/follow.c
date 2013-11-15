@@ -42,7 +42,7 @@ void follow(const signed short int m)
 	/*There used to be unfolded storetynd here.*/
 	storetynd(local_tate, local_yoko, local_name, &local_maxValueInDned);
 
-	i=grope4initialValueOfLove(m)+1;
+	i=grope4initialValueOfLove(m);
 	if(i>maxValueInDned)
 		return;
 	else
@@ -50,8 +50,8 @@ void follow(const signed short int m)
 			dned_local=dned_local->next;
 
 	dned_local_significant_value=alllocal_dned+m*Ceilings;
-	dned_cp(dned_local_significant_value, dned_local);
 	dned_local_value_significant_def_locate=dned_local;
+	dned_cp(dned_local_significant_value, dned_local_value_significant_def_locate);
 
 	do{
 		usedned_symbolic(dned_local);
@@ -99,7 +99,8 @@ ncot:
 		dprintf("Restoring\n");
 		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
 		restoretynd(local_tate, local_yoko, local_name, local_maxValueInDned);
-		dned=dned_local_initial_locate;
+		/*dned=dned_local_initial_locate;*/
+		dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
 
 	dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);
@@ -171,9 +172,9 @@ int grope4initialValueOfLove(signed short int m)
 	else if((chain[m].x==0) && (chain[m].y==X-1))
 		return tcode[X-1][0];
 	else if((chain[m].x==0) && (chain[m].y==0))
-		return 0;/*Ceilings/2+1;*/
+		return 1;/*Ceilings/2+1;*/
 	else
-		return 0;
+		return 1;
 #elif 0
 	if(((chain[m].x==X-1) && (chain[m].y==0)) || ((chain[m].x==X-1) && (chain[m].y==X-1)))
 		return tcode[0][0];
