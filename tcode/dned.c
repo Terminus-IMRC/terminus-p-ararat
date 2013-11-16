@@ -47,6 +47,8 @@ void dned_subst_particular_value(signed short int *tosubst, struct dned_part *pa
 
 void dned_cp(struct dned_part *dest, struct dned_part *src)
 {
+	assert(dest);
+	assert(src);
 	do{
 		memcpy(dest, src, sizeof(struct dned_part));
 		dest=dest->next;
@@ -95,6 +97,8 @@ void usedned_symbolic(struct dned_part *parts)
 {
 	if(!parts->prior){
 		if(parts->next){
+			fprintf(stderr, "parts:%p dned:%p\n", parts, dned);
+			fprintf(stderr, "parts->num:%d dned->num:%d\n", parts->num, dned->num);
 			assert(parts->num == dned->num);
 			parts->next->prior=NULL;
 			/*dned=parts->next;*/
