@@ -7,21 +7,33 @@ signed short int maxValueInDned;
 
 struct dned_part* dned_alloc()
 {
-	int i;
 	struct dned_part *toret;
 	
 	toret=(struct dned_part*)malloc(Ceilings*sizeof(struct dned_part));
+	assert(toret);
+
+	dned_set_proper_pointer(&toret);
+
+	return toret;
+}
+
+void dned_set_proper_pointer(struct dned_part **toret)
+{
+	int i;
 
 	for(i=1; i<Ceilings-1; i++){
-		toret[i].prior=toret+(i-1);
-		toret[i].next=toret+(i+1);
+		*toret[i].prior=*toret+(i-1);
+		*toret[i].self=*toret+i;
+		*toret[i].next=*toret+(i+1);
 	}
-	toret[0].prior=NULL;
-	toret[0].next=toret+1;
-	toret[Ceilings-1].prior=toret+((Ceilings-1)-1);
-	toret[Ceilings-1].next=NULL;
+	*toret[0].prior=NULL;
+	*toret[0].self=*toret;
+	*toret[0].next=*toret+1;
+	*toret[Ceilings-1].prior=*toret+((Ceilings-1)-1);
+	*toret[Ceilings-1].self=*toret+(Ceilings-1);
+	*toret[Ceilings-1].next=NULL;
 	
-	return toret;
+	return;
 }
 
 void dned_subst_normal_value(struct dned_part *parts)
@@ -47,11 +59,9 @@ void dned_subst_particular_value(signed short int *tosubst, struct dned_part *pa
 
 void dned_cp(struct dned_part *dest, struct dned_part *src)
 {
-	do{
-		memcpy(dest, src, sizeof(struct dned_part));
-		dest=dest->next;
-		src=src->next;
-	}while(src);
+	for(; src; dest=dest->next, src=src->next)
+		dest->num=src->num;
+
 	return;
 }
 
@@ -96,7 +106,6 @@ void usedned_symbolic(struct dned_part *parts)
 	if(!parts->prior){
 		if(parts->next){
 			parts->next->prior=NULL;
-			/*dned=parts->next;*/
 			dned=dned->next;
 		}
 		else

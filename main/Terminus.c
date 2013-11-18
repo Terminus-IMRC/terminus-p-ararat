@@ -173,8 +173,10 @@ void initialization_before_follow()
 	dned_subst_normal_value(dned);
 	maxValueInDned=Ceilings;
 	
-	alllocal_dned=(struct dned_part*)malloc(chaincont*Ceilings*sizeof(struct dned_part));
+	alllocal_dned=(struct dned_part*)malloc(sizeof(struct dned_part)*Ceilings*chaincont);
 	assert(alllocal_dned);
+	for(i=0; i<Ceilings; i++)
+		dned_set_proper_pointer(&alllocal_dned+i*Ceilings);
 
 	#ifdef PF
 	proper_ms=proper_ms_def=tcode_linear_list_get_new_entry();
