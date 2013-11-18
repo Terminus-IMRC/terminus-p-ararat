@@ -105,6 +105,9 @@ void usedned_symbolic(struct dned_part *parts)
 {
 	if(!parts->prior){
 		if(parts->next){
+			fprintf(stderr, "parts:%p dned:%p\n", parts, dned);
+			fprintf(stderr, "parts->num:%d dned->num:%d\n", parts->num, dned->num);
+			assert(parts->num == dned->num);
 			parts->next->prior=NULL;
 			dned=dned->next;
 		}
@@ -148,12 +151,12 @@ void dned_num_serialize(signed short int tostore[Ceilings], struct dned_part *pa
 
 int dned_probe_length(struct dned_part* parts)
 {
-	int i=0;
+	int cnt=0;
 
 	while(parts){
-		i++;
+		cnt++;
 		parts=parts->next;
 	}
 
-	return i;
+	return cnt;
 }

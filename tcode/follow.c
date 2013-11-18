@@ -6,6 +6,7 @@
 #include "code.h"
 #include "parallel.h"
 #include "dned.h"
+#include <assert.h>
 
 #define isitconsist(m) (((m>0)&&(m<=OneLine)) ? True:False)
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
@@ -28,7 +29,7 @@ void follow(const signed short int m)
 	signed short int i=-1;
 	signed short int local_tate[X], local_yoko[X], local_name[2], local_maxValueInDned;
 	struct dned_part *dned_local_initial_locate=dned;
-	struct dned_part *dned_local_significant_value, *dned_local_value_significant_def_locate;
+	struct dned_part dned_local_significant_value[Ceilings], *dned_local_value_significant_def_locate;
 	struct dned_part *dned_local=dned;
 
 	dprintf("Entering #%d\n", m);
@@ -42,20 +43,20 @@ void follow(const signed short int m)
 	/*There used to be unfolded storetynd here.*/
 	storetynd(local_tate, local_yoko, local_name, &local_maxValueInDned);
 
-	/*i=grope4initialValueOfLove(m);
+	i=grope4initialValueOfLove(m);
 	if(i>maxValueInDned)
 		return;
 	else
 		while(dned_local->num<i)
-			dned_local=dned_local->next;*/
+			dned_local=dned_local->next;
 
 	dned_local_significant_value=alllocal_dned+m*Ceilings;
 	dned_local_value_significant_def_locate=dned_local;
 	dned_cp(dned_local_significant_value, dned_local_value_significant_def_locate);
 
 	do{
-		usedned_symbolic(dned_local);
 		i=dned_local->num;
+		usedned_symbolic(dned_local);
 		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i, chain[m].x, chain[m].y);
 		tcode[chain[m].x][chain[m].y]=i;
 
@@ -69,6 +70,7 @@ void follow(const signed short int m)
 				goto ncot;
 				break;
 			case 2:
+				assert(!"Please do not use this now.");
 				return;
 				break;
 			default:
@@ -99,7 +101,7 @@ ncot:
 		dprintf("Restoring\n");
 		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
 		restoretynd(local_tate, local_yoko, local_name, local_maxValueInDned);
-		/*dned=dned_local_initial_locate;*/
+		dned=dned_local_initial_locate;
 		dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
 
@@ -145,7 +147,8 @@ short int follow_chain(int m)
 			return 2;
 #endif
 
-		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;
+		/*tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;*/
+		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=located->num;
 		usedned_symbolic(located);
 		sum_tate[chain[m].toafill[i].x]+=tobes;
 		sum_yoko[chain[m].toafill[i].y]+=tobes;
@@ -164,7 +167,7 @@ short int follow_chain(int m)
 
 int grope4initialValueOfLove(signed short int m)
 {
-#if 1
+#if 0
 	/*TODO: is it code[][]+1 or code[][]?*/
 
 	if(((chain[m].x==X-1) && (chain[m].y==0)) || ((chain[m].x==X-1) && (chain[m].y==X-1)))
@@ -179,9 +182,9 @@ int grope4initialValueOfLove(signed short int m)
 	if(((chain[m].x==X-1) && (chain[m].y==0)) || ((chain[m].x==X-1) && (chain[m].y==X-1)))
 		return tcode[0][0];
 	else
-		return 0;
+		return 1;
 #else
-	return 0;
+	return m-m+1;
 #endif
 }
 
