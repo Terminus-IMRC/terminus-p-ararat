@@ -6,11 +6,11 @@
 		struct dned_part *self;
 	};
 	
-	extern struct dned_part *dned, *dned_global_def, *alllocal_dned;
+	extern struct dned_part *dned, *dned_global_def, **alllocal_dned;
 	extern signed short int maxValueInDned;
 
 	struct dned_part* dned_alloc();
-	void dned_set_proper_pointer(struct dned_part **toret);
+	void dned_set_proper_pointer(struct dned_part *toret);
 	void dned_subst_normal_value(struct dned_part *parts);
 	void dned_subst_particular_value(signed short int *tosubst, struct dned_part *parts);
 	void dned_cp(struct dned_part *dest, struct dned_part *src);

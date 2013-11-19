@@ -12,7 +12,7 @@
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
 signed short int** tcode;
-struct dned_part *dned, *dned_global_def, *alllocal_dned;
+struct dned_part *dned, *dned_global_def, **alllocal_dned;
 signed short int *sum_tate, *sum_yoko, *sum_name;
 
 #define if_name0(s) (s.x==s.y ? True:False)
@@ -29,7 +29,7 @@ void follow(const signed short int m)
 	signed short int i=-1;
 	signed short int local_tate[X], local_yoko[X], local_name[2], local_maxValueInDned;
 	struct dned_part *dned_local_initial_locate=dned;
-	struct dned_part dned_local_significant_value[Ceilings], *dned_local_value_significant_def_locate;
+	struct dned_part *dned_local_significant_value, *dned_local_value_significant_def_locate;
 	struct dned_part *dned_local=dned;
 
 	dprintf("Entering #%d\n", m);
@@ -50,7 +50,7 @@ void follow(const signed short int m)
 		while(dned_local->num<i)
 			dned_local=dned_local->next;
 
-	dned_local_significant_value=alllocal_dned+m*Ceilings;
+	dned_local_significant_value=alllocal_dned[m];
 	dned_local_value_significant_def_locate=dned_local;
 	dned_cp(dned_local_significant_value, dned_local_value_significant_def_locate);
 

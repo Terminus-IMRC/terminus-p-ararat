@@ -89,7 +89,9 @@ int main(int argc, char* argv[])
 	free(sum_yoko);
 	free(sum_name);
 	dned_free(dned_global_def);
-	dned_free(alllocal_dned);
+	for(i=1; i<chaincont; i++)
+		dned_free(alllocal_dned[i]);
+	free(alllocal_dned);
 
 	#ifdef PF
 	if(commrank){	/* Master is only to make candidates. */
@@ -173,10 +175,10 @@ void initialization_before_follow()
 	dned_subst_normal_value(dned);
 	maxValueInDned=Ceilings;
 	
-	alllocal_dned=(struct dned_part*)malloc(sizeof(struct dned_part)*Ceilings*chaincont);
+	alllocal_dned=(struct dned_part**)malloc(sizeof(struct dned_part*)*chaincont);
 	assert(alllocal_dned);
-	for(i=0; i<Ceilings; i++)
-		dned_set_proper_pointer(&alllocal_dned+i*Ceilings);
+	for(i=0; i<chaincont; i++)
+		alllocal_dned[i]=dned_alloc();
 
 	#ifdef PF
 	proper_ms=proper_ms_def=tcode_linear_list_get_new_entry();

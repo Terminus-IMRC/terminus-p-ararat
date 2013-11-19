@@ -12,27 +12,42 @@ struct dned_part* dned_alloc()
 	toret=(struct dned_part*)malloc(Ceilings*sizeof(struct dned_part));
 	assert(toret);
 
-	dned_set_proper_pointer(&toret);
+	dned_set_proper_pointer(toret);
 
 	return toret;
 }
 
-void dned_set_proper_pointer(struct dned_part **toret)
+void dned_set_proper_pointer(struct dned_part *toret)
 {
 	int i;
 
 	for(i=1; i<Ceilings-1; i++){
-		*toret[i].prior=*toret+(i-1);
-		*toret[i].self=*toret+i;
-		*toret[i].next=*toret+(i+1);
+#if 0
+		(*toret)[i].prior=(*toret)+(i-1);
+		(*toret)[i].self=(*toret)+i;
+		(*toret)[i].next=(*toret)+(i+1);
+#else
+		toret[i].prior=toret+(i-1);
+		toret[i].self=toret+i;
+		toret[i].next=toret+(i+1);
+#endif
 	}
-	*toret[0].prior=NULL;
-	*toret[0].self=*toret;
-	*toret[0].next=*toret+1;
-	*toret[Ceilings-1].prior=*toret+((Ceilings-1)-1);
-	*toret[Ceilings-1].self=*toret+(Ceilings-1);
-	*toret[Ceilings-1].next=NULL;
-	
+#if 0
+	(*toret)[0].prior=NULL;
+	(*toret)[0].self=*toret;
+	(*toret)[0].next=(*toret)+1;
+	(*toret)[Ceilings-1].prior=(*toret)+((Ceilings-1)-1);
+	(*toret)[Ceilings-1].self=(*toret)+(Ceilings-1);
+	(*toret)[Ceilings-1].next=NULL;
+#else
+	toret[0].prior=NULL;
+	toret[0].self=toret;
+	toret[0].next=toret+1;
+	toret[Ceilings-1].prior=toret+((Ceilings-1)-1);
+	toret[Ceilings-1].self=toret+(Ceilings-1);
+	toret[Ceilings-1].next=NULL;
+#endif
+
 	return;
 }
 
