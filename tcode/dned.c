@@ -7,19 +7,11 @@ signed short int maxValueInDned;
 
 struct dned_part* dned_alloc()
 {
+	int i;
 	struct dned_part *toret;
 	
 	toret=(struct dned_part*)malloc(Ceilings*sizeof(struct dned_part));
 	assert(toret);
-
-	dned_set_proper_pointer(toret);
-
-	return toret;
-}
-
-void dned_set_proper_pointer(struct dned_part *toret)
-{
-	int i;
 
 	for(i=1; i<Ceilings-1; i++){
 #if 0
@@ -48,7 +40,7 @@ void dned_set_proper_pointer(struct dned_part *toret)
 	toret[Ceilings-1].next=NULL;
 #endif
 
-	return;
+	return toret;
 }
 
 void dned_subst_normal_value(struct dned_part *parts)
