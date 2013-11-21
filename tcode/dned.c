@@ -60,6 +60,7 @@ void dned_subst_particular_value(signed short int *tosubst, struct dned_part *pa
 
 	for(i=0; tosubst[i]!=0; i++)
 		parts[i].num=tosubst[i];
+	parts[i-1].next=NULL;
 
 	return;
 }
@@ -100,7 +101,7 @@ struct dned_part* dned_whereis_num(signed short tofind, struct dned_part *start)
 #else
 	while(start){
 		if(start->num==tofind)
-			return start;
+			return start->self;
 		start=start->next;
 	}
 	return NULL;

@@ -149,7 +149,7 @@ short int follow_chain(int m)
 
 		/*tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;*/
 		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=located->num;
-		usedned_symbolic(located);
+		usedned_symbolic(located->self);
 		sum_tate[chain[m].toafill[i].x]+=tobes;
 		sum_yoko[chain[m].toafill[i].y]+=tobes;
 		if(if_name0(chain[m].toafill[i]))
