@@ -46,3 +46,5 @@ TOCLEAN-OUTPUTS+=res*.txt tim*.txt out*.txt wcr*.txt efl*.txt icr*.txt
 PROC?=2
 run:	$(PROG)
 	mpiexec -n $(PROC) ./$<
+vtdrun: $(PROG)
+	mpiexec -n $(PROC) openvt -s gdb ./$<
