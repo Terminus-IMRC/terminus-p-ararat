@@ -5,42 +5,37 @@
 
 signed short int maxValueInDned;
 
-struct dned_part* dned_alloc()
+static struct dned_part* dned_alloc_internal(int elem)
 {
 	int i;
 	struct dned_part *toret;
 	
-	toret=(struct dned_part*)malloc(Ceilings*sizeof(struct dned_part));
+	toret=(struct dned_part*)malloc(elem*sizeof(struct dned_part));
 	assert(toret);
 
-	for(i=1; i<Ceilings-1; i++){
-#if 0
-		(*toret)[i].prior=(*toret)+(i-1);
-		(*toret)[i].self=(*toret)+i;
-		(*toret)[i].next=(*toret)+(i+1);
-#else
+	for(i=1; i<elem-1; i++){
 		toret[i].prior=toret+(i-1);
 		toret[i].self=toret+i;
 		toret[i].next=toret+(i+1);
-#endif
 	}
-#if 0
-	(*toret)[0].prior=NULL;
-	(*toret)[0].self=*toret;
-	(*toret)[0].next=(*toret)+1;
-	(*toret)[Ceilings-1].prior=(*toret)+((Ceilings-1)-1);
-	(*toret)[Ceilings-1].self=(*toret)+(Ceilings-1);
-	(*toret)[Ceilings-1].next=NULL;
-#else
 	toret[0].prior=NULL;
 	toret[0].self=toret;
 	toret[0].next=toret+1;
-	toret[Ceilings-1].prior=toret+((Ceilings-1)-1);
-	toret[Ceilings-1].self=toret+(Ceilings-1);
-	toret[Ceilings-1].next=NULL;
-#endif
+	toret[elem-1].prior=toret+((elem-1)-1);
+	toret[elem-1].self=toret+(elem-1);
+	toret[elem-1].next=NULL;
 
 	return toret;
+}
+
+struct dned_part* dned_alloc()
+{
+	return dned_alloc_internal(Ceilings);
+}
+
+dned_entire dned_entire_alloc()
+{
+	return dned_alloc_internal(chaincont);
 }
 
 void dned_subst_normal_value(struct dned_part *parts)
@@ -69,6 +64,38 @@ void dned_cp(struct dned_part *dest, struct dned_part *src)
 {
 	for(; src; dest=dest->next, src=src->next)
 		dest->num=src->num;
+
+	return;
+}
+
+void dned_store_entire(dned_entire dest, struct dned_part *src)
+{
+	int i;
+
+	/* Not to mind i<chaincont because the length of src is unknown. */
+	for(i=0; src; src=src->next, i++){
+		assert(i<chaincont);
+		dest[i]->num=src->num;
+		dest[i]->prior=src->prior;
+		dest[i]->next=src->next;
+		dest[i]->self=src->self;
+	}
+
+	return;
+}
+
+void dned_restore_entire(struct dned_part *dest, dned_entire src)
+{
+	int i;
+
+	/* Not to mind src because the length of src is unknown. */
+	for(i=0; src[i]->next; dest=dest->next, i++){
+		assert(i<chaincont);
+		dest->num=src[i]->num;
+		dest->prior=src[i]->prior;
+		dest->next=src[i]->next;
+		dest->self=src[i]->self;
+	}
 
 	return;
 }
@@ -122,9 +149,13 @@ void usedned_symbolic(struct dned_part *parts)
 		else
 			dned=NULL;
 	}else if(!parts->next){
+		assert(NULL);
+		fprintf(stderr, "last\n");
 		parts->prior->next=NULL;
 		maxValueInDned=parts->prior->num;
 	}else{
+		assert(NULL);
+		fprintf(stderr, "norm\n");
 		parts->prior->next=parts->next;
 		parts->next->prior=parts->prior;
 	}

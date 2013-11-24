@@ -52,7 +52,7 @@ void follow(const signed short int m)
 
 	dned_local_significant_value=alllocal_dned[m];
 	dned_local_value_significant_def_locate=dned_local;
-	dned_cp(dned_local_significant_value, dned_local_value_significant_def_locate);
+	dned_cp_nirvana(dned_local_significant_value, dned_local_value_significant_def_locate);
 
 	do{
 		i=dned_local->num;
@@ -102,7 +102,7 @@ ncot:
 		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
 		restoretynd(local_tate, local_yoko, local_name, local_maxValueInDned);
 		dned=dned_local_initial_locate;
-		dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);
+		dned_cp_nirvana(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
 
 	dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);
