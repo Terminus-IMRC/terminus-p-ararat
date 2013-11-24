@@ -12,7 +12,8 @@
 #define isitpropernum(m) (((m>0) && (m<=Ceilings)) ? True:False)
 
 signed short int** tcode;
-struct dned_part *dned, *dned_global_def, **alllocal_dned;
+struct dned_part *dned, *dned_global_def;
+dned_entire **alllocal_dned_entire;
 signed short int *sum_tate, *sum_yoko, *sum_name;
 
 #define if_name0(s) (s.x==s.y ? True:False)
@@ -50,9 +51,9 @@ void follow(const signed short int m)
 		while(dned_local->num<i)
 			dned_local=dned_local->next;
 
-	dned_local_significant_value=alllocal_dned[m];
+	dned_local_significant_value=alllocal_dned_entire[m];
 	dned_local_value_significant_def_locate=dned_local;
-	dned_cp_nirvana(dned_local_significant_value, dned_local_value_significant_def_locate);
+	dned_cp_entire(dned_local_significant_value, dned_local_value_significant_def_locate);
 
 	do{
 		i=dned_local->num;
@@ -102,7 +103,7 @@ ncot:
 		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
 		restoretynd(local_tate, local_yoko, local_name, local_maxValueInDned);
 		dned=dned_local_initial_locate;
-		dned_cp_nirvana(dned_local_value_significant_def_locate, dned_local_significant_value);
+		dned_cp_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
 
 	dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);

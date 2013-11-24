@@ -7,7 +7,7 @@
 	};
 
 	/* The number of element must be chaincont. */
-	typedef struct *dned_part dned_entire;
+	typedef struct dned_part* dned_entire;
 
 	extern struct dned_part *dned, *dned_global_def, **alllocal_dned;
 	extern signed short int maxValueInDned;
