@@ -11,7 +11,7 @@ X?=4
 VALFLAGS_X=-DX=$(X)
 XNUM=.x
 
-N?=8
+N?=10
 VALFLAGS_N=-DN=$(N)
 NNUM=.n
 
