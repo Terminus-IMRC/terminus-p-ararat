@@ -90,8 +90,8 @@ int main(int argc, char* argv[])
 	free(sum_name);
 	dned_free(dned_global_def);
 	for(i=1; i<chaincont; i++)
-		dned_free(alllocal_dned[i]);
-	free(alllocal_dned);
+		dned_free(alllocal_dned_entire[i]);
+	free(alllocal_dned_entire);
 
 	#ifdef PF
 	if(commrank){	/* Master is only to make candidates. */
@@ -175,10 +175,10 @@ void initialization_before_follow()
 	dned_subst_normal_value(dned);
 	maxValueInDned=Ceilings;
 	
-	alllocal_dned=(struct dned_part**)malloc(sizeof(struct dned_part*)*chaincont);
-	assert(alllocal_dned);
+	alllocal_dned_entire=(dned_entire*)malloc(sizeof(dned_entire)*chaincont);
+	assert(alllocal_dned_entire);
 	for(i=0; i<chaincont; i++)
-		alllocal_dned[i]=dned_alloc();
+		alllocal_dned_entire[i]=dned_alloc();
 
 	#ifdef PF
 	proper_ms=proper_ms_def=tcode_linear_list_get_new_entry();

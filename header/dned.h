@@ -9,7 +9,8 @@
 	/* The number of element must be chaincont. */
 	typedef struct dned_part* dned_entire;
 
-	extern struct dned_part *dned, *dned_global_def, **alllocal_dned;
+	extern struct dned_part *dned, *dned_global_def;
+	dned_entire *alllocal_dned_entire;
 	extern signed short int maxValueInDned;
 
 	struct dned_part* dned_alloc();

@@ -74,11 +74,10 @@ void dned_store_entire(dned_entire dest, struct dned_part *src)
 
 	/* Not to mind i<chaincont because the length of src is unknown. */
 	for(i=0; src; src=src->next, i++){
-		assert(i<chaincont);
-		dest[i]->num=src->num;
-		dest[i]->prior=src->prior;
-		dest[i]->next=src->next;
-		dest[i]->self=src->self;
+		dest[i].num=src->num;
+		dest[i].prior=src->prior;
+		dest[i].next=src->next;
+		dest[i].self=src->self;
 	}
 
 	return;
@@ -89,12 +88,11 @@ void dned_restore_entire(struct dned_part *dest, dned_entire src)
 	int i;
 
 	/* Not to mind src because the length of src is unknown. */
-	for(i=0; src[i]->next; dest=dest->next, i++){
-		assert(i<chaincont);
-		dest->num=src[i]->num;
-		dest->prior=src[i]->prior;
-		dest->next=src[i]->next;
-		dest->self=src[i]->self;
+	for(i=0; src[i].next; dest=dest->next, i++){
+		dest->num=src[i].num;
+		dest->prior=src[i].prior;
+		dest->next=src[i].next;
+		dest->self=src[i].self;
 	}
 
 	return;
@@ -140,8 +138,8 @@ void usedned_symbolic(struct dned_part *parts)
 {
 	if(!parts->prior){
 		if(parts->next){
-			fprintf(stderr, "parts:%p dned:%p\n", parts, dned);
-			fprintf(stderr, "parts->num:%d dned->num:%d\n", parts->num, dned->num);
+			dprintf("parts:%p dned:%p\n", parts, dned);
+			dprintf("parts->num:%d dned->num:%d\n", parts->num, dned->num);
 			assert(parts->num == dned->num);
 			parts->next->prior=NULL;
 			dned=dned->next;
@@ -149,13 +147,9 @@ void usedned_symbolic(struct dned_part *parts)
 		else
 			dned=NULL;
 	}else if(!parts->next){
-		assert(NULL);
-		fprintf(stderr, "last\n");
 		parts->prior->next=NULL;
 		maxValueInDned=parts->prior->num;
 	}else{
-		assert(NULL);
-		fprintf(stderr, "norm\n");
 		parts->prior->next=parts->next;
 		parts->next->prior=parts->prior;
 	}

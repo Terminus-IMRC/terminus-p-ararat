@@ -13,7 +13,7 @@
 
 signed short int** tcode;
 struct dned_part *dned, *dned_global_def;
-dned_entire **alllocal_dned_entire;
+dned_entire *alllocal_dned_entire;
 signed short int *sum_tate, *sum_yoko, *sum_name;
 
 #define if_name0(s) (s.x==s.y ? True:False)
@@ -30,13 +30,14 @@ void follow(const signed short int m)
 	signed short int i=-1;
 	signed short int local_tate[X], local_yoko[X], local_name[2], local_maxValueInDned;
 	struct dned_part *dned_local_initial_locate=dned;
-	struct dned_part *dned_local_significant_value, *dned_local_value_significant_def_locate;
+	struct dned_part *dned_local_value_significant_def_locate;
+	dned_entire dned_local_significant_value;
 	struct dned_part *dned_local=dned;
 
 	dprintf("Entering #%d\n", m);
 
 	if((!commrank) && (m==N-1)){
-		dprintf("Now let master broadcast ms.\n");
+		printf("Now let master broadcast ms.\n");
 		follow_pa(m);
 		return;	/*Don't forget!!!*/
 	}
@@ -48,12 +49,12 @@ void follow(const signed short int m)
 	if(i>maxValueInDned)
 		return;
 	else
-		while(dned_local->num<i)
+		while(dned_local && dned_local->num<i)
 			dned_local=dned_local->next;
 
 	dned_local_significant_value=alllocal_dned_entire[m];
 	dned_local_value_significant_def_locate=dned_local;
-	dned_cp_entire(dned_local_significant_value, dned_local_value_significant_def_locate);
+	dned_store_entire(dned_local_significant_value, dned_local_value_significant_def_locate);
 
 	do{
 		i=dned_local->num;
@@ -103,7 +104,7 @@ ncot:
 		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
 		restoretynd(local_tate, local_yoko, local_name, local_maxValueInDned);
 		dned=dned_local_initial_locate;
-		dned_cp_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
+		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
 
 	dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);
