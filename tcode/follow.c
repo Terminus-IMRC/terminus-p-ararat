@@ -107,7 +107,7 @@ ncot:
 		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
 
-	dned_cp(dned_local_value_significant_def_locate, dned_local_significant_value);
+	dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	dned=dned_local_initial_locate;
 
 	dprintf("Leaving from #%d\n", m);
