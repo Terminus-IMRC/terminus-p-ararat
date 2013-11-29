@@ -45,12 +45,14 @@ void follow(const signed short int m)
 	/*There used to be unfolded storetynd here.*/
 	storetynd(local_tate, local_yoko, local_name, &local_maxValueInDned);
 
+	/*
 	i=grope4initialValueOfLove(m);
 	if(i>maxValueInDned)
 		return;
 	else
 		while(dned_local && dned_local->num<i)
 			dned_local=dned_local->next;
+	*/
 
 	dned_local_significant_value=alllocal_dned_entire[m];
 	dned_local_value_significant_def_locate=dned_local;

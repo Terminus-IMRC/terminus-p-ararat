@@ -178,7 +178,7 @@ void initialization_before_follow()
 	alllocal_dned_entire=(dned_entire*)malloc(sizeof(dned_entire)*chaincont);
 	assert(alllocal_dned_entire);
 	for(i=0; i<chaincont; i++)
-		alllocal_dned_entire[i]=dned_alloc();
+		alllocal_dned_entire[i]=dned_entire_alloc();
 
 	#ifdef PF
 	proper_ms=proper_ms_def=tcode_linear_list_get_new_entry();

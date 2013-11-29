@@ -75,9 +75,9 @@ void dned_store_entire(dned_entire dest, struct dned_part *src)
 	/* Not to mind i<chaincont because the length of src is unknown. */
 	for(i=0; src; src=src->next, i++){
 		dest[i].num=src->num;
-		dest[i].prior=src->prior;
-		dest[i].next=src->next;
-		dest[i].self=src->self;
+		dest[i].prior=src->prior?src->prior->self:NULL;
+		dest[i].next=src->next?src->next->self:NULL;
+		dest[i].self=src->self->self;
 	}
 
 	return;
@@ -88,12 +88,15 @@ void dned_restore_entire(struct dned_part *dest, dned_entire src)
 	int i;
 
 	/* Not to mind src because the length of src is unknown. */
-	for(i=0; src[i].next; dest=dest->next, i++){
+	i=-1;
+	do{
+		i++;
 		dest->num=src[i].num;
-		dest->prior=src[i].prior;
-		dest->next=src[i].next;
-		dest->self=src[i].self;
-	}
+		dest->prior=src[i].prior?src[i].prior->self:NULL;
+		dest->next=src[i].next?src[i].next->self:NULL;
+		dest->self=src[i].self->self;
+		dest=dest->next;
+	}while(dest);
 
 	return;
 }
