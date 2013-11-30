@@ -10,8 +10,11 @@ static struct dned_part* dned_alloc_internal(int elem)
 	int i;
 	struct dned_part *toret;
 	
+	pass();
 	toret=(struct dned_part*)malloc(elem*sizeof(struct dned_part));
+	pass();
 	assert(toret);
+	pass();
 
 	for(i=1; i<elem-1; i++){
 		toret[i].prior=toret+(i-1);
@@ -35,7 +38,9 @@ struct dned_part* dned_alloc()
 
 dned_entire dned_entire_alloc()
 {
-	return dned_alloc_internal(chaincont);
+	pass();
+	return dned_alloc_internal(Ceilings);
+	pass();
 }
 
 void dned_subst_normal_value(struct dned_part *parts)
@@ -112,6 +117,12 @@ void dned_cp_array(struct dned_part *dest, struct dned_part *src)
 }
 
 void dned_free(struct dned_part *parts)
+{
+	free(parts);
+	return;
+}
+
+void dned_entire_free(dned_entire parts)
 {
 	free(parts);
 	return;
@@ -195,4 +206,14 @@ int dned_probe_length(struct dned_part* parts)
 	}
 
 	return cnt;
+}
+
+void dned_print_chain(FILE *fp, struct dned_part* parts)
+{
+	do
+		fprintf(fp, "%p(%d)->", parts, parts->num);
+	while((parts=parts->next));
+	fprintf(fp, "(nil)\n");
+
+	return;
 }

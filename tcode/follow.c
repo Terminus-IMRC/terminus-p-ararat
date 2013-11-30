@@ -45,20 +45,21 @@ void follow(const signed short int m)
 	/*There used to be unfolded storetynd here.*/
 	storetynd(local_tate, local_yoko, local_name, &local_maxValueInDned);
 
-	/*
 	i=grope4initialValueOfLove(m);
 	if(i>maxValueInDned)
 		return;
 	else
 		while(dned_local && dned_local->num<i)
 			dned_local=dned_local->next;
-	*/
 
-	dned_local_significant_value=alllocal_dned_entire[m];
+	/*dned_local_significant_value=alllocal_dned_entire[m];*/
+	dned_local_significant_value=dned_entire_alloc();
 	dned_local_value_significant_def_locate=dned_local;
 	dned_store_entire(dned_local_significant_value, dned_local_value_significant_def_locate);
 
 	do{
+		assert(dned_local == dned_local->self);
+		dprintf("%d: %p<-%p(%d)->%p\n", m, dned_local->prior, dned_local, dned_local->num, dned_local->next);
 		i=dned_local->num;
 		usedned_symbolic(dned_local);
 		dprintf("Trying to subst i(%d) to tcode[%d][%d]\n", i, chain[m].x, chain[m].y);
@@ -66,6 +67,8 @@ void follow(const signed short int m)
 
 		/*There used to be unfolded settcodeval here.*/
 		settcodeval(i, m);
+
+		/*dned_print_chain(stdout, dned);*/
 
 		switch(follow_chain(m)){
 			case 0:
@@ -81,6 +84,8 @@ void follow(const signed short int m)
 				will_and_die("follow_chain did not returned 0, 1 or 2.", 1);
 				break;
 		}
+
+		/*dned_print_chain(stdout, dned);*/
 
 		if(isitconsist(sum_tate[chain[m].x]) && isitconsist(sum_yoko[chain[m].y]) && ((if_name0(chain[m])) ? isitconsist(sum_name[0]):True) && ((if_name1(chain[m])) ? isitconsist(sum_name[1]):True)){
 			if(m<chaincont-1)
@@ -111,6 +116,7 @@ ncot:
 
 	dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	dned=dned_local_initial_locate;
+	dned_entire_free(dned_local_significant_value);
 
 	dprintf("Leaving from #%d\n", m);
 	return;
@@ -140,9 +146,11 @@ short int follow_chain(int m)
 		}
 		located=dned_whereis_num(tobes, dned);
 		if(!located){
-			dprintf("TT: dned[tcode[%d][%d](%d)] is already in use.\n", chain[m].toafill[i][0], chain[m].toafill[i][1], tobes-1);
+			dprintf("TT: dned[tcode[%d][%d](%d)] is already in use.\n", chain[m].toafillroad[i][0], chain[m].toafillroad[i][1], tobes-1);
+			dprintf("%dc: %d is already in use.\n", m, tobes);
 			return 1;
 		}
+		assert(located->num == tobes);
 
 #if 0
 		if( ((chain[m].toafill[i].x==X-1) && (chain[m].toafill[i].y==X-1)) && (!(tobes>tcode[0][0])) )
@@ -151,8 +159,7 @@ short int follow_chain(int m)
 			return 2;
 #endif
 
-		/*tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;*/
-		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=located->num;
+		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;
 		usedned_symbolic(located->self);
 		sum_tate[chain[m].toafill[i].x]+=tobes;
 		sum_yoko[chain[m].toafill[i].y]+=tobes;

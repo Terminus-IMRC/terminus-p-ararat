@@ -21,10 +21,12 @@
 	void dned_cp(struct dned_part *dest, struct dned_part *src);
 	void dned_cp_array(struct dned_part *dest, struct dned_part *src);
 	void dned_free(struct dned_part *parts);
+	void dned_entire_free(dned_entire);
 	struct dned_part* dned_whereis_num(signed short int, struct dned_part*);
 	void usedned_symbolic(struct dned_part*);
 	void dned_num_serialize(signed short int tostore[Ceilings], struct dned_part *parts);
 	int dned_probe_length(struct dned_part*);
 	void dned_store_entire(dned_entire dest, struct dned_part *src);
 	void dned_restore_entire(struct dned_part *dest, dned_entire src);
+	void dned_print_chain(FILE*, struct dned_part*);
 #endif
