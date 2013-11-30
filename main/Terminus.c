@@ -46,6 +46,8 @@ int main(int argc, char* argv[])
 	FILE* nfp;
 	#endif
 
+	setbuf(stdout, NULL);
+
 	MPI_Init(&argc, &argv);
 
 	initialization_before_chain_main();
