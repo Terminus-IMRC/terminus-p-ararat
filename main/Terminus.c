@@ -96,14 +96,12 @@ int main(int argc, char* argv[])
 	free(alllocal_dned_entire);
 
 	#ifdef PF
-	if(commrank){	/* Master is only to make candidates. */
-		/* All of solved mses will be put into this file. */
-		sprintf(filename, "out%d.txt", commrank);
-		nfp=fopen(filename, "w");
-		tcode_linear_list_output_from_orig(nfp, proper_ms_def);
-		fclose(nfp);
-		tcode_linear_list_free_from_orig(proper_ms_def);
-	}
+	/* All of solved mses will be put into this file. */
+	sprintf(filename, "out%d.txt", commrank);
+	nfp=fopen(filename, "w");
+	tcode_linear_list_output_from_orig(nfp, proper_ms_def);
+	fclose(nfp);
+	tcode_linear_list_free_from_orig(proper_ms_def);
 	#endif
 
 	probe_len_and_gather_total();

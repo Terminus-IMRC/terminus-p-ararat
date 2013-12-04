@@ -208,7 +208,7 @@ int dned_probe_length(struct dned_part* parts)
 	return cnt;
 }
 
-void dned_print_chain(FILE *fp, struct dned_part* parts)
+void dned_print_chain(FILE *fp, struct dned_part *parts)
 {
 	do
 		fprintf(fp, "%p(%d)->", parts, parts->num);
@@ -216,4 +216,55 @@ void dned_print_chain(FILE *fp, struct dned_part* parts)
 	fprintf(fp, "(nil)\n");
 
 	return;
+}
+
+void dned_print_chain_full(FILE *fp, struct dned_part *parts)
+{
+	do{
+		if(!parts->prior)
+			fprintf(fp, "[^(nil)<-");
+		else
+			fprintf(fp, "[%d(%p)<-", parts->prior->num, parts->prior);
+		fprintf(fp, "%d(%p)->", parts->num, parts->self);
+		if(!parts->next)
+			fprintf(fp, "$(nil)]");
+		else
+			fprintf(fp, "%d(%p)]", parts->next->num, parts->next);
+	}while((parts=parts->next));
+
+	return;
+}
+
+void dned_print_chain_only_num(FILE *fp, struct dned_part *parts)
+{
+	do
+		fprintf(fp, "%d->", parts->num);
+	while((parts=parts->next));
+	fprintf(fp, "(nil)\n");
+
+	return;
+}
+
+void dned_print_chain_only_num_full(FILE *fp, struct dned_part *parts)
+{
+	do{
+		if(!parts->prior)
+			fprintf(fp, "[^<-");
+		else
+			fprintf(fp, "[%d<-", parts->prior->num);
+		fprintf(fp, "%d->", parts->num);
+		if(!parts->next)
+			fprintf(fp, "$]");
+		else
+			fprintf(fp, "%d]", parts->next->num);
+	}while((parts=parts->next));
+
+	return;
+}
+
+struct dned_part* dned_follow_to_last(struct dned_part *parts)
+{
+	while(parts->next)
+		parts=parts->next;
+	return parts->self;
 }

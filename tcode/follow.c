@@ -34,6 +34,8 @@ void follow(const signed short int m)
 	dned_entire dned_local_significant_value;
 	struct dned_part *dned_local=dned;
 
+	struct dned_part *dtmp;
+
 	dprintf("Entering #%d\n", m);
 
 	if((!commrank) && (m==N-1)){
@@ -44,20 +46,35 @@ void follow(const signed short int m)
 
 	/*There used to be unfolded storetynd here.*/
 	storetynd(local_tate, local_yoko, local_name, &local_maxValueInDned);
-
 	i=grope4initialValueOfLove(m);
-	if(i>maxValueInDned)
+	dtmp=dned_follow_to_last(dned_local);
+	dned_print_chain_only_num(stdout, dned);
+	printf("IF %d == %d ?\n", dtmp->num, maxValueInDned);
+	printf("m%-2d i%-2d mvid%-2d ", m, i, maxValueInDned);
+	fflush(stdout);
+	assert(dtmp->num == maxValueInDned);
+	if(maxValueInDned<i){
+		puts("ret$");
 		return;
-	else
-		while(dned_local && dned_local->num<i)
-			dned_local=dned_local->next;
+	}
+	while(dned_local){
+		printf("%d,", dned_local->num);
+		if(dned_local->num>=i)
+			break;
+		dned_local=dned_local->next;
+		assert(dned_local!=NULL);
+	}
+	puts("$");
+	/*If so, maxValueInDned is wrong.*/
+	assert(dned_local!=NULL);
 
-	/*dned_local_significant_value=alllocal_dned_entire[m];*/
-	dned_local_significant_value=dned_entire_alloc();
+	dned_local_significant_value=alllocal_dned_entire[m];
+	/*dned_local_significant_value=dned_entire_alloc();*/
 	dned_local_value_significant_def_locate=dned_local;
 	dned_store_entire(dned_local_significant_value, dned_local_value_significant_def_locate);
 
 	do{
+		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 		assert(dned_local == dned_local->self);
 		dprintf("%d: %p<-%p(%d)->%p\n", m, dned_local->prior, dned_local, dned_local->num, dned_local->next);
 		i=dned_local->num;
@@ -85,7 +102,8 @@ void follow(const signed short int m)
 				break;
 		}
 
-		/*dned_print_chain(stdout, dned);*/
+		fprintf(stdout, "\t(i%-2d mvid%-2d) ", i, maxValueInDned);
+		dned_print_chain_only_num_full(stdout, dned);
 
 		if(isitconsist(sum_tate[chain[m].x]) && isitconsist(sum_yoko[chain[m].y]) && ((if_name0(chain[m])) ? isitconsist(sum_name[0]):True) && ((if_name1(chain[m])) ? isitconsist(sum_name[1]):True)){
 			if(m<chaincont-1)
@@ -111,12 +129,11 @@ ncot:
 		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
 		restoretynd(local_tate, local_yoko, local_name, local_maxValueInDned);
 		dned=dned_local_initial_locate;
-		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
 
 	dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	dned=dned_local_initial_locate;
-	dned_entire_free(dned_local_significant_value);
+	/*dned_entire_free(dned_local_significant_value);*/
 
 	dprintf("Leaving from #%d\n", m);
 	return;
@@ -178,7 +195,7 @@ short int follow_chain(int m)
 
 int grope4initialValueOfLove(signed short int m)
 {
-#if 0
+#if 1
 	/*TODO: is it code[][]+1 or code[][]?*/
 
 	if(((chain[m].x==X-1) && (chain[m].y==0)) || ((chain[m].x==X-1) && (chain[m].y==X-1)))
