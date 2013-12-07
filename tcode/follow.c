@@ -44,6 +44,8 @@ void follow(const signed short int m)
 		return;	/*Don't forget!!!*/
 	}
 
+	assert(!dned_check_consistency(dned));
+
 	/*There used to be unfolded storetynd here.*/
 	storetynd(local_tate, local_yoko, local_name, &local_maxValueInDned);
 	i=grope4initialValueOfLove(m);
@@ -85,12 +87,16 @@ void follow(const signed short int m)
 		/*There used to be unfolded settcodeval here.*/
 		settcodeval(i, m);
 
-		/*dned_print_chain(stdout, dned);*/
+		dned_print_chain_only_num_full(stdout, dned);
+
+		printf("(i=%d) ", i);
 
 		switch(follow_chain(m)){
 			case 0:
+				puts("toafill succeeded.");
 				break;
 			case 1:
+				puts("toafill failed.");
 				goto ncot;
 				break;
 			case 2:
@@ -167,6 +173,7 @@ short int follow_chain(int m)
 			dprintf("%dc: %d is already in use.\n", m, tobes);
 			return 1;
 		}
+		located=located->self;
 		assert(located->num == tobes);
 
 #if 0

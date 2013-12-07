@@ -268,3 +268,23 @@ struct dned_part* dned_follow_to_last(struct dned_part *parts)
 		parts=parts->next;
 	return parts->self;
 }
+
+_Bool dned_check_consistency(struct dned_part *parts)
+{
+	do{
+		if(parts->prior){
+			if(parts->self!=parts->prior->next)
+				return 1;
+			if(parts->num<=parts->prior->num)
+				return 1;
+		}
+		if(parts->next){
+			if(parts->self!=parts->next->prior)
+				return 1;
+		}else
+			if(maxValueInDned!=parts->num)
+				return 1;
+	}while((parts=parts->next));
+
+	return 0;
+}

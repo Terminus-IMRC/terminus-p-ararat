@@ -33,4 +33,5 @@
 	struct dned_part* dned_follow_to_last(struct dned_part *parts);
 	void dned_print_chain_full(FILE *fp, struct dned_part *parts);
 	void dned_print_chain_only_num_full(FILE *fp, struct dned_part *parts);
+	_Bool dned_check_consistency(struct dned_part *parts);
 #endif
