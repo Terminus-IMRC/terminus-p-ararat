@@ -50,3 +50,5 @@ vtdrun: $(PROG)
 	mpiexec -n $(PROC) openvt -s gdb ./$<
 tmdrun: $(PROG)
 	mpiexec -n $(PROC) tmux new-win 'gdb ./$<'
+sub: $(PROG)
+	dqsub2 ./DEBUG_TERMINUS_terminus-p-ararat.sh
