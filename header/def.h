@@ -46,4 +46,5 @@
 	extern signed short int chaincont;
 	extern void pfCode(signed short int code[X][X]);
 	extern void will_and_die(const char*, const int);
+	extern void print_str_n_times(char *s, int n, FILE *fp);
 #endif

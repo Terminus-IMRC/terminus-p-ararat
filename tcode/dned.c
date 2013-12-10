@@ -4,6 +4,7 @@
 #include <assert.h>
 
 signed short int maxValueInDned;
+int dned_consist_error_at;
 
 static struct dned_part* dned_alloc_internal(int elem)
 {
@@ -164,6 +165,7 @@ void usedned_symbolic(struct dned_part *parts)
 		parts->prior->next=NULL;
 		maxValueInDned=parts->prior->num;
 	}else{
+		puts("usedned: passed middle parts");
 		parts->prior->next=parts->next;
 		parts->next->prior=parts->prior;
 	}
@@ -269,22 +271,69 @@ struct dned_part* dned_follow_to_last(struct dned_part *parts)
 	return parts->self;
 }
 
-_Bool dned_check_consistency(struct dned_part *parts)
+enum dned_consist dned_check_consistency(struct dned_part *parts)
 {
 	do{
 		if(parts->prior){
-			if(parts->self!=parts->prior->next)
-				return 1;
-			if(parts->num<=parts->prior->num)
-				return 1;
+			if(parts->self!=parts->prior->next){
+				dned_consist_error_at=parts->num;
+				return DNED_CONSIST_ERROR_PRIOR_NEXT;
+			}
+			if(parts->num<=parts->prior->num){
+				dned_consist_error_at=parts->num;
+				return DNED_CONSIST_PRIOR_NUM;
+			}
 		}
 		if(parts->next){
-			if(parts->self!=parts->next->prior)
-				return 1;
+			if(parts->self!=parts->next->prior){
+				dned_consist_error_at=parts->num;
+				return DNED_CONSIST_NEXT_PRIOR;
+			}
 		}else
-			if(maxValueInDned!=parts->num)
-				return 1;
+			if(parts->num!=maxValueInDned){
+				dned_consist_error_at=parts->num;
+				return DNED_CONSIST_MVID;
+			}
 	}while((parts=parts->next));
 
-	return 0;
+	return DNED_CONSIST_NOERROR;
+}
+
+void dned_elope_with_consistency(enum dned_consist c)
+{
+	char str[0xff], base[0xff]="dned_elope_with_consistency: ";
+	switch(c){
+		case DNED_CONSIST_NOERROR:
+			return;
+		case DNED_CONSIST_ERROR_PRIOR_NEXT:
+			sprintf(str, "prior->next is not self(num=%d)", dned_consist_error_at);
+			break;
+		case DNED_CONSIST_PRIOR_NUM:
+			sprintf(str, "prior->next is not self(num=%d)", dned_consist_error_at);
+			break;
+		case DNED_CONSIST_NEXT_PRIOR:
+			sprintf(str, "prior->next is not self(num=%d)", dned_consist_error_at);
+			break;
+		case DNED_CONSIST_MVID:
+			sprintf(str, "prior->next is not self(num=%d)", dned_consist_error_at);
+			break;
+	}
+	strcat(base, str);
+	will_and_die(base, c);
+
+	return;
+}
+
+int dned_probe_len(struct dned_part *parts)
+{
+	int count=0;
+
+	if(!parts)
+		return 0;
+
+	do
+		count++;
+	while((parts=parts->next));
+
+	return count;
 }

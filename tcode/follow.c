@@ -44,14 +44,24 @@ void follow(const signed short int m)
 		return;	/*Don't forget!!!*/
 	}
 
-	assert(!dned_check_consistency(dned));
+	dned_elope_with_consistency(dned_check_consistency(dned));
+
+	dned_local_value_significant_def_locate=dned;
+	dned_local_initial_locate=dned;	/* Is this value duplicated? */
+	/*dned_local_significant_value=alllocal_dned_entire[m];*/
+	dned_local_significant_value=dned_entire_alloc();
+	dned_local_value_significant_def_locate=dned_local;
+	dned_store_entire(dned_local_significant_value, dned_local_value_significant_def_locate);
 
 	/*There used to be unfolded storetynd here.*/
 	storetynd(local_tate, local_yoko, local_name, &local_maxValueInDned);
 	i=grope4initialValueOfLove(m);
 	dtmp=dned_follow_to_last(dned_local);
+	print_str_n_times(" ", m, stdout);
 	dned_print_chain_only_num(stdout, dned);
-	printf("IF %d == %d ?\n", dtmp->num, maxValueInDned);
+	print_str_n_times(" ", m, stdout);
+	printf("IF %d(last) == %d(mvid) ?\n", dtmp->num, maxValueInDned);
+	print_str_n_times(" ", m, stdout);
 	printf("m%-2d i%-2d mvid%-2d ", m, i, maxValueInDned);
 	fflush(stdout);
 	assert(dtmp->num == maxValueInDned);
@@ -70,11 +80,6 @@ void follow(const signed short int m)
 	/*If so, maxValueInDned is wrong.*/
 	assert(dned_local!=NULL);
 
-	dned_local_significant_value=alllocal_dned_entire[m];
-	/*dned_local_significant_value=dned_entire_alloc();*/
-	dned_local_value_significant_def_locate=dned_local;
-	dned_store_entire(dned_local_significant_value, dned_local_value_significant_def_locate);
-
 	do{
 		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 		assert(dned_local == dned_local->self);
@@ -87,13 +92,17 @@ void follow(const signed short int m)
 		/*There used to be unfolded settcodeval here.*/
 		settcodeval(i, m);
 
+		print_str_n_times(" ", m, stdout);
 		dned_print_chain_only_num_full(stdout, dned);
 
+		print_str_n_times(" ", m, stdout);
 		printf("(i=%d) ", i);
+
+		dned_elope_with_consistency(dned_check_consistency(dned));
 
 		switch(follow_chain(m)){
 			case 0:
-				puts("toafill succeeded.");
+				puts("toafill succeeded or no toafill.");
 				break;
 			case 1:
 				puts("toafill failed.");
@@ -108,8 +117,9 @@ void follow(const signed short int m)
 				break;
 		}
 
-		fprintf(stdout, "\t(i%-2d mvid%-2d) ", i, maxValueInDned);
-		dned_print_chain_only_num_full(stdout, dned);
+		print_str_n_times(" ", m, stdout);
+		fprintf(stdout, "(i%-2d mvid%-2d) ", i, maxValueInDned);
+		dned_print_chain_only_num(stdout, dned);
 
 		if(isitconsist(sum_tate[chain[m].x]) && isitconsist(sum_yoko[chain[m].y]) && ((if_name0(chain[m])) ? isitconsist(sum_name[0]):True) && ((if_name1(chain[m])) ? isitconsist(sum_name[1]):True)){
 			if(m<chaincont-1)

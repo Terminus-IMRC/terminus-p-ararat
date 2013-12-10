@@ -1,4 +1,4 @@
-main_srcs:=Terminus.c will_and_die.c caught_signal.c wtime_linear_list_utils.c
+main_srcs:=Terminus.c will_and_die.c caught_signal.c wtime_linear_list_utils.c print_n_chars.c
 SRCS+=$(addprefix main/,$(main_srcs))
 
 DEP_N_C+=main/Terminus.c main/caught_signal.c

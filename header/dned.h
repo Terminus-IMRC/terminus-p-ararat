@@ -6,6 +6,14 @@
 		struct dned_part *self;
 	};
 
+	enum dned_consist{
+		DNED_CONSIST_NOERROR,
+		DNED_CONSIST_ERROR_PRIOR_NEXT,
+		DNED_CONSIST_PRIOR_NUM,
+		DNED_CONSIST_NEXT_PRIOR,
+		DNED_CONSIST_MVID
+	};
+
 	/* The number of element must be chaincont. */
 	typedef struct dned_part* dned_entire;
 
@@ -33,5 +41,7 @@
 	struct dned_part* dned_follow_to_last(struct dned_part *parts);
 	void dned_print_chain_full(FILE *fp, struct dned_part *parts);
 	void dned_print_chain_only_num_full(FILE *fp, struct dned_part *parts);
-	_Bool dned_check_consistency(struct dned_part *parts);
+	enum dned_consist dned_check_consistency(struct dned_part *parts);
+	void dned_elope_with_consistency(enum dned_consist c);
+	int dned_probe_len(struct dned_part *parts);
 #endif
