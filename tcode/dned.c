@@ -226,12 +226,12 @@ void dned_print_chain_full(FILE *fp, struct dned_part *parts)
 		if(!parts->prior)
 			fprintf(fp, "[^(nil)<-");
 		else
-			fprintf(fp, "[%d(%p)<-", parts->prior->num, parts->prior);
-		fprintf(fp, "%d(%p)->", parts->num, parts->self);
+			fprintf(fp, "[%2d(%p)<-", parts->prior->num, parts->prior);
+		fprintf(fp, "%2d(%p)->", parts->num, parts->self);
 		if(!parts->next)
 			fprintf(fp, "$(nil)]");
 		else
-			fprintf(fp, "%d(%p)]", parts->next->num, parts->next);
+			fprintf(fp, "%2d(%p)]", parts->next->num, parts->next);
 	}while((parts=parts->next));
 
 	return;
@@ -251,14 +251,14 @@ void dned_print_chain_only_num_full(FILE *fp, struct dned_part *parts)
 {
 	do{
 		if(!parts->prior)
-			fprintf(fp, "[^<-");
+			fprintf(fp, "[^ <-");
 		else
-			fprintf(fp, "[%d<-", parts->prior->num);
-		fprintf(fp, "%d->", parts->num);
+			fprintf(fp, "[%2d<-", parts->prior->num);
+		fprintf(fp, "%2d->", parts->num);
 		if(!parts->next)
-			fprintf(fp, "$]");
+			fprintf(fp, "$ ]");
 		else
-			fprintf(fp, "%d]", parts->next->num);
+			fprintf(fp, "%2d]", parts->next->num);
 	}while((parts=parts->next));
 
 	return;

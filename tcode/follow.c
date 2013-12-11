@@ -37,8 +37,11 @@ void follow(const signed short int m)
 	struct dned_part *dtmp;
 
 	dprintf("Entering #%d\n", m);
+	if(m==chaincont-1)
+		printf("Max depth reached.\n");
 
 	if((!commrank) && (m==N-1)){
+		assert(!"follow_pa called.");
 		printf("Now let master broadcast ms.\n");
 		follow_pa(m);
 		return;	/*Don't forget!!!*/
@@ -82,6 +85,7 @@ void follow(const signed short int m)
 
 	do{
 		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
+		dned_elope_with_consistency(dned_check_consistency(dned));
 		assert(dned_local == dned_local->self);
 		dprintf("%d: %p<-%p(%d)->%p\n", m, dned_local->prior, dned_local, dned_local->num, dned_local->next);
 		i=dned_local->num;
@@ -125,7 +129,7 @@ void follow(const signed short int m)
 			if(m<chaincont-1)
 				follow(m+1);
 			else{
-				dprintf("Max depth(m) reached.\n");
+				printf("Max depth(m) reached.\n");
 				#ifdef PF
 				tcode_linear_list_subst(&proper_ms, tcode_as_1dim);
 				#endif
