@@ -212,6 +212,9 @@ int dned_probe_length(struct dned_part* parts)
 
 void dned_print_chain(FILE *fp, struct dned_part *parts)
 {
+	if(!parts)
+		return;
+
 	do
 		fprintf(fp, "%p(%d)->", parts, parts->num);
 	while((parts=parts->next));
@@ -222,6 +225,9 @@ void dned_print_chain(FILE *fp, struct dned_part *parts)
 
 void dned_print_chain_full(FILE *fp, struct dned_part *parts)
 {
+	if(!parts)
+		return;
+
 	do{
 		if(!parts->prior)
 			fprintf(fp, "[^(nil)<-");
@@ -239,6 +245,9 @@ void dned_print_chain_full(FILE *fp, struct dned_part *parts)
 
 void dned_print_chain_only_num(FILE *fp, struct dned_part *parts)
 {
+	if(!parts)
+		return;
+
 	do
 		fprintf(fp, "%d->", parts->num);
 	while((parts=parts->next));
@@ -249,6 +258,9 @@ void dned_print_chain_only_num(FILE *fp, struct dned_part *parts)
 
 void dned_print_chain_only_num_full(FILE *fp, struct dned_part *parts)
 {
+	if(!parts)
+		return;
+
 	do{
 		if(!parts->prior)
 			fprintf(fp, "[^ <-");
@@ -266,6 +278,9 @@ void dned_print_chain_only_num_full(FILE *fp, struct dned_part *parts)
 
 struct dned_part* dned_follow_to_last(struct dned_part *parts)
 {
+	if(!parts)
+		return NULL;
+
 	while(parts->next)
 		parts=parts->next;
 	return parts->self;
