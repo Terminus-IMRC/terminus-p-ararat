@@ -165,7 +165,6 @@ void usedned_symbolic(struct dned_part *parts)
 		parts->prior->next=NULL;
 		maxValueInDned=parts->prior->num;
 	}else{
-		puts("usedned: passed middle parts");
 		parts->prior->next=parts->next;
 		parts->next->prior=parts->prior;
 	}
