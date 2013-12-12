@@ -37,7 +37,7 @@ void follow(const signed short int m)
 	dprintf("Entering #%d\n", m);
 
 	if((!commrank) && (m==N-1)){
-		printf("Now let master broadcast ms.\n");
+		dprintf("Now let master broadcast ms.\n");
 		follow_pa(m);
 		return;	/*Don't forget!!!*/
 	}
