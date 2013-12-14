@@ -149,7 +149,6 @@ struct dned_part* dned_whereis_num(signed short tofind, struct dned_part *start)
 #endif
 }
 
-/* TODO: Be void and the argument would be struct dned_part **parts :) */
 void usedned_symbolic(struct dned_part *parts)
 {
 	if(!parts->prior){
