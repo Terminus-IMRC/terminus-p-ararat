@@ -29,7 +29,7 @@ void follow(const signed short int m)
 {
 	signed short int i=-1;
 	signed short int local_tate[X], local_yoko[X], local_name[2], local_maxValueInDned;
-	struct dned_part *dned_local_initial_locate=dned;
+	struct dned_part *dned_initial_locate_local=dned;
 	struct dned_part *dned_local_value_significant_def_locate;
 	dned_entire dned_local_significant_value;
 	struct dned_part *dned_local=dned;
@@ -42,8 +42,7 @@ void follow(const signed short int m)
 		return;	/*Don't forget!!!*/
 	}
 
-	dned_local_value_significant_def_locate=dned;
-	dned_local_initial_locate=dned;	/* Is this value duplicated? */
+	dned_initial_locate_local=dned;	/* Is this value duplicated? */
 	dned_local_significant_value=alllocal_dned_entire[m];
 	dned_local_value_significant_def_locate=dned_local;
 	dned_store_entire(dned_local_significant_value, dned_local_value_significant_def_locate);
@@ -64,7 +63,6 @@ void follow(const signed short int m)
 	}
 
 	do{
-		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 		assert(dned_local == dned_local->self);
 		dprintf("%d: %p<-%p(%d)->%p\n", m, dned_local->prior, dned_local, dned_local->num, dned_local->next);
 		i=dned_local->num;
@@ -113,12 +111,9 @@ ncot:
 		dprintf("Restoring\n");
 		/*This also plays a part in unusedned_symbolic(dned_localdef);.*/
 		restoretynd(local_tate, local_yoko, local_name, local_maxValueInDned);
-		dned=dned_local_initial_locate;
+		dned=dned_initial_locate_local;
+		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
-
-	dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
-	dned=dned_local_initial_locate;
-	/*dned_entire_free(dned_local_significant_value);*/
 
 	dprintf("Leaving from #%d\n", m);
 	return;
