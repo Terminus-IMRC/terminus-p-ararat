@@ -6,6 +6,7 @@
 #include "code.h"
 #include "parallel.h"
 #include "dned.h"
+#define NDEBUG
 #include <assert.h>
 
 #define isitconsist(m) (((m>0)&&(m<=OneLine)) ? True:False)

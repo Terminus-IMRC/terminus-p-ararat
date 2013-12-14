@@ -8,7 +8,7 @@
 #include "timing.h"
 #include "parallel.h"
 #include <signal.h>
-#undef NDEBUG
+#define NDEBUG
 #include <assert.h>
 
 int commrank, commsize;

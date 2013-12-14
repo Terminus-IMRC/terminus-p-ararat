@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "def.h"
 #include "dned.h"
+#define NDEBUG
 #include <assert.h>
 
 signed short int maxValueInDned;
