@@ -4,6 +4,7 @@
 		signed short int num;
 		struct dned_part *prior, *next;
 		struct dned_part *self;
+		_Bool used;
 	};
 
 	enum dned_consist{
@@ -23,9 +24,10 @@
 
 	struct dned_part* dned_alloc();
 	dned_entire dned_entire_alloc();
+	dned_entire dned_first_entire_def;
 	/*void dned_set_proper_pointer(struct dned_part *toret);*/
 	void dned_subst_normal_value(struct dned_part *parts);
-	void dned_subst_particular_value(signed short int *tosubst, struct dned_part *parts);
+	void dned_subst_particular_value(signed short int *tosubst, int tosubst_len, struct dned_part *parts);
 	void dned_cp(struct dned_part *dest, struct dned_part *src);
 	void dned_cp_array(struct dned_part *dest, struct dned_part *src);
 	void dned_free(struct dned_part *parts);

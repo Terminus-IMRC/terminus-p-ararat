@@ -48,14 +48,17 @@ dned_entire dned_entire_alloc()
 void dned_subst_normal_value(struct dned_part *parts)
 {
 	int i;
-	
-	for(i=0; i<Ceilings; i++)
+
+	for(i=0; i<Ceilings; i++){
 		parts[i].num=i+1;
+		parts[i].used=False;
+	}
 	
 	return;
 }
 
-/* Substitute the numbers in tosubst until 0 appears. */
+#if 0
+/* Old version; simply copys tosubst to parts until 0 appears. */
 void dned_subst_particular_value(signed short int *tosubst, struct dned_part *parts)
 {
 	int i;
@@ -66,11 +69,39 @@ void dned_subst_particular_value(signed short int *tosubst, struct dned_part *pa
 
 	return;
 }
+#else
+/* tosubst_len should not be 0. */
+void dned_subst_particular_value(signed short int *tosubst, int tosubst_len, struct dned_part *parts)
+{
+	int i;
+
+	parts[tosubst[0]-1].prior=NULL;
+	parts[tosubst[tosubst_len-1]-1].next=NULL;
+	if(tosubst_len==1)
+		parts[tosubst[0]-1].next=NULL;
+	else{
+		/* i.e. tosubst_len>1 */
+		parts[tosubst[0]-1].next=parts[tosubst[1]-1].self;
+		parts[tosubst[tosubst_len-1]-1].prior=parts[tosubst[tosubst_len-1-1]-1].self;
+	}
+
+	for(i=1; i<tosubst_len-1; i++){
+		/*parts[tosubst[i]-1].num=tosubst[i];*/
+		parts[tosubst[i]-1].prior=parts[tosubst[i-1]-1].self;
+		parts[tosubst[i]-1].next=parts[tosubst[i+1]-1].self;
+		parts[tosubst[i]-1].used=True;
+	}
+
+	return;
+}
+#endif
 
 void dned_cp(struct dned_part *dest, struct dned_part *src)
 {
-	for(; src; dest=dest->next, src=src->next)
+	for(; src; dest=dest->next, src=src->next){
 		dest->num=src->num;
+		dest->used=src->used;
+	}
 
 	return;
 }
@@ -82,6 +113,7 @@ void dned_store_entire(dned_entire dest, struct dned_part *src)
 	/* Not to mind i<chaincont because the length of src is unknown. */
 	for(i=0; src; src=src->next, i++){
 		dest[i].num=src->num;
+		dest[i].used=src->used;
 		dest[i].prior=src->prior?src->prior->self:NULL;
 		dest[i].next=src->next?src->next->self:NULL;
 		dest[i].self=src->self->self;
@@ -99,6 +131,7 @@ void dned_restore_entire(struct dned_part *dest, dned_entire src)
 	do{
 		i++;
 		dest->num=src[i].num;
+		dest->used=src[i].used;
 		dest->prior=src[i].prior?src[i].prior->self:NULL;
 		dest->next=src[i].next?src[i].next->self:NULL;
 		dest->self=src[i].self->self;
@@ -139,18 +172,26 @@ struct dned_part* dned_whereis_num(signed short tofind, struct dned_part *start)
 		start=start->next;
 	}
 	return start;
-#else
+#elif 0
 	while(start){
 		if(start->num==tofind)
 			return start->self;
 		start=start->next;
 	}
 	return NULL;
+#else
+	/* Uses new dned system (dned_global_def is sequent) #20131223 */
+	if(!dned_global_def[tofind-1].used)
+		return dned_global_def[tofind-1].self;
+	else
+		return NULL;
+	start=start->self;
 #endif
 }
 
 void usedned_symbolic(struct dned_part *parts)
 {
+	parts->used=True;
 	if(!parts->prior){
 		if(parts->next){
 			dprintf("parts:%p dned:%p\n", parts, dned);

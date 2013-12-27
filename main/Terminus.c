@@ -173,6 +173,8 @@ void initialization_before_follow()
 	dned=dned_global_def=dned_alloc();
 	assert(dned);
 	dned_subst_normal_value(dned);
+	dned_first_entire_def=dned_entire_alloc();
+	dned_store_entire(dned_first_entire_def, dned);
 	maxValueInDned=Ceilings;
 	
 	alllocal_dned_entire=(dned_entire*)malloc(sizeof(dned_entire)*chaincont);

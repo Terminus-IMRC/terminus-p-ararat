@@ -1,12 +1,16 @@
 #include "code.h"
 #include "parallel.h"
 #include "timing.h"
+#include <assert.h>
 
 extern struct wtime_linear_list *wtime_for_whole_corresponding_list, *wtime_for_each_follow_list, *wtime_for_idle;
 signed short int dned_tosend[Ceilings];
 
+dned_entire dned_first_entire_def;
+
 void follow_pa(const signed short int m)
 {
+	int i;
 	int tosend;
 	int dned_len;
 	unsigned char contflag;
@@ -53,12 +57,19 @@ void follow_pa(const signed short int m)
 			MPI_Recv(&dned_len, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			if(dned_len)
 				MPI_Recv(dned_tosend, Ceilings, MPI_SHORT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			else
+				assert(!"dned_len is 0. What should I do?");
 			end_tmp_wtime=MPI_Wtime();
 
 			wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
 			wtime_linear_list_subst(&wtime_for_idle, end_idle_wtime-start_tmp_wtime);
 
-			dned_subst_particular_value(dned_tosend, dned);
+			for(i=0; i<dned_len; i++)
+				printf("%2d ", dned_tosend[i]);
+			putchar('\n');
+			dned=dned_global_def;
+			dned_restore_entire(dned, dned_first_entire_def);
+			dned_subst_particular_value(dned_tosend, dned_len, dned);
 
 			start_tmp_wtime=MPI_Wtime();
 			follow(m);
