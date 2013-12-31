@@ -3,6 +3,7 @@
 PROG=Terminus
 LINKFLAGS=-lgmp
 CC=mpicc
+GDB=gdb --tui
 
 HDRDIRS:=header
 SRCDIRS:=main chain code tcode
@@ -47,8 +48,10 @@ PROC?=2
 run:	$(PROG)
 	mpiexec -n $(PROC) ./$<
 vtdrun: $(PROG)
-	mpiexec -n $(PROC) openvt -s gdb ./$<
+	mpiexec -n $(PROC) openvt -s -- $(GDB) ./$<
 tmdrun: $(PROG)
-	mpiexec -n $(PROC) tmux new-win 'gdb ./$<'
+	mpiexec -n $(PROC) tmux new-win '$(GDB) ./$<'
+xtdrun: $(PROG)
+	mpiexec -n $(PROC) xterm -e $(GDB) ./$<
 sub: $(PROG)
 	dqsub2 ./DEBUG_TERMINUS_terminus-p-ararat.sh
