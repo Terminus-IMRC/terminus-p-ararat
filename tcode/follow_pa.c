@@ -10,7 +10,6 @@ dned_entire dned_first_entire_def;
 
 void follow_pa(const signed short int m)
 {
-	int i;
 	int tosend;
 	int dned_len;
 	unsigned char contflag;
@@ -64,12 +63,17 @@ void follow_pa(const signed short int m)
 			wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
 			wtime_linear_list_subst(&wtime_for_idle, end_idle_wtime-start_tmp_wtime);
 
-			for(i=0; i<dned_len; i++)
-				printf("%2d ", dned_tosend[i]);
-			putchar('\n');
+			/*for(i=0; i<dned_len; i++)
+				printf("%d  ", dned_tosend[i]);
+			putchar('\n');*/
+
 			dned=dned_global_def;
 			dned_restore_entire(dned, dned_first_entire_def);
 			dned_subst_particular_value(dned_tosend, dned_len, dned);
+
+			/*dned_print_chain_full(stdout, dned);
+			putchar('\n');*/
+			dned_elope_with_consistency(dned_check_consistency(dned));
 
 			start_tmp_wtime=MPI_Wtime();
 			follow(m);

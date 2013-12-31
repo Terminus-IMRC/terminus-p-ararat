@@ -92,6 +92,8 @@ void dned_subst_particular_value(signed short int *tosubst, int tosubst_len, str
 		parts[tosubst[i]-1].used=True;
 	}
 
+	maxValueInDned=tosubst[tosubst_len-1];
+	dned=parts[tosubst[0]-1].self;
 	return;
 }
 #endif
