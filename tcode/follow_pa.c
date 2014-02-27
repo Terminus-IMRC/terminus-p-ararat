@@ -10,6 +10,7 @@ dned_entire dned_first_entire_def;
 
 void follow_pa(const signed short int m)
 {
+	int i;
 	int tosend;
 	int dned_len;
 	unsigned char contflag;
@@ -37,6 +38,12 @@ void follow_pa(const signed short int m)
 			MPI_Send(dned_tosend, Ceilings, MPI_SHORT, tosend, 0, MPI_COMM_WORLD);
 		end_tmp_wtime=MPI_Wtime();
 
+
+
+		MPI_Send(&maxValueInDned, 1, MPI_SHORT, tosend, 0, MPI_COMM_WORLD);
+
+
+
 		wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
 		wtime_linear_list_subst(&wtime_for_idle, end_idle_wtime-start_tmp_wtime);
 	}else{
@@ -60,6 +67,13 @@ void follow_pa(const signed short int m)
 				assert(!"dned_len is 0. What should I do?");
 			end_tmp_wtime=MPI_Wtime();
 
+
+
+			MPI_Recv(&maxValueInDned, 1, MPI_SHORT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			i=maxValueInDned;
+
+
+
 			wtime_linear_list_subst(&wtime_for_whole_corresponding_list, end_tmp_wtime-start_tmp_wtime);
 			wtime_linear_list_subst(&wtime_for_idle, end_idle_wtime-start_tmp_wtime);
 
@@ -70,6 +84,13 @@ void follow_pa(const signed short int m)
 			dned=dned_global_def;
 			dned_restore_entire(dned, dned_first_entire_def);
 			dned_subst_particular_value(dned_tosend, dned_len, dned);
+
+
+
+			if(i!=maxValueInDned)
+				assert(!"maxValueInDned's of master and worker are difference.");
+
+
 
 			/*dned_print_chain_full(stdout, dned);
 			putchar('\n');*/

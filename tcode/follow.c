@@ -35,7 +35,7 @@ void follow(const signed short int m)
 	dned_entire dned_local_significant_value;
 	struct dned_part *dned_local=dned;
 
-	dprintf("Entering #%d\n", m);
+	printf("Entering #%d\n", m);
 
 	if((!commrank) && (m==N-1)){
 		dprintf("Now let master broadcast ms.\n");
@@ -90,6 +90,7 @@ void follow(const signed short int m)
 		}
 
 		if(isitconsist(sum_tate[chain[m].x]) && isitconsist(sum_yoko[chain[m].y]) && ((if_name0(chain[m])) ? isitconsist(sum_name[0]):True) && ((if_name1(chain[m])) ? isitconsist(sum_name[1]):True)){
+			pfTcode(tcode);
 			if(m<chaincont-1)
 				follow(m+1);
 			else{
@@ -116,7 +117,7 @@ ncot:
 		dned_restore_entire(dned_local_value_significant_def_locate, dned_local_significant_value);
 	}while((dned_local=dned_local->next));
 
-	dprintf("Leaving from #%d\n", m);
+	printf("Leaving from #%d\n", m);
 	return;
 }
 
@@ -157,6 +158,9 @@ short int follow_chain(int m)
 		if( ((chain[m].toafill[i].x==0) && (chain[m].toafill[i].y==X-1)) && ((!(tobes>tcode[X-1][0])) ) )
 			return 2;
 #endif
+
+		dned_print_chain_only_num(stdout, dned);
+		dned_print_chain_only_num(stdout, located);
 
 		tcode[chain[m].toafill[i].x][chain[m].toafill[i].y]=tobes;
 		usedned_symbolic(located->self);

@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include "def.h"
 #include "dned.h"
-#define NDEBUG
+/*#define NDEBUG*/
 #include <assert.h>
+extern int commrank;
 
 signed short int maxValueInDned;
 int dned_consist_error_at;
@@ -86,7 +87,8 @@ void dned_subst_particular_value(signed short int *tosubst, int tosubst_len, str
 	}
 
 	for(i=1; i<tosubst_len-1; i++){
-		/*parts[tosubst[i]-1].num=tosubst[i];*/
+		if(parts[tosubst[i]-1].num!=tosubst[i])
+			assert(!"parts[tosubst[i]-1].num is not equals to tosubst[i].");
 		parts[tosubst[i]-1].prior=parts[tosubst[i-1]-1].self;
 		parts[tosubst[i]-1].next=parts[tosubst[i+1]-1].self;
 		parts[tosubst[i]-1].used=True;
@@ -183,8 +185,11 @@ struct dned_part* dned_whereis_num(signed short tofind, struct dned_part *start)
 	return NULL;
 #else
 	/* Uses new dned system (dned_global_def is sequent) #20131223 */
-	if(!dned_global_def[tofind-1].used)
+	if(!dned_global_def[tofind-1].used){
+		puts("called");
+		assert(tofind==dned_global_def[tofind-1].num);
 		return dned_global_def[tofind-1].self;
+	}
 	else
 		return NULL;
 	start=start->self;
@@ -196,8 +201,9 @@ void usedned_symbolic(struct dned_part *parts)
 	parts->used=True;
 	if(!parts->prior){
 		if(parts->next){
-			dprintf("parts:%p dned:%p\n", parts, dned);
-			dprintf("parts->num:%d dned->num:%d\n", parts->num, dned->num);
+			printf("parts:%p dned:%p\n", parts, dned);
+			printf("r%d: parts->num:%d dned->num:%d\n", commrank, parts->num, dned->num);
+			printf("r%d: dned->prior=%p(%2d)\n", commrank, dned->prior, dned->prior?dned->prior->num:-1);
 			assert(parts->num == dned->num);
 			parts->next->prior=NULL;
 			dned=dned->next;
